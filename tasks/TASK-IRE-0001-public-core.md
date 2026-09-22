@@ -6,15 +6,15 @@ Publish the provider-neutral engine with an executable contract and a fast local
 
 ## Acceptance
 
-- [ ] `npm test` passes.
-- [ ] property and metamorphic tests cover the invariant list.
-- [ ] public-surface scan passes.
-- [ ] package can be installed and packed without local-only files.
-- [ ] repository contains no credentials or provider-specific source clients.
+- [x] `npm test` passes.
+- [x] property and metamorphic tests cover the invariant list.
+- [x] public-surface scan passes.
+- [x] package can be installed and packed without local-only files.
+- [x] repository contains no credentials or provider-specific source clients.
 
 ## Evidence
 
-Record commands and results in the closing checkpoint for this task.
+Verified on 2026-09-22 with `npm test` (12 passed), `npm run check:public`, `npm run demo`, and `npm pack --dry-run`.
 
 ## Next action
 
