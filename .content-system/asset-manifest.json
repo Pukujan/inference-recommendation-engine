@@ -3,16 +3,16 @@
   "system_version": "0.2.0",
   "assets": [
     {
-      "path": "docs/content-system-assets/hero.svg",
+      "path": "docs/content-system-assets/hero-generated.png",
       "role": "hero",
       "orientation": "wide",
-      "dimensions": "1200x600",
-      "text_policy": "Text-free SVG; explanation remains in Markdown and alt text.",
-      "prompt_recipe": "Abstract vector editorial visual: scattered route signals, price points, and availability marks converge into one calm ranked path; navy background, cyan and mint signal lines, amber decision point; no logos, labels, fake UI, or claims.",
-      "alt_text": "Scattered inference route signals converge into one inspectable ranked path.",
+      "dimensions": "2048x768",
+      "text_policy": "No readable text in the generated image; explanation remains in Markdown and alt text.",
+      "prompt_recipe": "Use case: ads-marketing. Asset type: wide repository hero banner. A polished editorial illustration for a local inference recommendation engine: a human maintainer faces noisy fragmented route signals and price points on the left, which converge into one calm inspectable ranked path and decision node on the right. Dark navy, cyan, mint, and a small warm amber accent; no logos, words, fake dashboard, guarantee, or watermark.",
+      "alt_text": "A maintainer follows scattered inference route signals as they converge into one inspectable ranked path.",
       "usage": "README hero below the opening promise.",
       "crop_behavior": "Keep the central convergence and both outer signal groups visible on wide and narrow crops.",
-      "rejection_conditions": "Reject if it resembles a live provider dashboard, hides the convergence, or adds unreadable text.",
+      "rejection_conditions": "Reject if it resembles a live provider dashboard, hides the human or convergence, adds unsupported claims, or contains garbled text.",
       "review_decision": "accepted"
     },
     {

@@ -1,6 +1,6 @@
 {
   "schema_version": "content-generation.visual-style.v1",
-  "reference_asset": "docs/content-system-assets/hero.svg",
+  "reference_asset": "docs/content-system-assets/hero-generated.png",
   "palette": {
     "background": "#0b1020",
     "primary": "#7dd3fc",
@@ -21,7 +21,7 @@
   ],
   "text_policy": "SVG diagrams remain text-free; explanation and alt text live in Markdown.",
   "roles": {
-    "hero": {"orientation": "wide", "dimensions": "1200x600 SVG"},
+    "hero": {"orientation": "wide", "dimensions": "2048x768 PNG"},
     "problem": {"orientation": "wide", "dimensions": "1200x600 SVG"},
     "system": {"orientation": "square", "dimensions": "800x800 SVG"},
     "evidence": {"orientation": "portrait", "dimensions": "800x1000 SVG"}

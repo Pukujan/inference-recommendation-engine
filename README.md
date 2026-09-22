@@ -3,7 +3,7 @@
 > When a cheap inference route is only barely available, the lowest number is not the decision. This local, provider-neutral engine turns price ladders, supply, runtime evidence, and editable policy into a recommendation you can inspect and reproduce.
 
 <p align="center">
-  <img src="docs/content-system-assets/hero.svg" alt="Scattered inference route signals converge into one inspectable ranked path." width="100%">
+  <img src="docs/content-system-assets/hero-generated.png" alt="A maintainer follows scattered inference route signals as they converge into one inspectable ranked path." width="100%">
 </p>
 
 ## Why this exists
@@ -77,7 +77,7 @@ The score is a policy result, not an objective intelligence label. Model-assiste
 
 ## Image generation and use
 
-The README visuals are intentionally simple, text-free SVGs rather than provider screenshots or generated claims. The hero shows noisy route signals becoming an inspectable path. The supporting visual shows why a sparse cheap ask and a well-supplied higher ask contribute differently.
+The README visuals avoid provider screenshots and unsupported claims. The generated hero shows a maintainer following noisy route signals toward an inspectable path. The supporting SVG shows why a sparse cheap ask and a well-supplied higher ask contribute differently.
 
 Their roles, exact alt text, dimensions, crop behavior, rejection conditions, and review decisions are recorded in [`.content-system/asset-manifest.json`](.content-system/asset-manifest.json) and [`.content-system/visual-style.json`](.content-system/visual-style.json). No external image service or credential is needed to reuse them.
 
