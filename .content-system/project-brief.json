@@ -1,0 +1,61 @@
+{
+  "schema_version": "content-generation.project-brief.v1",
+  "project": "Inference Recommendation Engine",
+  "audience": [
+    "developers comparing multiple inference routes",
+    "agent builders who need an explainable model choice",
+    "maintainers who want policy changes to be testable"
+  ],
+  "problem": "The cheapest advertised ask is often a sparse outlier. A route can look inexpensive while having little supply, weak runtime evidence, or unclear trade-offs, leaving people to choose models by intuition or vendor marketing.",
+  "solution": "A local, provider-neutral ranking core that keeps price, supply, runtime evidence, recency, and policy decisions explicit and reproducible.",
+  "mechanism": [
+    "Normalize route prices, provider breadth, price ladders, and runtime observations at an adapter boundary.",
+    "Compare ladder availability with the observed candidate pool instead of using a universal provider-count cutoff.",
+    "Weight price points by relative supply, empirical percentile, local supply derivative, and lower-price preference.",
+    "Use an asymmetric near-free price regime so the full 0.0x band saturates price utility while availability and reliability continue to separate candidates.",
+    "Return deterministic rankings with versioned policy, explicit evidence state, and gate reasons."
+  ],
+  "evidence": [
+    {
+      "claim": "The public package exposes empirical price-supply weighting and top-ranking helpers.",
+      "source": "src/supply.mjs; src/index.mjs",
+      "status": "shipped"
+    },
+    {
+      "claim": "The price-supply rules and boundaries are documented as a public contract.",
+      "source": "spec/PRICE-SUPPLY-WEIGHTING.md; spec/INVARIANTS.md",
+      "status": "shipped"
+    },
+    {
+      "claim": "Property and relation-based tests cover supply weighting, saturation, upward movement from strongly supplied higher asks, and deterministic ranking.",
+      "source": "tests/supply.test.mjs; tests/properties.test.mjs; tests/metamorphic.test.mjs",
+      "status": "experimentally_supported"
+    },
+    {
+      "claim": "An adapter can connect rolling or temporal source records without putting credentials in this package.",
+      "source": "README.md; spec/INVARIANTS.md",
+      "status": "shipped"
+    }
+  ],
+  "boundaries": [
+    "The public package does not contact providers, store credentials, or perform source discovery.",
+    "Availability counts are supply and redundancy signals, not guarantees of concurrency, success, timeout rate, or latency.",
+    "Benchmark strength, release recency, and provider-specific catalog facts belong to an adapter; the core does not invent them.",
+    "A ranking is a policy result, not a universal truth or a guarantee that the first route will complete.",
+    "The public repository contains synthetic examples and contracts, not private account records or live provider snapshots."
+  ],
+  "terminology": {
+    "preferred": {
+      "effective price": "the price after supply-weighting the observed ladder",
+      "price-supply ladder": "price points paired with their available count",
+      "near-free band": "the configurable 0.0x price regime where price utility saturates",
+      "adapter": "the local boundary that maps a source into the public route contract"
+    },
+    "avoid": [
+      "guaranteed cheapest",
+      "guaranteed reliability",
+      "magic router",
+      "objective intelligence score"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "content-generation.brand-language.v1",
+  "name": "Inference Recommendation Engine",
+  "personality": ["clear", "evidence-led", "practical", "quietly opinionated"],
+  "audience_feeling": "I can see why this route ranked here, change the weights, and reproduce the result locally.",
+  "promise": "Turn noisy inference trade-offs into an inspectable recommendation you can adjust and test.",
+  "preferred_terms": {
+    "recommendation": "a policy-scored candidate, not a guarantee",
+    "availability": "observed supply or provider breadth, named precisely",
+    "reliability": "runtime evidence with a stated sample and confidence rule",
+    "ranking": "deterministic output for a fixed candidate pool and policy"
+  },
+  "avoid": [
+    "revolutionary",
+    "always best",
+    "guaranteed uptime",
+    "one perfect model",
+    "black-box intelligence"
+  ],
+  "good_examples": [
+    "A cheap outlier should not outweigh a well-supplied price tier by accident.",
+    "The policy makes the trade-off visible, editable, and testable.",
+    "Top candidates stay visible even when a gate explains why they are not routable yet."
+  ],
+  "bad_examples": [
+    "The engine knows the best model for every task.",
+    "Five providers means reliable.",
+    "The cheapest model is automatically the best choice."
+  ]
+}

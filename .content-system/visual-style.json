@@ -1,0 +1,35 @@
+{
+  "schema_version": "content-generation.visual-style.v1",
+  "reference_asset": "docs/content-system-assets/hero.svg",
+  "palette": {
+    "background": "#0b1020",
+    "primary": "#7dd3fc",
+    "accent": "#a7f3d0",
+    "warm_accent": "#fbbf24",
+    "text": "#e5e7eb"
+  },
+  "subjects": [
+    "a noisy set of route signals becoming a legible ranked decision",
+    "price ladders whose available counts change the effective price",
+    "a maintainer inspecting evidence rather than trusting a single number"
+  ],
+  "composition": [
+    "one dominant idea",
+    "clear left-to-right movement from noise to explanation",
+    "wide negative space for README layout",
+    "main signal paths remain visible at narrow crops"
+  ],
+  "text_policy": "SVG diagrams remain text-free; explanation and alt text live in Markdown.",
+  "roles": {
+    "hero": {"orientation": "wide", "dimensions": "1200x600 SVG"},
+    "problem": {"orientation": "wide", "dimensions": "1200x600 SVG"},
+    "system": {"orientation": "square", "dimensions": "800x800 SVG"},
+    "evidence": {"orientation": "portrait", "dimensions": "800x1000 SVG"}
+  },
+  "reject_when": [
+    "the visual looks like a provider dashboard or implies live guarantees",
+    "text is embedded in the SVG and becomes unreadable at README size",
+    "multiple focal points compete with the explanation",
+    "the image suggests a score is objective rather than policy-controlled"
+  ]
+}

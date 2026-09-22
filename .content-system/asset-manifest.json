@@ -1,0 +1,32 @@
+{
+  "schema_version": "content-generation.asset-manifest.v1",
+  "system_version": "0.2.0",
+  "assets": [
+    {
+      "path": "docs/content-system-assets/hero.svg",
+      "role": "hero",
+      "orientation": "wide",
+      "dimensions": "1200x600",
+      "text_policy": "Text-free SVG; explanation remains in Markdown and alt text.",
+      "prompt_recipe": "Abstract vector editorial visual: scattered route signals, price points, and availability marks converge into one calm ranked path; navy background, cyan and mint signal lines, amber decision point; no logos, labels, fake UI, or claims.",
+      "alt_text": "Scattered inference route signals converge into one inspectable ranked path.",
+      "usage": "README hero below the opening promise.",
+      "crop_behavior": "Keep the central convergence and both outer signal groups visible on wide and narrow crops.",
+      "rejection_conditions": "Reject if it resembles a live provider dashboard, hides the convergence, or adds unreadable text.",
+      "review_decision": "accepted"
+    },
+    {
+      "path": "docs/content-system-assets/supply-ladder.svg",
+      "role": "system",
+      "orientation": "svg",
+      "dimensions": "800x800",
+      "text_policy": "Text-free SVG; the adjacent paragraph explains the axes and meaning.",
+      "prompt_recipe": "Minimal vector diagram with two price ladder curves: a sparse low ask and a strongly supplied higher ask; availability bars and a highlighted weighted path; navy, cyan, mint, amber; no labels or fake metrics.",
+      "alt_text": "A price ladder shows a sparse cheap ask and a well-supplied higher ask contributing differently to effective price.",
+      "usage": "README mechanism section beside the supply-weighting explanation.",
+      "crop_behavior": "Keep both ladders and the highlighted weighted path visible when stacked on mobile.",
+      "rejection_conditions": "Reject if the cheap ask is presented as automatically best or if the diagram requires embedded labels to make sense.",
+      "review_decision": "accepted"
+    }
+  ]
+}

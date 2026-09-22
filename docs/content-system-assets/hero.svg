@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-labelledby="title desc">
+  <title id="title">Signals become a ranked route</title>
+  <desc id="desc">Abstract lines and points converge into a clear path through a decision node.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="1" stop-color="#111b35"/>
+    </linearGradient>
+    <linearGradient id="path" x1="0" x2="1">
+      <stop offset="0" stop-color="#7dd3fc" stop-opacity=".28"/>
+      <stop offset=".52" stop-color="#a7f3d0"/>
+      <stop offset="1" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="10" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="600" rx="36" fill="url(#bg)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M70 120 C240 90 290 230 470 250 S650 250 790 300" stroke="#7dd3fc" stroke-opacity=".35" stroke-width="5"/>
+    <path d="M70 230 C230 180 330 330 470 290 S650 280 790 300" stroke="#a7f3d0" stroke-opacity=".45" stroke-width="4"/>
+    <path d="M70 390 C220 430 330 320 470 315 S650 300 790 300" stroke="#fbbf24" stroke-opacity=".28" stroke-width="4"/>
+    <path d="M70 480 C240 500 300 350 470 335 S660 315 790 300" stroke="#7dd3fc" stroke-opacity=".22" stroke-width="3"/>
+    <path d="M790 300 C900 300 930 180 1030 150" stroke="url(#path)" stroke-width="8"/>
+    <path d="M790 300 C900 300 930 390 1030 450" stroke="url(#path)" stroke-opacity=".52" stroke-width="4"/>
+  </g>
+  <g fill="#7dd3fc" fill-opacity=".7">
+    <circle cx="96" cy="120" r="9"/><circle cx="180" cy="206" r="6"/><circle cx="260" cy="102" r="7"/>
+    <circle cx="140" cy="390" r="8"/><circle cx="302" cy="340" r="5"/><circle cx="392" cy="250" r="7"/>
+    <circle cx="226" cy="490" r="5"/><circle cx="360" cy="430" r="8"/><circle cx="480" cy="270" r="6"/>
+  </g>
+  <g fill="#a7f3d0" filter="url(#glow)">
+    <circle cx="790" cy="300" r="18"/>
+  </g>
+  <circle cx="790" cy="300" r="10" fill="#fbbf24"/>
+  <g fill="#e5e7eb" fill-opacity=".85">
+    <rect x="1000" y="112" width="110" height="14" rx="7"/><rect x="1000" y="142" width="72" height="9" rx="4.5" fill="#7dd3fc"/>
+    <rect x="1000" y="412" width="110" height="14" rx="7"/><rect x="1000" y="442" width="86" height="9" rx="4.5" fill="#a7f3d0"/>
+  </g>
+</svg>

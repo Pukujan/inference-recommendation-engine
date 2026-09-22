@@ -1,0 +1,12 @@
+{
+  "schema_version": "content-generation.review-rubric.v1",
+  "dimensions": [
+    {"id": "human_comprehension", "question": "Can a first-time reader explain why a sparse cheap ask is not automatically the best route?", "weight": 2},
+    {"id": "specificity", "question": "Does the README name the price ladder, supply weighting, policy, and adapter boundary concretely?", "weight": 2},
+    {"id": "claim_safety", "question": "Are ranking, reliability, and availability claims bounded by repository evidence?", "weight": 3},
+    {"id": "skimmability", "question": "Can a reader find the promise, mechanism, proof, and next action quickly?", "weight": 1},
+    {"id": "visual_clarity", "question": "Do the two SVGs clarify the story without implying live guarantees?", "weight": 2},
+    {"id": "responsive_fit", "question": "Do the visuals and Markdown remain useful when stacked on a narrow screen?", "weight": 1}
+  ],
+  "decision_rule": "Accept only when claim_safety passes and no weighted dimension is below 3/5; human review remains authoritative for whether the story is ready to share."
+}
