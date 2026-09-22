@@ -1,0 +1,40 @@
+{
+  "policyVersion": "0.1.0",
+  "price": {
+    "inputWeight": 0.4,
+    "outputWeight": 0.6,
+    "rawWeight": 0.9,
+    "discountWeight": 0.1,
+    "anchorUnits": 0.01
+  },
+  "availability": {
+    "providerCap": 5,
+    "providerWeight": 0.7,
+    "routeWeight": 0.3,
+    "minimumProviders": 2,
+    "acceptable": 0.55
+  },
+  "performance": {
+    "reliabilityWeight": 0.3,
+    "ttftWeight": 0.2,
+    "durationWeight": 0.15,
+    "throughputWeight": 0.1,
+    "priceWeight": 0.15,
+    "availabilityWeight": 0.1,
+    "reliabilityLow": 0.8,
+    "reliabilityHigh": 0.99,
+    "ttftLowMs": 2000,
+    "ttftHighMs": 30000,
+    "durationLowMs": 10000,
+    "durationHighMs": 120000,
+    "throughputLow": 5,
+    "throughputHigh": 50,
+    "minimumObservations": 30,
+    "minimumReliabilityLcb": 0.95,
+    "maximumTimeoutRate": 0.05,
+    "maximumTtftP95Ms": 60000,
+    "maximumDurationP95Ms": 120000,
+    "minimumThroughput": 5,
+    "allowPrivateWithoutPublic": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "protocolVersion": "0.1.0",
+  "profile": "software",
+  "projectName": "inference-recommendation-engine",
+  "taskPrefix": "IRE",
+  "activeTask": "IRE-0001",
+  "canonical": {
+    "project": "PROJECT.md",
+    "handoff": "HANDOFF.md",
+    "current": "checkpoints/CURRENT.md",
+    "tasks": "tasks"
+  }
+}

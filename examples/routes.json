@@ -1,0 +1,38 @@
+[
+  {
+    "id": "example-fast-route",
+    "providerCount": 4,
+    "routeCount": 8,
+    "price": { "inputPerMillion": 0.2, "outputPerMillion": 0.8 },
+    "discountPct": 5,
+    "runtime": {
+      "public": {
+        "evidenceState": "measured",
+        "eligibleAttempts": 100,
+        "reliabilityLcb": 0.97,
+        "timeoutRate": 0.01,
+        "ttftP95Ms": 1800,
+        "durationP95Ms": 9000,
+        "throughputTokensPerSecond": 70
+      }
+    }
+  },
+  {
+    "id": "example-cheap-route",
+    "providerCount": 2,
+    "routeCount": 2,
+    "price": { "inputPerMillion": 0.05, "outputPerMillion": 0.2 },
+    "discountPct": 15,
+    "runtime": {
+      "public": {
+        "evidenceState": "insufficient_evidence",
+        "eligibleAttempts": 4,
+        "reliabilityLcb": 0.5,
+        "timeoutRate": 0.1,
+        "ttftP95Ms": 2500,
+        "durationP95Ms": 11000,
+        "throughputTokensPerSecond": 45
+      }
+    }
+  }
+]

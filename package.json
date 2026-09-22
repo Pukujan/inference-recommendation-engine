@@ -1,0 +1,33 @@
+{
+  "name": "inference-recommendation-engine",
+  "version": "0.1.0",
+  "description": "A provider-neutral inference route ranking engine with explicit, versioned policy.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "bin": {
+    "inference-recommend": "./src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:properties": "node --test tests/properties.test.mjs tests/metamorphic.test.mjs",
+    "check:public": "node src/check-public.mjs",
+    "demo": "node src/cli.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "inference",
+    "routing",
+    "reliability",
+    "pricing",
+    "property-testing",
+    "metamorphic-testing"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "fast-check": "^4.3.0"
+  }
+}

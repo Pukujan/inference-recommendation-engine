@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Pukujan/inference-recommendation-engine/blob/main/spec/policy.schema.json",
+  "title": "Inference recommendation policy",
+  "type": "object",
+  "required": ["policyVersion", "price", "availability", "performance"],
+  "properties": {
+    "policyVersion": { "type": "string", "minLength": 1 },
+    "price": {
+      "type": "object",
+      "required": ["inputWeight", "outputWeight", "rawWeight", "discountWeight"],
+      "properties": {
+        "inputWeight": { "type": "number", "minimum": 0 },
+        "outputWeight": { "type": "number", "minimum": 0 },
+        "rawWeight": { "type": "number", "minimum": 0 },
+        "discountWeight": { "type": "number", "minimum": 0 },
+        "anchorUnits": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "availability": {
+      "type": "object",
+      "required": ["providerCap", "providerWeight", "routeWeight", "minimumProviders"],
+      "properties": {
+        "providerCap": { "type": "number", "exclusiveMinimum": 0 },
+        "providerWeight": { "type": "number", "minimum": 0 },
+        "routeWeight": { "type": "number", "minimum": 0 },
+        "minimumProviders": { "type": "integer", "minimum": 1 },
+        "acceptable": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "performance": {
+      "type": "object",
+      "required": ["reliabilityWeight", "ttftWeight", "durationWeight", "throughputWeight", "priceWeight", "availabilityWeight"],
+      "properties": {
+        "reliabilityWeight": { "type": "number", "minimum": 0 },
+        "ttftWeight": { "type": "number", "minimum": 0 },
+        "durationWeight": { "type": "number", "minimum": 0 },
+        "throughputWeight": { "type": "number", "minimum": 0 },
+        "priceWeight": { "type": "number", "minimum": 0 },
+        "availabilityWeight": { "type": "number", "minimum": 0 },
+        "minimumObservations": { "type": "integer", "minimum": 0 },
+        "minimumReliabilityLcb": { "type": "number", "minimum": 0, "maximum": 1 },
+        "maximumTimeoutRate": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
