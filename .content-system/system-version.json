@@ -1,8 +1,8 @@
 {
   "schema_version": "content-generation.adapter.v1",
   "helper_repository": "https://github.com/Pukujan/content-generation-modules",
-  "helper_version": "0.2.0",
-  "helper_commit": "8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7",
+  "helper_version": "0.3.0",
+  "helper_commit": "bdeb15a3db5c0d7516206b025f4eb79bf41a9806",
   "modules": [
     "brand-foundation",
     "content-context",
