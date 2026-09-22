@@ -19,6 +19,10 @@ This is the executable design contract for version 0.1. It protects the user-con
 13. A score is bounded in `[0, 1]`.
 14. A reliability gate is based on a lower confidence bound, not only on the observed success ratio.
 15. A rolling window is an adapter concern; the core never silently mixes windows.
+16. Price-supply weighting compares availability with the observed candidate pool; it never treats an arbitrary provider-count cutoff as universal.
+17. A price point with greater relative availability receives no less supply weight solely because another point is cheaper.
+18. The configured near-free band is asymmetric: price utility saturates there, while raw ladder points and availability remain visible.
+19. Adding a strongly supplied higher ask can move effective price toward that ask; it cannot erase the original raw ladder points.
 
 ## Metamorphic relations
 

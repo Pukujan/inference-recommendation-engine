@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { rankCandidates } from './engine.mjs';
+import { ENGINE_VERSION, rankCandidates } from './engine.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
@@ -12,5 +12,5 @@ const candidates = JSON.parse(fs.readFileSync(inputFile, 'utf8'));
 const policy = JSON.parse(fs.readFileSync(policyFile, 'utf8'));
 const ranked = rankCandidates(candidates, policy, 'public');
 fs.mkdirSync(path.dirname(outputFile), { recursive: true });
-fs.writeFileSync(outputFile, `${JSON.stringify({ engineVersion: '0.1.0', generatedAt: new Date().toISOString(), ranked }, null, 2)}\n`);
+fs.writeFileSync(outputFile, `${JSON.stringify({ engineVersion: ENGINE_VERSION, generatedAt: new Date().toISOString(), ranked }, null, 2)}\n`);
 console.log(`wrote ${ranked.length} recommendations to ${outputFile}`);

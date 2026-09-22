@@ -6,7 +6,7 @@ test('policy weights are explicit and valid', () => {
   const policy = defaultPolicy();
   assert.equal(policy.price.rawWeight + policy.price.discountWeight, 1);
   assert.equal(policy.performance.reliabilityWeight + policy.performance.ttftWeight + policy.performance.durationWeight + policy.performance.throughputWeight + policy.performance.priceWeight + policy.performance.availabilityWeight, 1);
-  assert.equal(validatePolicy(policy).policyVersion, '0.1.0');
+  assert.equal(validatePolicy(policy).policyVersion, '0.2.0');
 });
 
 test('a public route below breadth threshold is not qualified', () => {

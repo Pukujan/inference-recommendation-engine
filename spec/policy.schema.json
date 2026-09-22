@@ -14,7 +14,23 @@
         "outputWeight": { "type": "number", "minimum": 0 },
         "rawWeight": { "type": "number", "minimum": 0 },
         "discountWeight": { "type": "number", "minimum": 0 },
-        "anchorUnits": { "type": "number", "exclusiveMinimum": 0 }
+        "anchorUnits": { "type": "number", "exclusiveMinimum": 0 },
+        "supply": {
+          "type": "object",
+          "properties": {
+            "availabilityExponent": { "type": "number", "exclusiveMinimum": 0 },
+            "distributionWeight": { "type": "number", "minimum": 0 },
+            "derivativeWeight": { "type": "number", "minimum": 0 },
+            "derivativeCap": { "type": "number", "minimum": 0 },
+            "lowerPricePreferenceWeight": { "type": "number", "minimum": 0 },
+            "inputWeight": { "type": "number", "minimum": 0 },
+            "outputWeight": { "type": "number", "minimum": 0 },
+            "nearFreeCostCapPerMillion": { "type": "number", "exclusiveMinimum": 0 },
+            "nearFreePriceUtilityFloor": { "type": "number", "minimum": 0, "maximum": 1 },
+            "nonNearFreeLogCostDecay": { "type": "number", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     },

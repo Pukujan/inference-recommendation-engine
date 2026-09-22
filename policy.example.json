@@ -1,11 +1,23 @@
 {
-  "policyVersion": "0.1.0",
+  "policyVersion": "0.2.0",
   "price": {
     "inputWeight": 0.4,
     "outputWeight": 0.6,
     "rawWeight": 0.9,
     "discountWeight": 0.1,
-    "anchorUnits": 0.01
+    "anchorUnits": 0.01,
+    "supply": {
+      "availabilityExponent": 1,
+      "distributionWeight": 0.5,
+      "derivativeWeight": 0.25,
+      "derivativeCap": 3,
+      "lowerPricePreferenceWeight": 0.5,
+      "inputWeight": 0.4,
+      "outputWeight": 0.6,
+      "nearFreeCostCapPerMillion": 0.1,
+      "nearFreePriceUtilityFloor": 0.95,
+      "nonNearFreeLogCostDecay": 1
+    }
   },
   "availability": {
     "providerCap": 5,

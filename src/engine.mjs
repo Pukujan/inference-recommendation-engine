@@ -1,10 +1,10 @@
 import { availabilityScore, summarizeObservations } from './metrics.mjs';
 import { clamp, higherIsBetter, lowerIsBetter, weightedGeometricMean } from './numeric.mjs';
 
-export const ENGINE_VERSION = '0.1.0';
+export const ENGINE_VERSION = '0.2.0';
 
 const DEFAULT_POLICY = {
-  policyVersion: '0.1.0',
+  policyVersion: '0.2.0',
   price: {
     inputWeight: 0.4,
     outputWeight: 0.6,

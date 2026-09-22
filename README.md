@@ -4,6 +4,8 @@ A small, provider-neutral engine for ranking inference routes by raw price, boun
 
 The core is deliberately local-first. Integrations supply normalized route records; the engine returns deterministic rankings. Provider-specific credentials, source clients, and operational records stay outside this public package.
 
+The package also exposes an empirical price-supply layer. Give a candidate input/output price ladder as `[pricePerMillion, availableCount]` pairs (or `{ price, available }` objects); the engine pools observed availability across candidates, applies distribution and local-derivative weights, saturates the configurable `0.0x` near-free band, and preserves every raw point for audit.
+
 ## Fast start
 
 ```bash
@@ -29,6 +31,19 @@ const candidate = prepareCandidate({
 }, { minimumObservations: 1 });
 
 const ranking = rankCandidates([candidate], { performance: { minimumObservations: 1 } }, 'private');
+```
+
+For a ladder-only view:
+
+```js
+import { rankPriceSupplyCandidates } from 'inference-recommendation-engine';
+
+const ranked = rankPriceSupplyCandidates([
+  { id: 'route-a', price: {
+    inputLadder: [[0.01, 4], [0.09, 500]],
+    outputLadder: [[0.04, 4], [0.36, 500]]
+  } }
+], { nearFreeCostCapPerMillion: 0.1 });
 ```
 
 ## Contract
