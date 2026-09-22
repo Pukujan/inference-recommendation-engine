@@ -1,10 +1,12 @@
 {
   "schema_version": "content-generation.visual-style.v1",
   "reference_asset": "docs/content-system-assets/hero-generated.png",
+  "generation_workflow": "built-in image_gen",
+  "narrative_roles": ["hero", "supporting"],
   "reference_work": [
     "https://github.com/Pukujan/harness-on-steroids/blob/main/docs/content-system-assets/hero.png",
     "https://github.com/Pukujan/Eval-lab/blob/main/assets/eval-lab-banner.png",
-    "https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/BRAND_DIRECTION.md"
+    "https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/BRAND_DIRECTION.md"
   ],
   "palette": {
     "background": "#111B4D",

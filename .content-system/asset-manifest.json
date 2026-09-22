@@ -1,6 +1,6 @@
 {
   "schema_version": "content-generation.asset-manifest.v1",
-  "system_version": "0.3.0",
+  "system_version": "0.3.1",
   "assets": [
     {
       "path": "docs/content-system-assets/hero-generated.png",
@@ -8,6 +8,8 @@
       "orientation": "wide",
       "dimensions": "1536x1024",
       "text_policy": "Exact title and subtitle supplied to image generation; incidental prop lettering is not relied on.",
+      "exact_title": "Lowest price is not the decision",
+      "exact_subtitle": "Compare supply, evidence, and policy before you choose a route.",
       "prompt_recipe": "Original anime-inspired maintainer and friendly robot in a clean evening operations studio; price, supply, and evidence cards converge into an inspectable route recommendation; title Lowest price is not the decision; subtitle Compare supply, evidence, and policy before you choose a route.",
       "alt_text": "An anime-inspired maintainer and friendly robot compare price, supply, and evidence as they follow one inference route toward an inspectable recommendation.",
       "usage": "README hero below the opening promise.",
@@ -15,7 +17,8 @@
       "rejection_conditions": "Reject if the asset becomes a generic mountain scene, provider dashboard, live guarantee, or abstract network without a human and robot relationship.",
       "review_decision": "accepted",
       "provider": "built-in image_gen",
-      "helper_visual_contract": "content-generation-modules v0.3.0",
+      "prompt_record": "docs/content-system-assets/IMAGE_NOTES.md",
+      "helper_visual_contract": "content-generation-modules v0.3.1",
       "hash": "7406aa4ec75f0872fdeb0aabeda52366221a9738dba6e465af2519b447810357"
     },
     {
@@ -24,6 +27,8 @@
       "orientation": "wide",
       "dimensions": "1536x1024",
       "text_policy": "Exact title and subtitle supplied to image generation; route cards use simple symbols and are not relied on as prose.",
+      "exact_title": "Make the trade-off visible",
+      "exact_subtitle": "Price, supply, and evidence belong in one decision.",
       "prompt_recipe": "Original anime-inspired maintainer and friendly robot compare a sparse cheap route card with a well-supplied higher-cost route card; evidence check and inspectable recommendation highlighted; title Make the trade-off visible; subtitle Price, supply, and evidence belong in one decision.",
       "alt_text": "An anime-inspired maintainer and friendly robot compare a sparse cheap route with a well-supplied route before highlighting an inspectable recommendation.",
       "usage": "README mechanism section below the reader-sized workflow.",
@@ -31,7 +36,8 @@
       "rejection_conditions": "Reject if the difference between sparse cheap supply and well-supplied higher cost disappears, the robot or maintainer is obscured, or the image implies a provider guarantee.",
       "review_decision": "accepted",
       "provider": "built-in image_gen",
-      "helper_visual_contract": "content-generation-modules v0.3.0",
+      "prompt_record": "docs/content-system-assets/IMAGE_NOTES.md",
+      "helper_visual_contract": "content-generation-modules v0.3.1",
       "hash": "470f780451701f484f0e03966745a35391f7b833e2dd599bee9bb2b78e75a0d0"
     }
   ]
