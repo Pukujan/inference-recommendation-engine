@@ -3,7 +3,7 @@
 > When a cheap inference route is only barely available, the lowest number is not the decision. This local, provider-neutral engine turns price ladders, supply, runtime evidence, and editable policy into a recommendation you can inspect and reproduce.
 
 <p align="center">
-  <img src="docs/content-system-assets/hero-generated.png" alt="A maintainer follows scattered inference route signals as they converge into one inspectable ranked path." width="100%">
+  <img src="docs/content-system-assets/hero-generated.png" alt="An anime-inspired maintainer and friendly robot compare price, supply, and evidence as they follow one inference route toward an inspectable recommendation." width="100%">
 </p>
 
 ## Why this exists
@@ -56,7 +56,7 @@ The reader-sized version is five steps:
 5. **Return an inspectable decision.** Rankings carry the policy version, raw and effective price signals, evidence state, and gate reasons.
 
 <p align="center">
-  <img src="docs/content-system-assets/supply-ladder.svg" alt="A price ladder shows a sparse cheap ask and a well-supplied higher ask contributing differently to effective price." width="620">
+  <img src="docs/content-system-assets/supporting-generated.png" alt="An anime-inspired maintainer and friendly robot compare a sparse cheap route with a well-supplied route before highlighting an inspectable recommendation." width="100%">
 </p>
 
 The important distinction is that a cheap outlier remains visible, but a strongly supplied higher ask can move the effective price toward the option you can actually use. Every raw point remains available for audit.
@@ -77,11 +77,11 @@ The score is a policy result, not an objective intelligence label. Model-assiste
 
 ## Image generation and use
 
-The README visuals avoid provider screenshots and unsupported claims. The generated hero shows a maintainer following noisy route signals toward an inspectable path. The supporting SVG shows why a sparse cheap ask and a well-supplied higher ask contribute differently.
+The README visuals avoid provider screenshots and unsupported claims. The generated hero shows an anime-inspired maintainer and friendly robot comparing price, supply, and evidence before following an inspectable route. The supporting banner shows why a sparse cheap ask and a well-supplied higher ask contribute differently.
 
-Their roles, exact alt text, dimensions, crop behavior, rejection conditions, and review decisions are recorded in [`.content-system/asset-manifest.json`](.content-system/asset-manifest.json) and [`.content-system/visual-style.json`](.content-system/visual-style.json). No external image service or credential is needed to reuse them.
+Their exact title and subtitle copy, prompt intent, alt text, dimensions, crop behavior, rejection conditions, and review decisions are recorded in [`.content-system/asset-manifest.json`](.content-system/asset-manifest.json), [`.content-system/visual-style.json`](.content-system/visual-style.json), and [`docs/content-system-assets/IMAGE_NOTES.md`](docs/content-system-assets/IMAGE_NOTES.md). No external image service or credential is needed to reuse the committed assets.
 
-For future visual changes, follow the pinned helper's [`docs/IMAGE_GUIDE.md`](https://github.com/Pukujan/content-generation-modules/blob/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7/docs/IMAGE_GUIDE.md). Keep diagrams text-free, preserve the main subject at narrow widths, and reject visuals that imply live guarantees.
+For future visual changes, follow the pinned helper's [`CONTENT_RESEARCH.md`](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/CONTENT_RESEARCH.md), [`BRAND_DIRECTION.md`](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/BRAND_DIRECTION.md), and [`IMAGE_GUIDE.md`](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/IMAGE_GUIDE.md). Use ChatGPT's built-in image generation for narrative banners, keep the exact title/subtitle in the prompt, preserve the human and robot at narrow widths, and reject visuals that imply live guarantees.
 
 ## Templates and guides
 
@@ -93,13 +93,13 @@ Start with the target adapter in [`.content-system/`](.content-system/) and the 
 - [`examples/routes.json`](examples/routes.json) — synthetic route input;
 - [`tests/`](tests/) — invariant, property, and metamorphic coverage.
 
-The human-facing workflow is pinned to [the README playbook](https://github.com/Pukujan/content-generation-modules/blob/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7/docs/README_PLAYBOOK.md), [the image guide](https://github.com/Pukujan/content-generation-modules/blob/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7/docs/IMAGE_GUIDE.md), [the prior-work record](https://github.com/Pukujan/content-generation-modules/blob/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7/docs/PRIOR_WORK.md), [the migration guide](https://github.com/Pukujan/content-generation-modules/blob/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7/docs/MIGRATING_TO_0.2.md), and [the README template](https://github.com/Pukujan/content-generation-modules/blob/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7/templates/README.template.md).
+The human-facing workflow is pinned to [the README playbook](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/README_PLAYBOOK.md), [the image guide](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/IMAGE_GUIDE.md), [the content research](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/CONTENT_RESEARCH.md), [the brand direction](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/BRAND_DIRECTION.md), [the migration guide](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/MIGRATING_TO_0.3.md), and [the README template](https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/templates/README.template.md).
 
 ## Prior work and references
 
 The ranking contract carries forward the repository's earlier research on reliability signals, percentiles, instrumentation, redundancy, and property testing in [`RESEARCH-BASIS.md`](RESEARCH-BASIS.md). The public engine is intentionally smaller than a hosted router so that adapters can add their own source and temporal rules without changing the core.
 
-The README story and visual contract are pinned to [Content Generation Modules](https://github.com/Pukujan/content-generation-modules/tree/8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7), version `0.2.0`, commit `8532e3aecc30c4cfd8fbc2f95d472967a49ea2c7`. The target adapter records that pin so future agents do not silently read a moving branch.
+The README story and visual contract are pinned to [Content Generation Modules](https://github.com/Pukujan/content-generation-modules/tree/bdeb15a3db5c0d7516206b025f4eb79bf41a9806), version `0.3.0`, commit `bdeb15a3db5c0d7516206b025f4eb79bf41a9806`. The target adapter records that pin so future agents do not silently read a moving branch.
 
 ## Try it
 

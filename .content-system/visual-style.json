@@ -1,35 +1,44 @@
 {
   "schema_version": "content-generation.visual-style.v1",
   "reference_asset": "docs/content-system-assets/hero-generated.png",
+  "reference_work": [
+    "https://github.com/Pukujan/harness-on-steroids/blob/main/docs/content-system-assets/hero.png",
+    "https://github.com/Pukujan/Eval-lab/blob/main/assets/eval-lab-banner.png",
+    "https://github.com/Pukujan/content-generation-modules/blob/bdeb15a3db5c0d7516206b025f4eb79bf41a9806/docs/BRAND_DIRECTION.md"
+  ],
   "palette": {
-    "background": "#0b1020",
-    "primary": "#7dd3fc",
-    "accent": "#a7f3d0",
-    "warm_accent": "#fbbf24",
-    "text": "#e5e7eb"
+    "background": "#111B4D",
+    "primary": "#63D9FF",
+    "accent": "#94E3CB",
+    "warm_accent": "#FF8A70",
+    "highlight": "#FFD28A",
+    "text": "#F4F1FF",
+    "violet": "#8F7CFF"
   },
   "subjects": [
-    "a noisy set of route signals becoming a legible ranked decision",
-    "price ladders whose available counts change the effective price",
-    "a maintainer inspecting evidence rather than trusting a single number"
+    "an original anime-inspired maintainer and a small friendly robot companion",
+    "price, supply, and runtime evidence becoming one inspectable route recommendation",
+    "a clean decision board that makes policy trade-offs visible without becoming a provider dashboard"
   ],
   "composition": [
-    "one dominant idea",
-    "clear left-to-right movement from noise to explanation",
-    "wide negative space for README layout",
-    "main signal paths remain visible at narrow crops"
+    "one dominant idea per image",
+    "recurring maintainer and robot keep visual continuity across assets",
+    "wide negative space for exact title and subtitle copy",
+    "main characters and decision path remain visible at narrow crops",
+    "simple route cards and symbols explain the mechanism without dense microcopy"
   ],
-  "text_policy": "SVG diagrams remain text-free; explanation and alt text live in Markdown.",
+  "style": "Original anime-inspired editorial product illustration with cinematic blue-violet evening light, cyan glass signals, coral price accents, warm gold recommendations, and clean case-study composition.",
+  "text_policy": "Narrative PNG assets carry one exact title and one exact subtitle supplied verbatim in the prompt. Incidental prop lettering is not relied on. No technical diagram should replace the narrative asset.",
   "roles": {
-    "hero": {"orientation": "wide", "dimensions": "2048x768 PNG"},
-    "problem": {"orientation": "wide", "dimensions": "1200x600 SVG"},
-    "system": {"orientation": "square", "dimensions": "800x800 SVG"},
-    "evidence": {"orientation": "portrait", "dimensions": "800x1000 SVG"}
+    "hero": {"orientation": "wide", "dimensions": "1536x1024 PNG", "path": "docs/content-system-assets/hero-generated.png"},
+    "supporting": {"orientation": "wide", "dimensions": "1536x1024 PNG", "path": "docs/content-system-assets/supporting-generated.png"}
   },
   "reject_when": [
+    "the human and robot relationship is missing or obscured",
+    "the title or subtitle changes, becomes unreadable, or is replaced with generic text",
     "the visual looks like a provider dashboard or implies live guarantees",
-    "text is embedded in the SVG and becomes unreadable at README size",
+    "the route comparison hides the difference between sparse cheap supply and well-supplied higher cost",
     "multiple focal points compete with the explanation",
-    "the image suggests a score is objective rather than policy-controlled"
+    "the image falls back to a generic mountain, stock, cyberpunk, or abstract network scene"
   ]
 }

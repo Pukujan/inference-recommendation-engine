@@ -1,32 +1,38 @@
 {
   "schema_version": "content-generation.asset-manifest.v1",
-  "system_version": "0.2.0",
+  "system_version": "0.3.0",
   "assets": [
     {
       "path": "docs/content-system-assets/hero-generated.png",
-      "role": "hero",
+      "role": "hero story introduction",
       "orientation": "wide",
-      "dimensions": "2048x768",
-      "text_policy": "No readable text in the generated image; explanation remains in Markdown and alt text.",
-      "prompt_recipe": "Use case: ads-marketing. Asset type: wide repository hero banner. A polished editorial illustration for a local inference recommendation engine: a human maintainer faces noisy fragmented route signals and price points on the left, which converge into one calm inspectable ranked path and decision node on the right. Dark navy, cyan, mint, and a small warm amber accent; no logos, words, fake dashboard, guarantee, or watermark.",
-      "alt_text": "A maintainer follows scattered inference route signals as they converge into one inspectable ranked path.",
+      "dimensions": "1536x1024",
+      "text_policy": "Exact title and subtitle supplied to image generation; incidental prop lettering is not relied on.",
+      "prompt_recipe": "Original anime-inspired maintainer and friendly robot in a clean evening operations studio; price, supply, and evidence cards converge into an inspectable route recommendation; title Lowest price is not the decision; subtitle Compare supply, evidence, and policy before you choose a route.",
+      "alt_text": "An anime-inspired maintainer and friendly robot compare price, supply, and evidence as they follow one inference route toward an inspectable recommendation.",
       "usage": "README hero below the opening promise.",
-      "crop_behavior": "Keep the central convergence and both outer signal groups visible on wide and narrow crops.",
-      "rejection_conditions": "Reject if it resembles a live provider dashboard, hides the human or convergence, adds unsupported claims, or contains garbled text.",
-      "review_decision": "accepted"
+      "crop_behavior": "Keep the title, maintainer, robot, three signal cards, and highlighted recommendation visible on wide and narrow crops.",
+      "rejection_conditions": "Reject if the asset becomes a generic mountain scene, provider dashboard, live guarantee, or abstract network without a human and robot relationship.",
+      "review_decision": "accepted",
+      "provider": "built-in image_gen",
+      "helper_visual_contract": "content-generation-modules v0.3.0",
+      "hash": "7406aa4ec75f0872fdeb0aabeda52366221a9738dba6e465af2519b447810357"
     },
     {
-      "path": "docs/content-system-assets/supply-ladder.svg",
-      "role": "system",
-      "orientation": "svg",
-      "dimensions": "800x800",
-      "text_policy": "Text-free SVG; the adjacent paragraph explains the axes and meaning.",
-      "prompt_recipe": "Minimal vector diagram with two price ladder curves: a sparse low ask and a strongly supplied higher ask; availability bars and a highlighted weighted path; navy, cyan, mint, amber; no labels or fake metrics.",
-      "alt_text": "A price ladder shows a sparse cheap ask and a well-supplied higher ask contributing differently to effective price.",
-      "usage": "README mechanism section beside the supply-weighting explanation.",
-      "crop_behavior": "Keep both ladders and the highlighted weighted path visible when stacked on mobile.",
-      "rejection_conditions": "Reject if the cheap ask is presented as automatically best or if the diagram requires embedded labels to make sense.",
-      "review_decision": "accepted"
+      "path": "docs/content-system-assets/supporting-generated.png",
+      "role": "supporting trade-off explanation",
+      "orientation": "wide",
+      "dimensions": "1536x1024",
+      "text_policy": "Exact title and subtitle supplied to image generation; route cards use simple symbols and are not relied on as prose.",
+      "prompt_recipe": "Original anime-inspired maintainer and friendly robot compare a sparse cheap route card with a well-supplied higher-cost route card; evidence check and inspectable recommendation highlighted; title Make the trade-off visible; subtitle Price, supply, and evidence belong in one decision.",
+      "alt_text": "An anime-inspired maintainer and friendly robot compare a sparse cheap route with a well-supplied route before highlighting an inspectable recommendation.",
+      "usage": "README mechanism section below the reader-sized workflow.",
+      "crop_behavior": "Keep both route choices, the characters, arrows, and final inspectable recommendation visible when stacked on mobile.",
+      "rejection_conditions": "Reject if the difference between sparse cheap supply and well-supplied higher cost disappears, the robot or maintainer is obscured, or the image implies a provider guarantee.",
+      "review_decision": "accepted",
+      "provider": "built-in image_gen",
+      "helper_visual_contract": "content-generation-modules v0.3.0",
+      "hash": "470f780451701f484f0e03966745a35391f7b833e2dd599bee9bb2b78e75a0d0"
     }
   ]
 }

@@ -4,6 +4,16 @@
   "personality": ["clear", "evidence-led", "practical", "quietly opinionated"],
   "audience_feeling": "I can see why this route ranked here, change the weights, and reproduce the result locally.",
   "promise": "Turn noisy inference trade-offs into an inspectable recommendation you can adjust and test.",
+  "visual_identity": "Anime-inspired editorial scenes with a recurring maintainer and friendly robot companion; clean decision boards make price, supply, evidence, and policy visible without implying live provider guarantees.",
+  "visual_palette": {
+    "night_ink": "#111B4D",
+    "violet": "#8F7CFF",
+    "cyan": "#63D9FF",
+    "coral": "#FF8A70",
+    "warm_cream": "#F4F1FF",
+    "mint": "#94E3CB",
+    "gold": "#FFD28A"
+  },
   "preferred_terms": {
     "recommendation": "a policy-scored candidate, not a guarantee",
     "availability": "observed supply or provider breadth, named precisely",
