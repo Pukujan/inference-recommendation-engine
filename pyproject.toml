@@ -1,0 +1,12 @@
+[project]
+name = "inference-recommendation-engine-ops"
+version = "0.1.0"
+description = "Local operational tooling for the inference recommendation engine"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["jsonschema>=4.0.0"]
+
+[tool.uv]
+package = false

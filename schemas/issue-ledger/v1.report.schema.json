@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inference-recommendation-engine.local/schemas/issue-ledger/v1.report.schema.json",
+  "title": "Inference Recommendation Engine Adapter Issue Report Packet v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "actor", "subject", "execution_id", "summary", "outcome", "observed_at"],
+  "properties": {
+    "schema_version": {"const": "issue-ledger/report/v1"},
+    "event_id": {"type": "string", "pattern": "^ILE-[A-Za-z0-9._:-]+$"},
+    "idempotency_key": {"type": "string", "minLength": 1},
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["human", "agent", "service", "importer", "system"]},
+        "harness": {"type": ["string", "null"]},
+        "model": {"type": ["string", "null"]},
+        "software_commit": {"type": ["string", "null"]}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "route", "operation", "workload_class"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "route": {"type": "string", "minLength": 1},
+        "model": {"type": ["string", "null"]},
+        "operation": {"type": "string", "minLength": 1},
+        "workload_class": {"type": "string", "minLength": 1},
+        "agent_harness": {"type": ["string", "null"]},
+        "stream_mode": {"type": ["string", "null"]},
+        "configuration_hash": {"type": ["string", "null"]},
+        "environment_hash": {"type": ["string", "null"]}
+      }
+    },
+    "execution_id": {"type": "string", "minLength": 1},
+    "correlation_id": {"type": ["string", "null"]},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "known_at": {"type": "string", "format": "date-time"},
+    "subject_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "receipt_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "runbook_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "summary": {"type": "string", "minLength": 1},
+    "classification": {"enum": ["protocol", "client", "provider", "model_behavior", "harness", "telemetry", "evaluation", "unknown"]},
+    "outcome": {"enum": ["success", "failure", "timeout", "cancelled", "partial", "unknown"]},
+    "attempted_recovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["not_attempted", "attempted", "succeeded", "failed", "unknown"]},
+        "action": {"type": ["string", "null"]},
+        "result": {"type": ["string", "null"]}
+      }
+    },
+    "proposed_next_action": {"type": ["string", "null"]},
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "failure_phase": {"type": ["string", "null"]},
+        "stream_mode": {"type": ["string", "null"]},
+        "error_code": {"type": ["string", "null"]},
+        "finish_reason_capture_status": {"type": ["string", "null"]},
+        "configuration_hash": {"type": ["string", "null"]},
+        "environment_hash": {"type": ["string", "null"]},
+        "timeout_policy": {"type": ["string", "null"]},
+        "timeout_seconds": {"type": ["number", "null"], "minimum": 0},
+        "response_capture_status": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

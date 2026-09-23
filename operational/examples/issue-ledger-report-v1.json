@@ -1,0 +1,37 @@
+{
+  "schema_version": "issue-ledger/report/v1",
+  "actor": {
+    "id": "agent:fixture",
+    "kind": "agent",
+    "harness": "fixture"
+  },
+  "subject": {
+    "provider": "provider:test",
+    "route": "route:test",
+    "model": "model:test",
+    "operation": "completion",
+    "workload_class": "long_horizon",
+    "stream_mode": "sse"
+  },
+  "execution_id": "run:fixture-001",
+  "correlation_id": "turn:fixture-001",
+  "summary": "the stream ended without a terminal marker",
+  "classification": "harness",
+  "outcome": "partial",
+  "observed_at": "2026-09-22T12:00:00Z",
+  "recorded_at": "2026-09-22T12:00:01Z",
+  "receipt_refs": ["sha256:fixture-receipt"],
+  "runbook_refs": ["runbook:stream-capture"],
+  "attempted_recovery": {
+    "status": "failed",
+    "action": "reconnect the stream",
+    "result": "no terminal event arrived"
+  },
+  "proposed_next_action": "replay with the same fixture under the verifier",
+  "observation": {
+    "failure_phase": "capture",
+    "stream_mode": "sse",
+    "finish_reason_capture_status": "partial",
+    "timeout_policy": "inactivity-20m"
+  }
+}
