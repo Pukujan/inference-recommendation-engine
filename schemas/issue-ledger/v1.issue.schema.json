@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inference-recommendation-engine.local/schemas/issue-ledger/v1.issue.schema.json",
+  "title": "Inference Recommendation Engine Canonical Issue Projection v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "issue_id",
+    "lifecycle",
+    "claim",
+    "subject",
+    "fingerprint",
+    "evidence_summary",
+    "occurrences",
+    "reproduction",
+    "resolution",
+    "diagnostics",
+    "timestamps",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "issue-ledger/issue/v1"},
+    "issue_id": {"type": "string", "pattern": "^ISSUE-[A-Za-z0-9._:-]+$"},
+    "lifecycle": {
+      "enum": ["CANDIDATE", "OPEN", "REPRODUCING", "CORROBORATED", "ACCEPTED", "MITIGATED", "RESOLVED", "REGRESSED", "REJECTED", "RETRACTED", "SUPERSEDED", "STALE_PENDING_REVIEW"]
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "classification", "reported_by"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "classification": {"enum": ["protocol", "client", "provider", "model_behavior", "harness", "telemetry", "evaluation", "unknown"]},
+        "reported_by": {"type": "string", "minLength": 1}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "route", "operation", "workload_class"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "route": {"type": "string", "minLength": 1},
+        "model": {"type": ["string", "null"]},
+        "operation": {"type": "string", "minLength": 1},
+        "workload_class": {"type": "string", "minLength": 1},
+        "agent_harness": {"type": ["string", "null"]},
+        "stream_mode": {"type": ["string", "null"]},
+        "configuration_hash": {"type": ["string", "null"]},
+        "environment_hash": {"type": ["string", "null"]}
+      }
+    },
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "value", "components"],
+      "properties": {
+        "version": {"type": "string", "minLength": 1},
+        "value": {"type": "string", "minLength": 1},
+        "components": {"type": "object", "additionalProperties": {"type": ["string", "null"]}}
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "report_count", "distinct_execution_count", "distinct_actor_count", "distinct_correlation_count", "independent_reproduction_count", "deterministic_receipt_count", "counterexample_count", "accepted_for_recommendation"],
+      "properties": {
+        "level": {"enum": ["reported_only", "observed_once", "receipt_backed", "replayable", "operationally_reproduced", "independently_corroborated", "accepted", "retracted", "stale_pending_review"]},
+        "report_count": {"type": "integer", "minimum": 1},
+        "distinct_execution_count": {"type": "integer", "minimum": 1},
+        "distinct_actor_count": {"type": "integer", "minimum": 1},
+        "distinct_correlation_count": {"type": "integer", "minimum": 1},
+        "independent_reproduction_count": {"type": "integer", "minimum": 0},
+        "deterministic_receipt_count": {"type": "integer", "minimum": 0},
+        "counterexample_count": {"type": "integer", "minimum": 0},
+        "accepted_for_recommendation": {"type": "boolean"}
+      }
+    },
+    "occurrences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["occurrence_id", "event_ref", "execution_id", "correlation_id", "actor_id", "observed_at", "outcome", "evidence_level"],
+        "properties": {
+          "occurrence_id": {"type": "string", "minLength": 1},
+          "event_ref": {"type": "string", "minLength": 1},
+          "execution_id": {"type": "string", "minLength": 1},
+          "correlation_id": {"type": "string", "minLength": 1},
+          "actor_id": {"type": "string", "minLength": 1},
+          "observed_at": {"type": "string", "format": "date-time"},
+          "outcome": {"enum": ["success", "failure", "timeout", "cancelled", "partial", "unknown"]},
+          "evidence_level": {"enum": ["reported_only", "receipt_backed", "reproduced", "corroborated", "verified"]},
+          "receipt_ref": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "reproduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "attempt_count"],
+      "properties": {
+        "status": {"enum": ["not_requested", "recipe_missing", "pending", "failed", "reproduced", "independently_reproduced"]},
+        "attempt_count": {"type": "integer", "minimum": 0},
+        "recipe_ref": {"type": ["string", "null"]},
+        "last_attempt_ref": {"type": ["string", "null"]}
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "fix_refs", "verification_refs"],
+      "properties": {
+        "status": {"enum": ["unknown", "workaround_known", "fix_proposed", "fix_verified", "regression_detected"]},
+        "fix_refs": {"type": "array", "items": {"type": "string"}},
+        "verification_refs": {"type": "array", "items": {"type": "string"}},
+        "verified_by": {"type": ["string", "null"]}
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["next_action", "receipt_refs", "runbook_refs"],
+      "properties": {
+        "next_action": {"type": ["string", "null"]},
+        "receipt_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "runbook_refs": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "relations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duplicate_of": {"type": ["string", "null"]},
+        "related_issue_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "contradicts_issue_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "supersedes_issue_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["known_at", "last_updated_at", "valid_from"],
+      "properties": {
+        "known_at": {"type": "string", "format": "date-time"},
+        "last_updated_at": {"type": "string", "format": "date-time"},
+        "valid_from": {"type": "string", "format": "date-time"},
+        "valid_to": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_refs", "projection_policy_hash"],
+      "properties": {
+        "event_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "projection_policy_hash": {"type": "string", "minLength": 1},
+        "source_snapshot_ref": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"evidence_summary": {"properties": {"accepted_for_recommendation": {"const": true}}}}},
+      "then": {"properties": {"evidence_summary": {"allOf": [
+        {"properties": {"level": {"enum": ["accepted"]}}},
+        {"anyOf": [
+          {"required": ["independent_reproduction_count"], "properties": {"independent_reproduction_count": {"minimum": 1}}},
+          {"required": ["deterministic_receipt_count"], "properties": {"deterministic_receipt_count": {"minimum": 1}}}
+        ]}
+      ]}}}
+    },
+    {
+      "if": {"properties": {"resolution": {"properties": {"status": {"const": "fix_verified"}}}}},
+      "then": {"properties": {"resolution": {"required": ["verification_refs"]}}}
+    }
+  ]
+}

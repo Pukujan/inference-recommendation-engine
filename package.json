@@ -1,6 +1,7 @@
 {
   "name": "inference-recommendation-engine",
   "version": "0.2.0",
+  "packageManager": "pnpm@11.19.0",
   "description": "A provider-neutral inference route ranking engine with explicit, versioned policy.",
   "type": "module",
   "exports": {
@@ -12,6 +13,7 @@
   "scripts": {
     "test": "node --test",
     "test:properties": "node --test tests/properties.test.mjs tests/metamorphic.test.mjs",
+    "test:operational": "uv run --locked python -B -m unittest discover -s operational/tests -p \"test_issue_ledger_contract.py\"",
     "check:public": "node src/check-public.mjs",
     "demo": "node src/cli.mjs"
   },

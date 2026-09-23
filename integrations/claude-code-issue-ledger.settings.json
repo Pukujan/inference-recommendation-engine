@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/integrations/claude-code-issue-ledger-hook.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

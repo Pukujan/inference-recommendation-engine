@@ -2,25 +2,52 @@
 kind: current
 version: 1
 project: inference-recommendation-engine
-status: published
-active_task: IRE-0001
-updated_at: 2026-09-22T14:30:00Z
+status: ready_for_checkpoint
+active_task: IRE-0001-operational-ledger-relocation
+updated_at: 2026-09-23T23:43:57Z
 ---
 
 ## State
 
-The v0.1 core is published with explicit policy, pure scoring functions, generated property tests, and metamorphic tests.
+The v0.1 ranking core remains published and unchanged. The operational-ledger
+relocation, local SQLite storage, pnpm/uv toolchain, and CI-gated checkpoint
+workflow are integrated in the canonical checkout and pass their local gates.
+The private ledger projection remains separate from ranking behavior. GitHub
+issue #8 is the public plan and project-issue record for this work.
 
 ## Verified
 
-- public surface is provider-neutral;
-- raw price and bounded discount are separate components;
-- availability uses capped logarithmic provider breadth;
-- runtime evidence is kept separate by channel;
-- policy and result revisions are visible.
-- GitHub repository is public at `https://github.com/Pukujan/inference-recommendation-engine`;
-- issues 1 through 5 track adapter, rolling-window, packaging, agent, and test expansion work.
+- GitHub repository: `https://github.com/Pukujan/inference-recommendation-engine`;
+- canonical `main` is at `2e6438802f4ae55a13d81bb2965bdbcfecaf0001`, synchronized
+  with `origin/main`; no relocation checkpoint commit, branch, or PR exists yet;
+- main protection requires strict status check `test`, applies to administrators,
+  disallows force-push and deletion, and requires zero review approvals;
+- only the canonical checkout is registered as a Git worktree; no task worktree
+  was created;
+- GitHub Issues own project plans and project-wide issue status; pull requests
+  and commit history own code changes;
+- private operational event storage defaults to ignored
+  `.ire/issue-ledger/ledger.sqlite3`; that directory/database did not exist when
+  this task resumed, so no local event history needed migration;
+- SQLite uses transactional batches, WAL journaling, full synchronous durability,
+  and update/delete guards; tests cover SQLite format, immutability, replay,
+  deduplication, and concurrent writers;
+- repository development pins pnpm `11.19.0` and uv `0.12.7`; `pnpm-lock.yaml`
+  and `uv.lock` are current, and CI uses frozen/locked installs;
+- pnpm's hoisted linker is configured because this canonical checkout resides
+  on a filesystem that does not support symlinks;
+- `pnpm test`: 20 tests passed;
+- `pnpm check:public`: passed, with the provider-name guard still global;
+- `pnpm test:operational`: 41 tests passed;
+- `pnpm pack --dry-run`: passed; it did not create a tarball or include `.ire/`;
+- `project-continuity` has no remaining moved ledger source files; its unrelated
+  prior working-tree change and generated Python caches remain untouched;
+- no credential, provider inference call, or host-wide integration setting was
+  used or changed.
 
 ## Next
 
-Build the private local adapter against the public core contract.
+Run `node scripts/checkpoint.mjs` in this same folder with `--issue 8` and the
+explicit paths listed in `docs/CHECKPOINT-DELIVERY.md`. Wait for required GitHub
+CI, merge only after it passes, verify branch cleanup and fast-forwarded `main`,
+then record the merge SHA/time here before beginning the next checkpoint.

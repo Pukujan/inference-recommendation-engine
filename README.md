@@ -91,6 +91,7 @@ Start with the target adapter in [`.content-system/`](.content-system/) and the 
 - [`spec/PRICE-SUPPLY-WEIGHTING.md`](spec/PRICE-SUPPLY-WEIGHTING.md) — ladder weighting and asymmetric price regime;
 - [`policy.example.json`](policy.example.json) — editable policy example;
 - [`examples/routes.json`](examples/routes.json) — synthetic route input;
+- [`docs/ISSUE-LEDGER-OPERATIONS.md`](docs/ISSUE-LEDGER-OPERATIONS.md) — private local operational guidance and the SQLite incident ledger, separate from GitHub's project issue and change history;
 - [`tests/`](tests/) — invariant, property, and metamorphic coverage.
 
 The human-facing workflow is pinned to [the README playbook](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/README_PLAYBOOK.md), [the image guide](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/IMAGE_GUIDE.md), [the content research](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/CONTENT_RESEARCH.md), [the brand direction](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/BRAND_DIRECTION.md), [the migration guide](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/MIGRATING_TO_0.3.md), [the holdout protocol](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/HOLDOUT_EVALUATION.md), and [the README template](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/templates/README.template.md).
@@ -103,13 +104,15 @@ The README story and visual contract are pinned to [Content Generation Modules](
 
 ## Try it
 
-Requires Node.js 20 or newer.
+The published package supports Node.js 20 or newer. Repository development
+uses Node.js 22.13+, pnpm 11.19.0, and uv 0.12.7.
 
 ```bash
-npm install
-npm test
-npm run check:public
-npm run demo
+pnpm install --frozen-lockfile
+pnpm test
+pnpm check:public
+pnpm test:operational
+pnpm demo
 ```
 
 To use the package:
@@ -134,7 +137,7 @@ For the complete route scorer, import `prepareCandidate` and `rankCandidates` fr
 
 ```bash
 npm install github:Pukujan/inference-recommendation-engine
-npm pack
+pnpm pack
 ```
 
 The smallest useful next step is to write one adapter that maps your route catalog and runtime observations into the public shape, then run the property suite before tuning policy weights.

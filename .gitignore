@@ -8,3 +8,6 @@ dist/
 *.tmp
 reports/
 local/
+.ire/
+__pycache__/
+.venv/
