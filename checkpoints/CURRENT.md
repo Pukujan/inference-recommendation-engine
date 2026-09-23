@@ -3,8 +3,8 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: ready_for_checkpoint
-active_task: IRE-0001-operational-ledger-relocation
-updated_at: 2026-09-23T23:43:57Z
+active_task: IRE-0002-streaming-liveness-and-resume-guidance
+updated_at: 2026-09-23T23:50:16Z
 ---
 
 ## State
@@ -18,8 +18,13 @@ issue #8 is the public plan and project-issue record for this work.
 ## Verified
 
 - GitHub repository: `https://github.com/Pukujan/inference-recommendation-engine`;
-- canonical `main` is at `2e6438802f4ae55a13d81bb2965bdbcfecaf0001`, synchronized
-  with `origin/main`; no relocation checkpoint commit, branch, or PR exists yet;
+- relocation checkpoint PR [#9](https://github.com/Pukujan/inference-recommendation-engine/pull/9)
+  merged at `2026-09-23T23:48:37Z` as
+  `4a4fbbb81921312356badb78d751f4f35cace731`; both required `test` CI checks
+  passed before merge;
+- canonical `main` is synchronized with `origin/main` at
+  `4a4fbbb81921312356badb78d751f4f35cace731`; the temporary local and remote
+  checkpoint branches are gone and the checkout is clean;
 - main protection requires strict status check `test`, applies to administrators,
   disallows force-push and deletion, and requires zero review approvals;
 - only the canonical checkout is registered as a Git worktree; no task worktree
@@ -42,12 +47,15 @@ issue #8 is the public plan and project-issue record for this work.
 - `pnpm pack --dry-run`: passed; it did not create a tarball or include `.ire/`;
 - `project-continuity` has no remaining moved ledger source files; its unrelated
   prior working-tree change and generated Python caches remain untouched;
+- a pre-sync safety stash remains available and has not been dropped;
 - no credential, provider inference call, or host-wide integration setting was
   used or changed.
 
 ## Next
 
-Run `node scripts/checkpoint.mjs` in this same folder with `--issue 8` and the
-explicit paths listed in `docs/CHECKPOINT-DELIVERY.md`. Wait for required GitHub
-CI, merge only after it passes, verify branch cleanup and fast-forwarded `main`,
-then record the merge SHA/time here before beginning the next checkpoint.
+First deliver this merge-evidence update as a small checkpoint using the same
+helper, `--issue 8`, and only the two checkpoint-record paths. Then research and
+document evidence-based streaming/liveness and resume guidance as IRE-0002,
+keeping it separate from ranking. Treat the configured inference-gateway-only
+premium catalog lane as a later, separate increment; paid inference requires
+explicit human authorization and must not be called without it.
