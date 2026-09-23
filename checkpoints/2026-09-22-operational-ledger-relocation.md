@@ -3,8 +3,8 @@ kind: checkpoint
 version: 1
 project: inference-recommendation-engine
 task: IRE-0001-operational-ledger-relocation
-status: ready_for_checkpoint
-recorded_at: 2026-09-23T23:43:57Z
+status: complete
+recorded_at: 2026-09-23T23:50:16Z
 ---
 
 ## User intent
@@ -25,7 +25,7 @@ Target repository:
 ```text
 inference-recommendation-engine (canonical local checkout)
 remote: https://github.com/Pukujan/inference-recommendation-engine.git
-HEAD: 2e6438802f4ae55a13d81bb2965bdbcfecaf0001
+HEAD: 4a4fbbb81921312356badb78d751f4f35cace731
 ```
 
 Source repository that was mistakenly edited earlier:
@@ -46,8 +46,8 @@ attempted cleanup was rejected by the execution policy.
 
 ## What has been moved
 
-The following artifacts were moved into the target repository and are currently
-untracked there:
+The following artifacts were moved into the target repository and merged by
+checkpoint PR #9:
 
 - `docs/ISSUE-LEDGER-HOST-HOOKS.md`
 - `docs/ISSUE-LEDGER-INVARIANTS.md`
@@ -108,14 +108,23 @@ created.
 10. [x] Pin pnpm and uv lockfiles, adapt CI and the checkpoint helper, and
     configure the hoisted pnpm linker required by the canonical filesystem.
 
+## Checkpoint delivery evidence
+
+- PR: https://github.com/Pukujan/inference-recommendation-engine/pull/9
+- merged at: `2026-09-23T23:48:37Z`
+- merge commit: `4a4fbbb81921312356badb78d751f4f35cace731`
+- both required GitHub `test` checks passed before merge;
+- the checkpoint helper removed the temporary branch and synchronized the
+  canonical checkout to `main`; the checkout is clean and matches `origin/main`;
+- the existing pre-sync safety stash remains untouched.
+
 ## Next action
 
-Deliver this relocation as a checkpoint through `node scripts/checkpoint.mjs`
-linked to GitHub issue #8; the user's explicit instruction authorizes the
-checkpoint push and CI-gated merge. Do not bypass required checks. After merge,
-record the merge evidence in `checkpoints/CURRENT.md` and continue with the
-streaming/liveness/resume guidance and gateway-catalog-only premium-model work
-tracked by issue #8.
+Deliver the merge-evidence record update through a separate small checkpoint,
+then continue the remaining work tracked by issue #8. Keep operational guidance
+separate from ranking. The premium-model catalog must use only models exposed
+by the configured inference gateway API; paid inference requires explicit
+human authorization.
 
 ## Current non-claims
 
@@ -124,4 +133,4 @@ tracked by issue #8.
 - No model/provider ranking changed in this relocation slice.
 - No API key or provider request was used.
 - No host adapter was installed or enabled.
-- No commit or push was made for this relocation.
+- The relocation was committed, pushed as PR #9, and merged after CI passed.
