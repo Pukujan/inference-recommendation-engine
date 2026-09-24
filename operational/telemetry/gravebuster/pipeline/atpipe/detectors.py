@@ -54,6 +54,14 @@ INCIDENT_COLUMNS = (
 )
 
 OK_OUTCOMES = ("completed", "success", "ok")
+FACT_TABLES = {
+    "runs": "fact_runs",
+    "model_requests": "fact_model_requests",
+    "idle_gaps": "fact_idle_gaps",
+    "hops": "fact_hops",
+    "tool_calls": "fact_tool_calls",
+}
+HARNESS_MART_PREFIXES = ("kilo_",)
 
 
 # ---------------------------------------------------------------- helpers
@@ -90,6 +98,10 @@ def _num(v):
         return None if v is None else float(v)
     except (TypeError, ValueError):
         return None
+
+
+def _evidence_id(v):
+    return f"evidence:{v}" if v else None
 
 
 def receipt_ref(stamp, file="codex-events.jsonl", line_no=None, seq=None):
@@ -202,6 +214,7 @@ def d_unjustified_kill(ctx, p):
             ev += [
                 f"gap:{g.get('gap_id')}",
                 span_ref(g.get("before_trace_id"), g.get("before_span_id")),
+                _evidence_id(g.get("before_evidence_id")),
             ]
         h = hop_by_child.get(rid)
         if h is not None and _num(h.get("child_last_event_to_parent_end_s")) is not None:
@@ -845,6 +858,7 @@ def d_long_idle_gap(ctx, p):
                     f"run:{rid}",
                     f"gap:{g.get('gap_id')}",
                     span_ref(g.get("before_trace_id"), g.get("before_span_id")),
+                    _evidence_id(g.get("before_evidence_id")),
                     span_ref(g.get("after_trace_id"), g.get("after_span_id")),
                 ],
                 f"{rid}: {g['gap_s']:.0f}s without events ({g.get('before_event')} -> {g.get('after_event')})",
@@ -1126,6 +1140,11 @@ def load_inputs(con, out_dir, clean_root):
         "receipt_runs": t("receipt_runs", rc),
         "receipt_events": t("receipt_events", rc),
     }
+    # Harness-specific marts with the same grain (Kilo: kilo_fact_*, atpipe/ingest_kilo.py) join the
+    # same detector inputs, so every signature also runs over Kilo sessions and sub-agents.
+    for key, table in FACT_TABLES.items():
+        for prefix in HARNESS_MART_PREFIXES:
+            inputs[key] += t(prefix + table)
     inputs["root_errors"] = _root_errors(con, clean_root, inputs["runs"])
     return inputs
 
