@@ -70,8 +70,8 @@ def build(run_id: str) -> dict[str, Any]:
         else ""
     )
     src = src.replace("{BILLING_REVISIONS}", rev)
-    for stmt in src.split(";"):
-        body = "\n".join(ln for ln in stmt.splitlines() if not ln.strip().startswith("--"))
+    src = "\n".join(ln for ln in src.splitlines() if not ln.strip().startswith("--"))
+    for body in src.split(";"):
         if not body.strip():
             continue
         view = body.split("VIEW", 1)[1].split()[0]
