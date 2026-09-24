@@ -4,7 +4,15 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const forbidden = [new RegExp(['infer', 'hub'].join(''), 'ig'), new RegExp(['tele', 'metry'].join(''), 'ig'), new RegExp(`\\b${['da', 'ta'].join('')}\\b`, 'ig')];
-const allowed = new Set(['.git', '.venv', 'node_modules', 'coverage', 'local']);
+const allowed = new Set([
+  '.git',
+  '.mypy_cache',
+  '.ruff_cache',
+  '.venv',
+  'node_modules',
+  'coverage',
+  'local',
+]);
 const operationalLedgerPaths = [
   /^checkpoints\/2026-09-22-operational-ledger-relocation\.md$/i,
   /^docs\/ISSUE-LEDGER-/i,

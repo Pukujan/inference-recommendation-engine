@@ -6,18 +6,19 @@ does not read prompts, responses, credentials, headers, or provider bodies.
 Successes are ignored by default: an operational issue report requires a
 failure-like outcome or an explicit predicate/counterexample marker.
 """
+
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import json
-from pathlib import Path
 import sys
-from typing import Any, Iterable, Iterator
+from collections.abc import Iterable, Iterator
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
 
 from issue_ledger import LedgerError, make_report_event
-from issue_ledger_store import AppendOnlyEventStore, DEFAULT_DB_PATH
-
+from issue_ledger_store import DEFAULT_DB_PATH, AppendOnlyEventStore
 
 OUTCOME_MAP = {
     "success": "success",
@@ -90,7 +91,8 @@ def convert_record(record: dict[str, Any], include_success: bool = False) -> dic
         "classification": "telemetry",
         "outcome": outcome,
         "observation": {
-            "failure_phase": record.get("timeout_phase") or ("capture" if "capture" in error_class else "request"),
+            "failure_phase": record.get("timeout_phase")
+            or ("capture" if "capture" in error_class else "request"),
             "stream_mode": stream_mode,
             "error_code": record.get("error_code") or error_class,
             "finish_reason_capture_status": record.get("capture_status") or error_class,
@@ -98,18 +100,22 @@ def convert_record(record: dict[str, Any], include_success: bool = False) -> dic
         },
     }
     event = make_report_event(packet)
-    event["payload"].update({
-        "telemetry_event_id": event_id,
-        "telemetry_source": record.get("source"),
-        "request_id": record.get("request_id"),
-        "http_status": record.get("http_status"),
-        "predicate_failure": explicit_issue,
-        "counterexample": bool(record.get("counterexample")),
-    })
+    event["payload"].update(
+        {
+            "telemetry_event_id": event_id,
+            "telemetry_source": record.get("source"),
+            "request_id": record.get("request_id"),
+            "http_status": record.get("http_status"),
+            "predicate_failure": explicit_issue,
+            "counterexample": bool(record.get("counterexample")),
+        }
+    )
     return event
 
 
-def convert_records(records: Iterable[dict[str, Any]], include_success: bool = False) -> Iterator[dict[str, Any]]:
+def convert_records(
+    records: Iterable[dict[str, Any]], include_success: bool = False
+) -> Iterator[dict[str, Any]]:
     for record in records:
         converted = convert_record(record, include_success)
         if converted is not None:
@@ -134,10 +140,21 @@ def read_jsonl(path: Path) -> Iterator[dict[str, Any]]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Convert secret-free telemetry into a local Issue Ledger.")
+    parser = argparse.ArgumentParser(
+        description="Convert secret-free telemetry into a local Issue Ledger."
+    )
     parser.add_argument("--telemetry", required=True, type=Path)
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH, help="local SQLite database (default: .ire/issue-ledger/ledger.sqlite3)")
-    parser.add_argument("--include-success", action="store_true", help="retain successes as observations; not recommendation acceptance")
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=DEFAULT_DB_PATH,
+        help="local SQLite database (default: .ire/issue-ledger/ledger.sqlite3)",
+    )
+    parser.add_argument(
+        "--include-success",
+        action="store_true",
+        help="retain successes as observations; not recommendation acceptance",
+    )
     args = parser.parse_args(argv)
     try:
         events = list(convert_records(read_jsonl(args.telemetry), args.include_success))

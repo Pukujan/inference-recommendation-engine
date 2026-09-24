@@ -6,17 +6,18 @@ provider, write live state, change IRE scores, or infer that an agent report is
 true. Adapters may append validated events; this reducer deduplicates them and
 builds a reproducible issue projection.
 """
+
 from __future__ import annotations
 
 import argparse
-from copy import deepcopy
-from datetime import datetime, timedelta, timezone
 import hashlib
 import json
-from pathlib import Path
 import sys
-from typing import Any, Iterable
-
+from collections.abc import Iterable
+from copy import deepcopy
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from typing import Any
 
 EVENT_TYPES = {
     "report_submitted",
@@ -47,30 +48,78 @@ EVIDENCE_RANK = {name: index for index, name in enumerate(EVIDENCE_LEVELS)}
 EVIDENCE_RANK.update({"reproduced": 4, "corroborated": 5, "verified": 6})
 DEFAULT_TRUSTED_VERIFIER_IDS = frozenset({"system:issue-ledger-verifier"})
 REPORT_PACKET_SCHEMA_VERSION = "issue-ledger/report/v1"
-REPORT_PACKET_FIELDS = frozenset({
-    "schema_version", "event_id", "idempotency_key", "actor", "subject",
-    "execution_id", "correlation_id", "observed_at", "recorded_at", "known_at",
-    "subject_refs", "receipt_refs", "summary", "classification", "outcome", "observation",
-    "attempted_recovery", "proposed_next_action", "runbook_refs",
-})
+REPORT_PACKET_FIELDS = frozenset(
+    {
+        "schema_version",
+        "event_id",
+        "idempotency_key",
+        "actor",
+        "subject",
+        "execution_id",
+        "correlation_id",
+        "observed_at",
+        "recorded_at",
+        "known_at",
+        "subject_refs",
+        "receipt_refs",
+        "summary",
+        "classification",
+        "outcome",
+        "observation",
+        "attempted_recovery",
+        "proposed_next_action",
+        "runbook_refs",
+    }
+)
 REPORT_ACTOR_FIELDS = frozenset({"id", "kind", "harness", "model", "software_commit"})
-REPORT_SUBJECT_FIELDS = frozenset({
-    "provider", "route", "model", "operation", "workload_class", "agent_harness",
-    "stream_mode", "configuration_hash", "environment_hash",
-})
-REPORT_OBSERVATION_FIELDS = frozenset({
-    "failure_phase", "stream_mode", "error_code", "finish_reason_capture_status",
-    "configuration_hash", "environment_hash", "timeout_policy", "timeout_seconds",
-    "response_capture_status",
-})
+REPORT_SUBJECT_FIELDS = frozenset(
+    {
+        "provider",
+        "route",
+        "model",
+        "operation",
+        "workload_class",
+        "agent_harness",
+        "stream_mode",
+        "configuration_hash",
+        "environment_hash",
+    }
+)
+REPORT_OBSERVATION_FIELDS = frozenset(
+    {
+        "failure_phase",
+        "stream_mode",
+        "error_code",
+        "finish_reason_capture_status",
+        "configuration_hash",
+        "environment_hash",
+        "timeout_policy",
+        "timeout_seconds",
+        "response_capture_status",
+    }
+)
 REPORT_RECOVERY_FIELDS = frozenset({"status", "action", "result"})
-EVENT_FIELDS = frozenset({
-    "schema_version", "event_id", "event_type", "recorded_at", "valid_at", "known_at",
-    "actor", "correlation_id", "idempotency_key", "subject_refs", "evidence_refs",
-    "provenance", "payload",
-})
+EVENT_FIELDS = frozenset(
+    {
+        "schema_version",
+        "event_id",
+        "event_type",
+        "recorded_at",
+        "valid_at",
+        "known_at",
+        "actor",
+        "correlation_id",
+        "idempotency_key",
+        "subject_refs",
+        "evidence_refs",
+        "provenance",
+        "payload",
+    }
+)
 EVENT_ACTOR_FIELDS = frozenset({"id", "kind", "harness", "model", "software_commit"})
-EVIDENCE_ROLES = frozenset({"receipt", "trace", "artifact", "source", "reproduction", "counterexample"})
+EVIDENCE_ROLES = frozenset(
+    {"receipt", "trace", "artifact", "source", "reproduction", "counterexample"}
+)
 OCCURRENCE_LEVEL = {
     "reported_only": "reported_only",
     "observed_once": "reported_only",
@@ -90,6 +139,12 @@ def _required_text(value: Any, field: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise LedgerError(f"{field} must be a non-empty string")
     return value.strip()
+
+
+def _required_object(value: Any, field: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise LedgerError(f"{field} must be an object")
+    return value
 
 
 def _stamp(value: Any, field: str) -> str:
@@ -140,11 +195,8 @@ def validate_report_packet(spec: dict[str, Any]) -> dict[str, Any]:
     if spec.get("schema_version") != REPORT_PACKET_SCHEMA_VERSION:
         raise LedgerError("unsupported issue-ledger report packet schema")
 
-    actor = spec.get("actor")
-    subject = spec.get("subject")
-    for field, value in (("actor", actor), ("subject", subject)):
-        if not isinstance(value, dict):
-            raise LedgerError(f"report.{field} must be an object")
+    actor = _required_object(spec.get("actor"), "report.actor")
+    subject = _required_object(spec.get("subject"), "report.subject")
     _reject_unknown(actor, REPORT_ACTOR_FIELDS, "report.actor")
     _reject_unknown(subject, REPORT_SUBJECT_FIELDS, "report.subject")
     _required_text(actor.get("id"), "report.actor.id")
@@ -154,7 +206,13 @@ def validate_report_packet(spec: dict[str, Any]) -> dict[str, Any]:
         _optional_text(actor.get(field), f"report.actor.{field}")
     for field in ("provider", "route", "operation", "workload_class"):
         _required_text(subject.get(field), f"report.subject.{field}")
-    for field in ("model", "agent_harness", "stream_mode", "configuration_hash", "environment_hash"):
+    for field in (
+        "model",
+        "agent_harness",
+        "stream_mode",
+        "configuration_hash",
+        "environment_hash",
+    ):
         _optional_text(subject.get(field), f"report.subject.{field}")
 
     _required_text(spec.get("execution_id"), "report.execution_id")
@@ -162,7 +220,16 @@ def validate_report_packet(spec: dict[str, Any]) -> dict[str, Any]:
     if spec.get("outcome", "unknown") not in OUTCOMES:
         raise LedgerError("report.outcome is not recognized")
     classification = spec.get("classification", "unknown")
-    if classification not in {"protocol", "client", "provider", "model_behavior", "harness", "telemetry", "evaluation", "unknown"}:
+    if classification not in {
+        "protocol",
+        "client",
+        "provider",
+        "model_behavior",
+        "harness",
+        "telemetry",
+        "evaluation",
+        "unknown",
+    }:
         raise LedgerError("report.classification is not recognized")
     for field in ("correlation_id", "event_id", "idempotency_key"):
         _optional_text(spec.get(field), f"report.{field}")
@@ -172,21 +239,33 @@ def validate_report_packet(spec: dict[str, Any]) -> dict[str, Any]:
 
     subject_refs = spec.get("subject_refs")
     if subject_refs is not None:
-        if not isinstance(subject_refs, list) or not subject_refs or len(set(subject_refs)) != len(subject_refs):
+        if (
+            not isinstance(subject_refs, list)
+            or not subject_refs
+            or len(set(subject_refs)) != len(subject_refs)
+        ):
             raise LedgerError("report.subject_refs must be a non-empty unique array")
         for index, ref in enumerate(subject_refs):
             _required_text(ref, f"report.subject_refs[{index}]")
 
     receipt_refs = spec.get("receipt_refs")
     if receipt_refs is not None:
-        if not isinstance(receipt_refs, list) or not receipt_refs or len(set(receipt_refs)) != len(receipt_refs):
+        if (
+            not isinstance(receipt_refs, list)
+            or not receipt_refs
+            or len(set(receipt_refs)) != len(receipt_refs)
+        ):
             raise LedgerError("report.receipt_refs must be a non-empty unique array")
         for index, ref in enumerate(receipt_refs):
             _required_text(ref, f"report.receipt_refs[{index}]")
 
     runbook_refs = spec.get("runbook_refs")
     if runbook_refs is not None:
-        if not isinstance(runbook_refs, list) or not runbook_refs or len(set(runbook_refs)) != len(runbook_refs):
+        if (
+            not isinstance(runbook_refs, list)
+            or not runbook_refs
+            or len(set(runbook_refs)) != len(runbook_refs)
+        ):
             raise LedgerError("report.runbook_refs must be a non-empty unique array")
         for index, ref in enumerate(runbook_refs):
             _required_text(ref, f"report.runbook_refs[{index}]")
@@ -196,7 +275,13 @@ def validate_report_packet(spec: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(recovery, dict):
             raise LedgerError("report.attempted_recovery must be an object")
         _reject_unknown(recovery, REPORT_RECOVERY_FIELDS, "report.attempted_recovery")
-        if recovery.get("status") not in {"not_attempted", "attempted", "succeeded", "failed", "unknown"}:
+        if recovery.get("status") not in {
+            "not_attempted",
+            "attempted",
+            "succeeded",
+            "failed",
+            "unknown",
+        }:
             raise LedgerError("report.attempted_recovery.status is not recognized")
         for field in ("action", "result"):
             _optional_text(recovery.get(field), f"report.attempted_recovery.{field}")
@@ -208,13 +293,23 @@ def validate_report_packet(spec: dict[str, Any]) -> dict[str, Any]:
         raise LedgerError("report.observation must be an object")
     _reject_unknown(observation, REPORT_OBSERVATION_FIELDS, "report.observation")
     for field in (
-        "failure_phase", "stream_mode", "error_code", "finish_reason_capture_status",
-        "configuration_hash", "environment_hash", "timeout_policy", "response_capture_status",
+        "failure_phase",
+        "stream_mode",
+        "error_code",
+        "finish_reason_capture_status",
+        "configuration_hash",
+        "environment_hash",
+        "timeout_policy",
+        "response_capture_status",
     ):
         _optional_text(observation.get(field), f"report.observation.{field}")
     if observation.get("timeout_seconds") is not None:
         timeout_seconds = observation["timeout_seconds"]
-        if isinstance(timeout_seconds, bool) or not isinstance(timeout_seconds, (int, float)) or timeout_seconds < 0:
+        if (
+            isinstance(timeout_seconds, bool)
+            or not isinstance(timeout_seconds, (int, float))
+            or timeout_seconds < 0
+        ):
             raise LedgerError("report.observation.timeout_seconds must be a non-negative number")
     return deepcopy(spec)
 
@@ -241,9 +336,11 @@ def make_fingerprint(
         "environment_hash": observation.get("environment_hash"),
     }
     components = {key: _normal(value) for key, value in fields.items()}
-    return {"version": _required_text(version, "fingerprint.version"),
-            "value": _hash({"version": version, "components": components}),
-            "components": components}
+    return {
+        "version": _required_text(version, "fingerprint.version"),
+        "value": _hash({"version": version, "components": components}),
+        "components": components,
+    }
 
 
 def _event_semantics(event: dict[str, Any]) -> dict[str, Any]:
@@ -258,7 +355,15 @@ def validate_event(event: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(event, dict):
         raise LedgerError("event must be an object")
     _reject_unknown(event, EVENT_FIELDS, "event")
-    for field in ("schema_version", "event_id", "event_type", "recorded_at", "actor", "subject_refs", "payload"):
+    for field in (
+        "schema_version",
+        "event_id",
+        "event_type",
+        "recorded_at",
+        "actor",
+        "subject_refs",
+        "payload",
+    ):
         if field not in event:
             raise LedgerError(f"event.{field} is required")
     if event["schema_version"] != "issue-ledger/v1":
@@ -294,7 +399,9 @@ def validate_event(event: dict[str, Any]) -> dict[str, Any]:
         for index, evidence in enumerate(evidence_refs):
             if not isinstance(evidence, dict):
                 raise LedgerError(f"event.evidence_refs[{index}] must be an object")
-            _reject_unknown(evidence, {"ref_id", "role", "content_hash"}, f"event.evidence_refs[{index}]")
+            _reject_unknown(
+                evidence, {"ref_id", "role", "content_hash"}, f"event.evidence_refs[{index}]"
+            )
             ref_id = _required_text(evidence.get("ref_id"), f"event.evidence_refs[{index}].ref_id")
             if ref_id in seen_refs:
                 raise LedgerError("event.evidence_refs must contain unique ref_id values")
@@ -302,12 +409,18 @@ def validate_event(event: dict[str, Any]) -> dict[str, Any]:
             if evidence.get("role") not in EVIDENCE_ROLES:
                 raise LedgerError(f"event.evidence_refs[{index}].role is not recognized")
             if evidence.get("content_hash") is not None:
-                _required_text(evidence["content_hash"], f"event.evidence_refs[{index}].content_hash")
+                _required_text(
+                    evidence["content_hash"], f"event.evidence_refs[{index}].content_hash"
+                )
     provenance = event.get("provenance")
     if provenance is not None:
         if not isinstance(provenance, dict):
             raise LedgerError("event.provenance must be an object")
-        _reject_unknown(provenance, {"producer", "software_commit", "policy_hash", "trace_id"}, "event.provenance")
+        _reject_unknown(
+            provenance,
+            {"producer", "software_commit", "policy_hash", "trace_id"},
+            "event.provenance",
+        )
         _required_text(provenance.get("producer"), "event.provenance.producer")
         _required_text(provenance.get("policy_hash"), "event.provenance.policy_hash")
     if event.get("known_at") is not None:
@@ -330,14 +443,15 @@ def validate_event(event: dict[str, Any]) -> dict[str, Any]:
 def make_report_event(spec: dict[str, Any]) -> dict[str, Any]:
     """Build a normalized report event from the adapter-facing report packet."""
     spec = validate_report_packet(spec)
-    actor = spec.get("actor")
-    subject = spec.get("subject")
+    actor = _required_object(spec.get("actor"), "report.actor")
+    subject = _required_object(spec.get("subject"), "report.subject")
     actor_id = _required_text(actor.get("id"), "report.actor.id")
-    actor_kind = actor.get("kind")
     execution_id = _required_text(spec.get("execution_id"), "report.execution_id")
     recorded_at = spec.get("recorded_at")
     if recorded_at is None:
-        recorded_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        recorded_at = (
+            datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        )
     recorded_at = _stamp(recorded_at, "report.recorded_at")
     observed_at = _stamp(spec.get("observed_at"), "report.observed_at")
     outcome = spec.get("outcome", "unknown")
@@ -350,8 +464,10 @@ def make_report_event(spec: dict[str, Any]) -> dict[str, Any]:
         "outcome": outcome,
         "observation": observation,
     }
-    idempotency_key = spec.get("idempotency_key") or "report:" + _hash(identity_material)[len("sha256:"):]
-    event_id = spec.get("event_id") or "ILE-" + _hash(identity_material)[len("sha256:"):][:24]
+    idempotency_key = (
+        spec.get("idempotency_key") or "report:" + _hash(identity_material)[len("sha256:") :]
+    )
+    event_id = spec.get("event_id") or "ILE-" + _hash(identity_material)[len("sha256:") :][:24]
     payload = {
         "summary": _required_text(spec.get("summary"), "report.summary"),
         "classification": spec.get("classification", "unknown"),
@@ -364,19 +480,22 @@ def make_report_event(spec: dict[str, Any]) -> dict[str, Any]:
     for field in ("receipt_refs", "attempted_recovery", "proposed_next_action", "runbook_refs"):
         if field in spec:
             payload[field] = deepcopy(spec[field])
-    return validate_event({
-        "schema_version": "issue-ledger/v1",
-        "event_id": _required_text(event_id, "report.event_id"),
-        "event_type": "report_submitted",
-        "recorded_at": recorded_at,
-        "valid_at": {"from": observed_at, "to": None},
-        "known_at": _stamp(spec.get("known_at") or recorded_at, "report.known_at"),
-        "actor": deepcopy(actor),
-        "correlation_id": spec.get("correlation_id") or execution_id,
-        "idempotency_key": _required_text(idempotency_key, "report.idempotency_key"),
-        "subject_refs": spec.get("subject_refs") or [f"{subject['provider']}:{subject['route']}"],
-        "payload": payload,
-    })
+    return validate_event(
+        {
+            "schema_version": "issue-ledger/v1",
+            "event_id": _required_text(event_id, "report.event_id"),
+            "event_type": "report_submitted",
+            "recorded_at": recorded_at,
+            "valid_at": {"from": observed_at, "to": None},
+            "known_at": _stamp(spec.get("known_at") or recorded_at, "report.known_at"),
+            "actor": deepcopy(actor),
+            "correlation_id": spec.get("correlation_id") or execution_id,
+            "idempotency_key": _required_text(idempotency_key, "report.idempotency_key"),
+            "subject_refs": spec.get("subject_refs")
+            or [f"{subject['provider']}:{subject['route']}"],
+            "payload": payload,
+        }
+    )
 
 
 def deduplicate_events(events: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -410,17 +529,32 @@ def _subject(payload: dict[str, Any]) -> dict[str, Any]:
     required = ("provider", "route", "operation", "workload_class")
     for field in required:
         _required_text(subject.get(field), f"payload.subject.{field}")
-    result = {key: subject.get(key) for key in (
-        "provider", "route", "model", "operation", "workload_class",
-        "agent_harness", "stream_mode", "configuration_hash", "environment_hash",
-    )}
+    result = {
+        key: subject.get(key)
+        for key in (
+            "provider",
+            "route",
+            "model",
+            "operation",
+            "workload_class",
+            "agent_harness",
+            "stream_mode",
+            "configuration_hash",
+            "environment_hash",
+        )
+    }
     return result
 
 
 def _fingerprint(event: dict[str, Any], subject: dict[str, Any]) -> dict[str, Any]:
     payload = event["payload"]
     supplied = payload.get("fingerprint")
-    if isinstance(supplied, dict) and supplied.get("version") and supplied.get("value") and isinstance(supplied.get("components"), dict):
+    if (
+        isinstance(supplied, dict)
+        and supplied.get("version")
+        and supplied.get("value")
+        and isinstance(supplied.get("components"), dict)
+    ):
         return deepcopy(supplied)
     observation = payload.get("observation")
     if not isinstance(observation, dict):
@@ -435,10 +569,16 @@ def _fingerprint(event: dict[str, Any], subject: dict[str, Any]) -> dict[str, An
     return make_fingerprint(subject, observation)
 
 
-def _trustworthy_verifier(event: dict[str, Any], trusted_verifier_ids: Iterable[str] | None = None) -> bool:
+def _trustworthy_verifier(
+    event: dict[str, Any], trusted_verifier_ids: Iterable[str] | None = None
+) -> bool:
     actor = event["actor"]
     payload = event["payload"]
-    trusted = set(trusted_verifier_ids) if trusted_verifier_ids is not None else DEFAULT_TRUSTED_VERIFIER_IDS
+    trusted = (
+        set(trusted_verifier_ids)
+        if trusted_verifier_ids is not None
+        else DEFAULT_TRUSTED_VERIFIER_IDS
+    )
     return (
         actor.get("id") in trusted
         and actor.get("kind") in {"human", "service", "system"}
@@ -446,7 +586,9 @@ def _trustworthy_verifier(event: dict[str, Any], trusted_verifier_ids: Iterable[
     )
 
 
-def _authoritative_verifier(event: dict[str, Any], trusted_verifier_ids: Iterable[str] | None = None) -> bool:
+def _authoritative_verifier(
+    event: dict[str, Any], trusted_verifier_ids: Iterable[str] | None = None
+) -> bool:
     """Require both trusted identity and explicit verifier provenance."""
     provenance = event.get("provenance")
     return (
@@ -457,7 +599,9 @@ def _authoritative_verifier(event: dict[str, Any], trusted_verifier_ids: Iterabl
     )
 
 
-def _resolution_evidence_complete(event: dict[str, Any], trusted_verifier_ids: Iterable[str] | None = None) -> bool:
+def _resolution_evidence_complete(
+    event: dict[str, Any], trusted_verifier_ids: Iterable[str] | None = None
+) -> bool:
     """Require explicit replay and regression receipts for a verified fix."""
     payload = event["payload"]
     evidence_refs = event.get("evidence_refs")
@@ -479,7 +623,11 @@ def _event_level(event: dict[str, Any], trusted_verifier_ids: Iterable[str] | No
     if event["event_type"] == "evidence_attached" and payload.get("receipt_ref"):
         return "receipt_backed"
     if event["event_type"] == "reproduction_completed" and payload.get("result") == "reproduced":
-        return "independently_corroborated" if payload.get("independent") and _trustworthy_verifier(event, trusted_verifier_ids) else "operationally_reproduced"
+        return (
+            "independently_corroborated"
+            if payload.get("independent") and _trustworthy_verifier(event, trusted_verifier_ids)
+            else "operationally_reproduced"
+        )
     if _resolution_evidence_complete(event, trusted_verifier_ids):
         return "accepted"
     return "observed_once"
@@ -487,8 +635,13 @@ def _event_level(event: dict[str, Any], trusted_verifier_ids: Iterable[str] | No
 
 def _occurrence(event: dict[str, Any], level: str) -> dict[str, Any]:
     payload = event["payload"]
-    execution_id = _required_text(payload.get("execution_id") or event.get("correlation_id") or event["event_id"], "payload.execution_id")
-    correlation_id = _required_text(event.get("correlation_id") or execution_id, "event.correlation_id")
+    execution_id = _required_text(
+        payload.get("execution_id") or event.get("correlation_id") or event["event_id"],
+        "payload.execution_id",
+    )
+    correlation_id = _required_text(
+        event.get("correlation_id") or execution_id, "event.correlation_id"
+    )
     observed_at = _stamp(payload.get("observed_at") or event["recorded_at"], "payload.observed_at")
     outcome = payload.get("outcome", "unknown")
     if outcome not in OUTCOMES:
@@ -513,7 +666,9 @@ def _merge_occurrence(occurrences: dict[str, dict[str, Any]], candidate: dict[st
         return
     if prior["correlation_id"] != candidate["correlation_id"]:
         raise LedgerError("conflicting correlation IDs for one execution")
-    if EVIDENCE_RANK.get(candidate["evidence_level"], 0) > EVIDENCE_RANK.get(prior["evidence_level"], 0):
+    if EVIDENCE_RANK.get(candidate["evidence_level"], 0) > EVIDENCE_RANK.get(
+        prior["evidence_level"], 0
+    ):
         prior["evidence_level"] = candidate["evidence_level"]
     if prior.get("receipt_ref") is None and candidate.get("receipt_ref") is not None:
         prior["receipt_ref"] = candidate["receipt_ref"]
@@ -533,7 +688,9 @@ def reduce_events(
         subject = _subject(event["payload"])
         fingerprint = _fingerprint(event, subject)
         key = fingerprint["value"]
-        group = groups.setdefault(key, {"events": [], "subject": subject, "fingerprint": fingerprint, "occurrences": {}})
+        group = groups.setdefault(
+            key, {"events": [], "subject": subject, "fingerprint": fingerprint, "occurrences": {}}
+        )
         group["events"].append(event)
         level = _event_level(event, trusted_verifier_ids)
         _merge_occurrence(group["occurrences"], _occurrence(event, level))
@@ -542,17 +699,62 @@ def reduce_events(
     for fingerprint_value, group in sorted(groups.items()):
         group_events = group["events"]
         occurrence_values = list(group["occurrences"].values())
-        report_events = [event for event in group_events if event["event_type"] == "report_submitted"]
-        reproduction_events = [event for event in group_events if event["event_type"] == "reproduction_completed" and event["payload"].get("result") == "reproduced"]
-        verified_reproductions = [event for event in reproduction_events if event["payload"].get("independent") is True and _authoritative_verifier(event, trusted_verifier_ids)]
-        deterministic_receipts = [event for event in group_events if event["payload"].get("deterministic_verifier") is True and _authoritative_verifier(event, trusted_verifier_ids) and event["payload"].get("receipt_ref")]
-        counterexamples = [event for event in group_events if (event["payload"].get("counterexample") is True or event["event_type"] == "issue_retracted") and _authoritative_verifier(event, trusted_verifier_ids)]
-        accepted_events = [event for event in group_events if event["payload"].get("accept_for_recommendation") is True and _authoritative_verifier(event, trusted_verifier_ids)]
-        verified_resolutions = [event for event in group_events if _resolution_evidence_complete(event, trusted_verifier_ids)]
-        accepted = bool(accepted_events and (verified_reproductions or deterministic_receipts) and not counterexamples)
-        latest_event = max(group_events, key=lambda event: (event["recorded_at"], event["event_id"]))
-        trusted_retractions = [event for event in counterexamples if event["event_type"] == "issue_retracted"]
-        trusted_reopens = [event for event in group_events if event["event_type"] == "issue_reopened" and _authoritative_verifier(event, trusted_verifier_ids)]
+        report_events = [
+            event for event in group_events if event["event_type"] == "report_submitted"
+        ]
+        reproduction_events = [
+            event
+            for event in group_events
+            if event["event_type"] == "reproduction_completed"
+            and event["payload"].get("result") == "reproduced"
+        ]
+        verified_reproductions = [
+            event
+            for event in reproduction_events
+            if event["payload"].get("independent") is True
+            and _authoritative_verifier(event, trusted_verifier_ids)
+        ]
+        deterministic_receipts = [
+            event
+            for event in group_events
+            if event["payload"].get("deterministic_verifier") is True
+            and _authoritative_verifier(event, trusted_verifier_ids)
+            and event["payload"].get("receipt_ref")
+        ]
+        counterexamples = [
+            event
+            for event in group_events
+            if (
+                event["payload"].get("counterexample") is True
+                or event["event_type"] == "issue_retracted"
+            )
+            and _authoritative_verifier(event, trusted_verifier_ids)
+        ]
+        accepted_events = [
+            event
+            for event in group_events
+            if event["payload"].get("accept_for_recommendation") is True
+            and _authoritative_verifier(event, trusted_verifier_ids)
+        ]
+        verified_resolutions = [
+            event
+            for event in group_events
+            if _resolution_evidence_complete(event, trusted_verifier_ids)
+        ]
+        accepted = bool(
+            accepted_events
+            and (verified_reproductions or deterministic_receipts)
+            and not counterexamples
+        )
+        trusted_retractions = [
+            event for event in counterexamples if event["event_type"] == "issue_retracted"
+        ]
+        trusted_reopens = [
+            event
+            for event in group_events
+            if event["event_type"] == "issue_reopened"
+            and _authoritative_verifier(event, trusted_verifier_ids)
+        ]
         if trusted_retractions or counterexamples:
             lifecycle = "RETRACTED" if accepted else "REJECTED"
             level = "retracted"
@@ -599,62 +801,108 @@ def reduce_events(
             runbooks = payload.get("runbook_refs")
             if isinstance(runbooks, list):
                 diagnostic_runbooks.extend(ref for ref in runbooks if isinstance(ref, str))
-            if isinstance(payload.get("proposed_next_action"), str) and payload["proposed_next_action"].strip():
+            if (
+                isinstance(payload.get("proposed_next_action"), str)
+                and payload["proposed_next_action"].strip()
+            ):
                 next_action = payload["proposed_next_action"]
         diagnostic_receipts = list(dict.fromkeys(diagnostic_receipts))
         diagnostic_runbooks = list(dict.fromkeys(diagnostic_runbooks))
-        projections.append({
-            "schema_version": "issue-ledger/issue/v1",
-            "issue_id": "ISSUE-" + fingerprint_value.removeprefix("sha256:")[:24],
-            "lifecycle": lifecycle,
-            "claim": {
-                "summary": first["payload"].get("summary", "Operational issue observation"),
-                "classification": first["payload"].get("classification", "unknown"),
-                "reported_by": first["actor"]["id"],
-            },
-            "subject": deepcopy(group["subject"]),
-            "fingerprint": deepcopy(group["fingerprint"]),
-            "evidence_summary": {
-                "level": level,
-                "report_count": len(report_events),
-                "distinct_execution_count": len({item["execution_id"] for item in occurrence_values}),
-                "distinct_actor_count": len(distinct_reporting_actors),
-                "distinct_correlation_count": len(distinct_correlations),
-                "independent_reproduction_count": len(verified_reproductions),
-                "deterministic_receipt_count": len(deterministic_receipts),
-                "counterexample_count": len(counterexamples),
-                "accepted_for_recommendation": accepted,
-            },
-            "occurrences": sorted(occurrence_values, key=lambda item: (item["observed_at"], item["occurrence_id"])),
-            "reproduction": {
-                "status": "independently_reproduced" if verified_reproductions else ("reproduced" if reproduction_events else "not_requested"),
-                "attempt_count": sum(event["event_type"] in {"reproduction_attempted", "reproduction_completed"} for event in group_events),
-                "recipe_ref": next((event["payload"].get("recipe_ref") for event in group_events if event["payload"].get("recipe_ref")), None),
-                "last_attempt_ref": next((event["event_id"] for event in reversed(group_events) if event["event_type"] in {"reproduction_attempted", "reproduction_completed"}), None),
-            },
-            "resolution": {
-                "status": "fix_verified" if verified_resolutions else ("fix_proposed" if any(event["event_type"] == "resolution_proposed" for event in group_events) else "unknown"),
-                "fix_refs": [event["payload"]["fix_ref"] for event in group_events if event["payload"].get("fix_ref")],
-                "verification_refs": [event["event_id"] for event in verified_resolutions],
-                "verified_by": next((event["actor"]["id"] for event in reversed(verified_resolutions)), None),
-            },
-            "diagnostics": {
-                "next_action": next_action,
-                "receipt_refs": diagnostic_receipts,
-                "runbook_refs": diagnostic_runbooks,
-            },
-            "timestamps": {
-                "known_at": min((event.get("known_at") or event["recorded_at"] for event in group_events), key=_parse_stamp),
-                "last_updated_at": max(timestamps, key=_parse_stamp),
-                "valid_from": min(observed or timestamps, key=_parse_stamp),
-                "valid_to": None,
-            },
-            "provenance": {
-                "event_refs": [event["event_id"] for event in group_events],
-                "projection_policy_hash": _required_text(policy_hash, "policy_hash"),
-                "source_snapshot_ref": None,
-            },
-        })
+        projections.append(
+            {
+                "schema_version": "issue-ledger/issue/v1",
+                "issue_id": "ISSUE-" + fingerprint_value.removeprefix("sha256:")[:24],
+                "lifecycle": lifecycle,
+                "claim": {
+                    "summary": first["payload"].get("summary", "Operational issue observation"),
+                    "classification": first["payload"].get("classification", "unknown"),
+                    "reported_by": first["actor"]["id"],
+                },
+                "subject": deepcopy(group["subject"]),
+                "fingerprint": deepcopy(group["fingerprint"]),
+                "evidence_summary": {
+                    "level": level,
+                    "report_count": len(report_events),
+                    "distinct_execution_count": len(
+                        {item["execution_id"] for item in occurrence_values}
+                    ),
+                    "distinct_actor_count": len(distinct_reporting_actors),
+                    "distinct_correlation_count": len(distinct_correlations),
+                    "independent_reproduction_count": len(verified_reproductions),
+                    "deterministic_receipt_count": len(deterministic_receipts),
+                    "counterexample_count": len(counterexamples),
+                    "accepted_for_recommendation": accepted,
+                },
+                "occurrences": sorted(
+                    occurrence_values, key=lambda item: (item["observed_at"], item["occurrence_id"])
+                ),
+                "reproduction": {
+                    "status": "independently_reproduced"
+                    if verified_reproductions
+                    else ("reproduced" if reproduction_events else "not_requested"),
+                    "attempt_count": sum(
+                        event["event_type"] in {"reproduction_attempted", "reproduction_completed"}
+                        for event in group_events
+                    ),
+                    "recipe_ref": next(
+                        (
+                            event["payload"].get("recipe_ref")
+                            for event in group_events
+                            if event["payload"].get("recipe_ref")
+                        ),
+                        None,
+                    ),
+                    "last_attempt_ref": next(
+                        (
+                            event["event_id"]
+                            for event in reversed(group_events)
+                            if event["event_type"]
+                            in {"reproduction_attempted", "reproduction_completed"}
+                        ),
+                        None,
+                    ),
+                },
+                "resolution": {
+                    "status": "fix_verified"
+                    if verified_resolutions
+                    else (
+                        "fix_proposed"
+                        if any(
+                            event["event_type"] == "resolution_proposed" for event in group_events
+                        )
+                        else "unknown"
+                    ),
+                    "fix_refs": [
+                        event["payload"]["fix_ref"]
+                        for event in group_events
+                        if event["payload"].get("fix_ref")
+                    ],
+                    "verification_refs": [event["event_id"] for event in verified_resolutions],
+                    "verified_by": next(
+                        (event["actor"]["id"] for event in reversed(verified_resolutions)), None
+                    ),
+                },
+                "diagnostics": {
+                    "next_action": next_action,
+                    "receipt_refs": diagnostic_receipts,
+                    "runbook_refs": diagnostic_runbooks,
+                },
+                "timestamps": {
+                    "known_at": min(
+                        (event.get("known_at") or event["recorded_at"] for event in group_events),
+                        key=_parse_stamp,
+                    ),
+                    "last_updated_at": max(timestamps, key=_parse_stamp),
+                    "valid_from": min(observed or timestamps, key=_parse_stamp),
+                    "valid_to": None,
+                },
+                "provenance": {
+                    "event_refs": [event["event_id"] for event in group_events],
+                    "projection_policy_hash": _required_text(policy_hash, "policy_hash"),
+                    "source_snapshot_ref": None,
+                },
+            }
+        )
     return projections
 
 
@@ -684,7 +932,12 @@ def export_ire(
         ]
         if as_of is None:
             if not observed_times:
-                return {"schema_version": "ire/issue-ledger/v1", "policy_hash": _required_text(policy_hash, "policy_hash"), "window": None, "issues": []}
+                return {
+                    "schema_version": "ire/issue-ledger/v1",
+                    "policy_hash": _required_text(policy_hash, "policy_hash"),
+                    "window": None,
+                    "issues": [],
+                }
             window_to = max(observed_times)
         else:
             window_to = _parse_stamp(_stamp(as_of, "as_of"))
@@ -697,48 +950,65 @@ def export_ire(
         occurrences = issue.get("occurrences", [])
         if window_from is not None and window_to is not None:
             occurrences = [
-                occurrence for occurrence in occurrences
+                occurrence
+                for occurrence in occurrences
                 if window_from <= _parse_stamp(occurrence["observed_at"]) <= window_to
             ]
             if not occurrences:
                 continue
         outcomes = [occurrence["outcome"] for occurrence in occurrences]
-        selected.append({
-            "issue_id": issue["issue_id"],
-            "subject": issue["subject"],
-            "fingerprint": issue["fingerprint"],
-            "evidence_level": summary["level"],
-            "report_count": summary["report_count"],
-            "distinct_execution_count": summary["distinct_execution_count"],
-            "distinct_actor_count": summary["distinct_actor_count"],
-            "distinct_correlation_count": summary["distinct_correlation_count"],
-            "independent_reproduction_count": summary["independent_reproduction_count"],
-            "lifecycle": issue["lifecycle"],
-            "diagnostics": deepcopy(issue.get("diagnostics", {"next_action": None, "receipt_refs": [], "runbook_refs": []})),
-            "reproduction": deepcopy(issue.get("reproduction", {})),
-            "resolution": deepcopy(issue.get("resolution", {})),
-            "valid_from": issue["timestamps"]["valid_from"],
-            "known_at": issue["timestamps"]["known_at"],
-            "source_event_refs": issue["provenance"]["event_refs"],
-            "policy_hash": issue["provenance"]["projection_policy_hash"],
-            "window": {
-                "from": window_from.isoformat().replace("+00:00", "Z") if window_from is not None else None,
-                "to": window_to.isoformat().replace("+00:00", "Z") if window_to is not None else None,
-                "occurrence_count": len(occurrences),
-                "failure_count": sum(outcome == "failure" for outcome in outcomes),
-                "timeout_count": sum(outcome == "timeout" for outcome in outcomes),
-                "partial_count": sum(outcome == "partial" for outcome in outcomes),
-                "success_count": sum(outcome == "success" for outcome in outcomes),
-                "unknown_count": sum(outcome == "unknown" for outcome in outcomes),
-                "distinct_execution_count": len({occurrence["execution_id"] for occurrence in occurrences}),
-                "distinct_correlation_count": len({occurrence["correlation_id"] for occurrence in occurrences}),
-            },
-        })
+        selected.append(
+            {
+                "issue_id": issue["issue_id"],
+                "subject": issue["subject"],
+                "fingerprint": issue["fingerprint"],
+                "evidence_level": summary["level"],
+                "report_count": summary["report_count"],
+                "distinct_execution_count": summary["distinct_execution_count"],
+                "distinct_actor_count": summary["distinct_actor_count"],
+                "distinct_correlation_count": summary["distinct_correlation_count"],
+                "independent_reproduction_count": summary["independent_reproduction_count"],
+                "lifecycle": issue["lifecycle"],
+                "diagnostics": deepcopy(
+                    issue.get(
+                        "diagnostics", {"next_action": None, "receipt_refs": [], "runbook_refs": []}
+                    )
+                ),
+                "reproduction": deepcopy(issue.get("reproduction", {})),
+                "resolution": deepcopy(issue.get("resolution", {})),
+                "valid_from": issue["timestamps"]["valid_from"],
+                "known_at": issue["timestamps"]["known_at"],
+                "source_event_refs": issue["provenance"]["event_refs"],
+                "policy_hash": issue["provenance"]["projection_policy_hash"],
+                "window": {
+                    "from": window_from.isoformat().replace("+00:00", "Z")
+                    if window_from is not None
+                    else None,
+                    "to": window_to.isoformat().replace("+00:00", "Z")
+                    if window_to is not None
+                    else None,
+                    "occurrence_count": len(occurrences),
+                    "failure_count": sum(outcome == "failure" for outcome in outcomes),
+                    "timeout_count": sum(outcome == "timeout" for outcome in outcomes),
+                    "partial_count": sum(outcome == "partial" for outcome in outcomes),
+                    "success_count": sum(outcome == "success" for outcome in outcomes),
+                    "unknown_count": sum(outcome == "unknown" for outcome in outcomes),
+                    "distinct_execution_count": len(
+                        {occurrence["execution_id"] for occurrence in occurrences}
+                    ),
+                    "distinct_correlation_count": len(
+                        {occurrence["correlation_id"] for occurrence in occurrences}
+                    ),
+                },
+            }
+        )
     return {
         "schema_version": "ire/issue-ledger/v1",
         "policy_hash": _required_text(policy_hash, "policy_hash"),
         "window": {
-            "from": window_from.isoformat().replace("+00:00", "Z") if window_from is not None else None,
+            "from": window_from.isoformat().replace("+00:00", "Z")
+            if window_from is not None
+            else None,
             "to": window_to.isoformat().replace("+00:00", "Z") if window_to is not None else None,
             "days": window_days,
         },
@@ -748,7 +1018,11 @@ def export_ire(
 
 def _load_events(path: Path) -> list[dict[str, Any]]:
     try:
-        return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        return [
+            json.loads(line)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise LedgerError("cannot read UTF-8 JSON-lines event file") from exc
 
@@ -756,7 +1030,9 @@ def _load_events(path: Path) -> list[dict[str, Any]]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Project an Issue Ledger JSON-lines file locally.")
     parser.add_argument("events", type=Path, help="append-only JSON-lines event file")
-    parser.add_argument("--ire", action="store_true", help="emit only accepted read-only IRE inputs")
+    parser.add_argument(
+        "--ire", action="store_true", help="emit only accepted read-only IRE inputs"
+    )
     parser.add_argument("--policy-hash", default="policy:issue-ledger-v1")
     args = parser.parse_args(argv)
     try:

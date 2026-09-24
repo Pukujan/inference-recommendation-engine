@@ -6,17 +6,18 @@ OpenCode, a TUI, or another runner can invoke it at request completion or
 capture failure. It accepts bounded execution metadata only; it never reads
 prompts, responses, credentials, headers, or provider bodies.
 """
+
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import json
-from pathlib import Path
 import sys
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from issue_ledger import LedgerError, make_report_event
-from issue_ledger_store import AppendOnlyEventStore, DEFAULT_DB_PATH
+from issue_ledger_store import DEFAULT_DB_PATH, AppendOnlyEventStore
 
 
 def _now() -> str:
@@ -51,7 +52,14 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
         "timeout_policy": args.timeout_policy,
         "timeout_seconds": args.timeout_seconds,
     }
-    for field in ("failure_phase", "stream_mode", "error_code", "finish_reason_capture_status", "timeout_policy", "timeout_seconds"):
+    for field in (
+        "failure_phase",
+        "stream_mode",
+        "error_code",
+        "finish_reason_capture_status",
+        "timeout_policy",
+        "timeout_seconds",
+    ):
         if observation[field] is None:
             observation.pop(field)
     _add_if_present(observation, "configuration_hash", args.configuration_hash)
@@ -88,13 +96,22 @@ def build_packet(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Append a bounded agent observation to the local Issue Ledger.")
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH, help="local SQLite database (default: .ire/issue-ledger/ledger.sqlite3)")
+    parser = argparse.ArgumentParser(
+        description="Append a bounded agent observation to the local Issue Ledger."
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=DEFAULT_DB_PATH,
+        help="local SQLite database (default: .ire/issue-ledger/ledger.sqlite3)",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     report = sub.add_parser("report", help="report one agent/runner observation")
     report.add_argument("--packet", type=Path, help="validated issue-ledger/report/v1 JSON packet")
     report.add_argument("--actor-id", default="agent:unknown")
-    report.add_argument("--actor-kind", default="agent", choices=["human", "agent", "service", "importer", "system"])
+    report.add_argument(
+        "--actor-kind", default="agent", choices=["human", "agent", "service", "importer", "system"]
+    )
     report.add_argument("--harness")
     report.add_argument("--provider", default="unknown-provider")
     report.add_argument("--route", default="unknown-route")
@@ -105,8 +122,25 @@ def _parser() -> argparse.ArgumentParser:
     report.add_argument("--execution-id")
     report.add_argument("--correlation-id")
     report.add_argument("--summary")
-    report.add_argument("--classification", default="unknown", choices=["protocol", "client", "provider", "model_behavior", "harness", "telemetry", "evaluation", "unknown"])
-    report.add_argument("--outcome", default="unknown", choices=["success", "failure", "timeout", "cancelled", "partial", "unknown"])
+    report.add_argument(
+        "--classification",
+        default="unknown",
+        choices=[
+            "protocol",
+            "client",
+            "provider",
+            "model_behavior",
+            "harness",
+            "telemetry",
+            "evaluation",
+            "unknown",
+        ],
+    )
+    report.add_argument(
+        "--outcome",
+        default="unknown",
+        choices=["success", "failure", "timeout", "cancelled", "partial", "unknown"],
+    )
     report.add_argument("--observed-at")
     report.add_argument("--recorded-at")
     report.add_argument("--event-id")
@@ -119,7 +153,10 @@ def _parser() -> argparse.ArgumentParser:
     report.add_argument("--configuration-hash")
     report.add_argument("--environment-hash")
     report.add_argument("--receipt-ref", action="append", default=[])
-    report.add_argument("--recovery-status", choices=["not_attempted", "attempted", "succeeded", "failed", "unknown"])
+    report.add_argument(
+        "--recovery-status",
+        choices=["not_attempted", "attempted", "succeeded", "failed", "unknown"],
+    )
     report.add_argument("--recovery-action")
     report.add_argument("--recovery-result")
     report.add_argument("--next-action")
@@ -146,14 +183,21 @@ def main(argv: list[str] | None = None) -> int:
             packet = _read_packet(args.packet)
         else:
             if not args.execution_id or not args.summary:
-                parser.error("report requires --execution-id and --summary when --packet is omitted")
+                parser.error(
+                    "report requires --execution-id and --summary when --packet is omitted"
+                )
             packet = build_packet(args)
         event = make_report_event(packet)
         receipt = AppendOnlyEventStore(args.db).append(event)
     except (LedgerError, OSError) as exc:
         print(f"issue-ledger-agent: {exc}", file=sys.stderr)
         return 2
-    print(json.dumps({"event": event["event_id"], "stored": receipt["stored"], "lifecycle": "CANDIDATE"}, sort_keys=True))
+    print(
+        json.dumps(
+            {"event": event["event_id"], "stored": receipt["stored"], "lifecycle": "CANDIDATE"},
+            sort_keys=True,
+        )
+    )
     return 0
 
 

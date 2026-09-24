@@ -11,6 +11,11 @@
     "inference-recommend": "./src/cli.mjs"
   },
   "scripts": {
+    "lint:js": "eslint . --max-warnings=0",
+    "lint:python": "uv run --locked ruff check operational integrations",
+    "format:python:check": "uv run --locked ruff format --check operational integrations",
+    "typecheck:python": "uv run --locked mypy operational/scripts",
+    "check:static": "pnpm lint:js && pnpm lint:python && pnpm format:python:check && pnpm typecheck:python",
     "test": "node --test",
     "test:properties": "node --test tests/properties.test.mjs tests/metamorphic.test.mjs",
     "test:operational": "uv run --locked python -B -m unittest discover -s operational/tests -p \"test_issue_ledger_contract.py\"",
@@ -30,6 +35,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "fast-check": "^4.3.0"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "fast-check": "^4.3.0",
+    "globals": "^17.12.0"
   }
 }

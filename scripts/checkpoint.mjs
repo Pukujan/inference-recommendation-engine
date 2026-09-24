@@ -55,7 +55,7 @@ function validatePath(input) {
     /^[A-Za-z]:/.test(normalized) ||
     normalized === '.' ||
     normalized.split('/').some((part) => part === '..' || part === '.' || part === '') ||
-    /[*?\[\]]/.test(normalized)
+    /[*?[\]]/.test(normalized)
   ) fail(`Unsafe checkpoint path: ${input}`);
   if (normalized.split('/').some((part) => forbiddenPathSegment.test(part))) {
     fail(`Sensitive path cannot be checkpointed: ${input}`);
