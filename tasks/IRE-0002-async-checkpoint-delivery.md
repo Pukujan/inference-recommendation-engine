@@ -2,7 +2,7 @@
 
 ## Status
 
-Ready for closeout checkpoint — implementation is merged; tracked by GitHub issue [#11](https://github.com/Pukujan/inference-recommendation-engine/issues/11), a sub-issue of project issue #8.
+Complete — implementation merged by PR #12, merge evidence recorded by PR #13, and GitHub issue [#11](https://github.com/Pukujan/inference-recommendation-engine/issues/11) was closed after both required CI checks passed.
 
 ## Goal
 
@@ -45,7 +45,8 @@ Update this list before editing any additional file.
 - 2026-09-23: Implemented asynchronous publishing and merge finalization. Enabled repository auto-merge and delete-branch-on-merge; verified both settings and confirmed the original strict `test` protection and zero-approval rule remain unchanged.
 - 2026-09-23: `uv sync --locked` passed; `pnpm test` passed (25); `pnpm check:public` passed; `pnpm test:operational` passed (41); `pnpm pack --dry-run` passed; focused checkpoint tests passed (9); `git diff --check` passed.
 - 2026-09-24: PR [#12](https://github.com/Pukujan/inference-recommendation-engine/pull/12) merged at `2026-09-24T02:19:43Z` as `0a7fdc2d10c09ca6d9a9dfea30f4132c25b77b37`; both required `test` checks passed. The publisher returned after requesting auto-merge; the finalizer verified PR head `8683ddaad9517bda1d43ee2ae42546bd7c76a3ee`, synchronized canonical `main`, and removed its exact local checkpoint branch.
+- 2026-09-24: PR [#13](https://github.com/Pukujan/inference-recommendation-engine/pull/13) merged at `2026-09-24T02:21:46Z` as `5ccd1ef75867b28151fa304cba3491a9624291ac`; both required `test` checks passed. The finalizer synchronized canonical `main`, removed its exact local checkpoint branch, and issue #11 was closed at `2026-09-24T02:22:30Z` with both merge SHAs recorded.
 
 ## Next action
 
-Deliver this merge-evidence closeout record through a final checkpoint under issue #11, confirm that PR merges, run the finalizer, then close issue #11. Only then begin IRE-0003 streaming/liveness and resume guidance.
+The next project-level action is to triage the streaming/liveness and task-resume guidance listed in issue #8. Create a child issue and task file before implementation; keep that work separate from ranking changes.
