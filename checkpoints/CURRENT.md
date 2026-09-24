@@ -4,17 +4,17 @@ version: 1
 project: inference-recommendation-engine
 status: ready_for_checkpoint
 active_task: IRE-0002-async-checkpoint-delivery
-updated_at: 2026-09-23
+updated_at: 2026-09-24T02:20:00Z
 ---
 
 ## State
 
 The v0.1 ranking core remains published and unchanged. The operational-ledger
-relocation, local SQLite storage, pnpm/uv toolchain, and synchronous CI-gated
-checkpoint workflow are integrated in the canonical checkout. IRE-0002 tracks
-making checkpoint publishing asynchronous while preserving local gates, branch
-protection, and merge confirmation. GitHub issue #8 is the project-level plan;
-issue #11 is its checkpoint-automation sub-issue.
+relocation, local SQLite storage, pnpm/uv toolchain, and asynchronous,
+CI-gated checkpoint workflow are integrated in the canonical checkout. The
+IRE-0002 implementation merged as PR #12; its issue/task closeout record is the
+remaining atomic action. GitHub issue #8 is the project-level plan; issue #11
+tracks this checkpoint-automation subtask.
 
 ## Verified
 
@@ -36,6 +36,10 @@ issue #11 is its checkpoint-automation sub-issue.
 - GitHub auto-merge and delete-branch-on-merge are enabled; `main` still requires
   strict `test`, enforces protection for administrators, disallows force-pushes
   and deletion, and has zero required approvals;
+- PR #12 merged at `2026-09-24T02:19:43Z` as
+  `0a7fdc2d10c09ca6d9a9dfea30f4132c25b77b37`; both required `test` checks passed;
+- `scripts/finalize-checkpoint.mjs --pr 12` verified the merged head and
+  synchronized canonical `main`; the task branch was removed;
 - private operational event storage defaults to ignored
   `.ire/issue-ledger/ledger.sqlite3`; that directory/database did not exist when
   this task resumed, so no local event history needed migration;
@@ -58,10 +62,9 @@ issue #11 is its checkpoint-automation sub-issue.
 
 ## Next
 
-Deliver IRE-0002 under issue #11 with the asynchronous checkpoint helper, wait
-for GitHub's required `test` check and auto-merge, and run the finalizer to
-confirm merge and synchronize local `main`. Then complete the merge-evidence
-record before beginning streaming/liveness and resume guidance. Keep
-operational guidance separate from ranking. The configured inference-gateway-
-only premium catalog lane remains separate; paid inference requires explicit
-human authorization and must not be called without it.
+Deliver this merge-evidence record as the closeout checkpoint for issue #11,
+wait for required CI and auto-merge, then run the finalizer and close #11. Next,
+begin IRE-0003 streaming/liveness and resume guidance, keeping operational
+guidance separate from ranking. The configured inference-gateway-only premium
+catalog lane remains separate; paid inference requires explicit human
+authorization and must not be called without it.
