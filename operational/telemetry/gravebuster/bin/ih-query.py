@@ -140,7 +140,7 @@ def main():
                    AS pct_snaps_out_under_policy,
                  count(*) AS snapshots, max(ts) AS last_ts
           FROM fact_route_price
-          WHERE ts >= now()::TIMESTAMP - INTERVAL {hrs} HOUR AND ({where})
+          WHERE ts >= now()::TIMESTAMP - INTERVAL '{hrs} hours' AND ({where})
           GROUP BY route ORDER BY route""",
             [f"%{s}%" for s in subs],
         )
