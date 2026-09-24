@@ -204,6 +204,24 @@ a live tool or blindly restart a long stream just because token text is quiet.
 Increase an idle timeout only when observed behavior needs it, while keeping
 finite retry and supervisor limits.
 
+Never wrap a live Astra, Codex, Claude, Pi, or other streamed run in a
+180-second shell timeout, a 120-second default, or any other short capture
+limit. Do not pass `timeout: 180000`, `timeout: 180`, or an equivalent kill.
+One-shot non-streaming capture is not allowed. Use a streaming JSON or event
+mode and leave the process running.
+
+A working stream gets at least 1 hour. If events, tool calls, or subprocess
+output are still arriving, do not kill it at 3 minutes, 5 minutes, or 30
+minutes. Killing a running stream is disallowed unless there is proof the
+stream has been stuck for 180 seconds: no events, no tool calls, no subprocess
+output, and process state shows no active work, for that full 180 seconds.
+Silence while a tool runs is not that proof. A local 180-second cutoff on a
+working stream is a staff bug, not a finished review and not a provider
+rejection. The ledger wrapper already says output stays live and no timeout or
+kill is added. Copy that. After a staff timeout kills a live run, resume that
+same session. Do not treat the kill as "tools already ran, so stop." Stopping
+a working task is not an option.
+
 Keep draining stdout and stderr while a child runs; an undrained pipe can block
 the process. Prefer JSONL / stream-json / JSON event modes so a supervisor can
 distinguish tool starts/results, partial text, retry events, final completion,
@@ -251,6 +269,42 @@ verifier. Kilo and its in-session subagents are the execution staff. Staff do
 not choose the next slice. Astra does not spawn Codex or Luna subagents for
 this staff pattern.
 
+### Finish the human spec
+
+This is a policy requirement, not a preference. Being conservative is
+disallowed. Saving tokens instead of finishing the task is disallowed.
+Stopping to debug, switching to a one-shot non-streaming capture, or ending a
+run before the human's spec is finished is disallowed. Unacceptable. Keep the
+streamed run going until the tasks in the human's spec are finished. A quiet
+model, a missing tool, a short timeout, or a smaller bill is not a reason to
+stop. Fix the blocker and continue. Not choosing a slice Astra has not
+released is obeying that spec. Cutting a working review, killing a live
+stream, or stopping to save tokens is violating it.
+
+### Required session goal
+
+Before staff work, set the Kilo session goal with `/goal` to the text below.
+Substitute the project name and the inbox where that project's Astra writes
+`TASK-*.md` files. Do not reuse another project's inbox. A goal that says
+"finish the issue log" or "keep going" is not this goal. The goal loop's
+"take the next useful step" and "do not repeat status-only reports" lines do
+not override the task-file gate.
+
+```text
+Astra owns planning, research, verification, and acceptance for <project>. Kilo and Grok execute only an unconsumed TASK file Astra released in <inbox>. If none exists, do not edit the repo, do not open a pull request, and do not choose the next slice.
+
+A quiet, idle, or exited Astra is not permission to implement. Codex exec ending is normal. Resume with codex exec resume only after checking the receipt, event log, and working tree. Relaunch a fresh Astra only for a clear transient failure before the request was accepted, such as a dropped connection. Do not relaunch the same rejected request after a provider parameter rejection or after tools may have run. Record that attempt as a bug, fuzz and fix the bug, then relaunch and keep continuing. Stopping is not the answer. That fix-and-relaunch is launcher work. It is not permission to edit the product repo or choose the next slice.
+
+After a released task is done, write the result file, return it to Astra, and stop until Astra writes the next task.
+
+Being conservative is disallowed. Saving tokens instead of finishing the task is disallowed. Stopping to debug, or ending before the human's spec is finished, is unacceptable. Keep the streamed run going until those tasks are finished.
+```
+
+Two waits stay. No unconsumed `TASK` file means do not implement. A finished
+task means return the result and wait for Astra's next file. A provider
+parameter rejection is neither of those waits. Record it, fuzz it, fix it,
+relaunch, and continue.
+
 Use the nested-process pattern earlier in this guide only when the task needs
 another coding CLI's own native subagents. Do not relabel a Kilo `task` child
 as a native subagent, and do not relabel an Agent Manager session as staff.
@@ -288,13 +342,20 @@ issue #32 and is not implemented by this guide.
 
 1. Confirm the owner route is `cb/gpt-6-astra` through the configured BYOK
    endpoint, without printing the key.
-2. Give staff one bounded task, the allowed files, and a stop boundary. Staff
-   do not pick the next slice.
-3. Spawn that worker as an in-session subagent with `background: true`, unless
+2. Set the required session goal above, with this project's name and inbox.
+   Do not start from a finish-the-issue-log goal.
+3. Give staff one bounded task, the allowed files, and a stop boundary. Staff
+   do not pick the next slice. If no unconsumed `TASK` file exists, do not
+   edit the repo.
+4. Stream the run. Do not use a one-shot non-streaming capture. A working
+   stream runs at least 1 hour. Kill it only after proof it has been stuck for
+   180 seconds with no events, tool calls, or output. A staff kill is not a
+   reason to stop the goal.
+5. Spawn that worker as an in-session subagent with `background: true`, unless
    the next parent step depends on it.
-4. Keep moving. Do not poll. Do not edit the child's files.
-5. On result, record the evidence and changed paths, then close the worker.
-6. Record the GitHub issue, branch, and checkpoint. Keep private receipts out
+6. Keep moving. Do not poll. Do not edit the child's files.
+7. On result, record the evidence and changed paths, then close the worker.
+8. Record the GitHub issue, branch, and checkpoint. Keep private receipts out
    of the repository.
 
 ## References
