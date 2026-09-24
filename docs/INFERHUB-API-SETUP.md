@@ -23,6 +23,19 @@ supported coding CLIs and select a model. It validates access through the
 model catalog endpoint. Check the live catalog and current pricing before
 choosing a route because model IDs, availability, and price can change.
 
+### Project model and price preference
+
+For this project, treat a model or route with a current estimated cost below
+**$0.10 USDC per 1 million tokens** as *effectively free* for recommendation
+and long-running experiment selection. This is a practical price threshold,
+not a claim that inference is literally free. Prefer currently
+recommendation-eligible entries in the project's Top 20 or Top 20+ lists when
+they meet the threshold. Check the current recommendation snapshot, live route
+availability, route-level price, and tool/stream support before launch; record
+which snapshot and route informed the choice. If no eligible route meets the
+threshold, say so and identify the nearest eligible option instead of
+silently substituting a research-only or more expensive route.
+
 Read the key from the authorized secret store or process environment. Never
 put real keys in repository files, prompts, command arguments, task notes,
 shell history, receipts, or logs. A process receives only environment
