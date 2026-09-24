@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { autoMergeArgs, checkpointPrBody } from '../scripts/checkpoint.mjs';
+import { autoMergeArgs, checkpointPrBody, localGateCommands } from '../scripts/checkpoint.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const helper = path.join(root, 'scripts', 'checkpoint.mjs');
@@ -27,6 +27,15 @@ test('checkpoint PR links its issue and requests GitHub auto-merge without waiti
   const args = autoMergeArgs(12, 'a'.repeat(40));
   assert.deepEqual(args, ['pr', 'merge', '12', '--auto', '--squash', '--match-head-commit', 'a'.repeat(40)]);
   assert.equal(args.includes('--watch'), false);
+});
+
+test('checkpoint publisher runs static checks before tests and publication', () => {
+  const gates = localGateCommands();
+  const staticGate = gates.findIndex(([command, args]) => command === 'pnpm' && args[0] === 'check:static');
+  const testGate = gates.findIndex(([command, args]) => command === 'pnpm' && args[0] === 'test');
+
+  assert.notEqual(staticGate, -1);
+  assert.ok(staticGate < testGate);
 });
 
 test('checkpoint helper rejects implicit all-files staging before any repository or network action', () => {

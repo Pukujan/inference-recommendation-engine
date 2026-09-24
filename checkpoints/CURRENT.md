@@ -2,27 +2,25 @@
 kind: current
 version: 1
 project: inference-recommendation-engine
-status: ready_for_next_task
-active_task: none
-updated_at: 2026-09-24T03:02:00Z
+status: in_progress
+active_task: IRE-0003
+updated_at: 2026-09-24T03:08:00Z
 ---
 
 ## State
 
-The ranking core and operational ledger remain intact. The asynchronous checkpoint workflow is integrated. IRE-0003 static-quality checks have merged in PR #17; issue #15 remains open pending publication of the closeout record and evidence comment.
+IRE-0003's static-analysis and CI checks are merged in PR #17. A final workflow review found the checkpoint publisher omitted `pnpm check:static`; issue #15 is reopened, and the helper now includes this gate with a regression test. The correction checkpoint still needs CI and merge verification before IRE-0003 can close.
 
 ## Verified
 
 - Canonical GitHub repository: `https://github.com/Pukujan/inference-recommendation-engine`.
-- IRE-0003 PR #17 merged at `2026-09-24T02:59:23Z` as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; both required CI `test` checks passed.
-- Canonical `main` is synchronized with `origin/main` at the IRE-0003 implementation merge; the finalizer verified a clean checkout and removed only the merged checkpoint branch.
+- PR #17 merged as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; both CI checks passed. PR #18 closeout record merged as `1ab249d809a21c4b8f22439d2d5e7d98f5ecc12f`.
+- Canonical `main` is synchronized with `origin/main` at `1ab249d809a21c4b8f22439d2d5e7d98f5ecc12f`; the checkout was clean before the current correction.
 - GitHub Issues own plans and status; pull requests and commit history own code changes; private ledger evidence stays in ignored `.ire/issue-ledger/ledger.sqlite3`.
 - Main requires strict CI check `test`, applies protection to administrators, disallows force pushes/deletion, and requires zero approvals. GitHub auto-merge and delete-branch-on-merge are enabled.
-- IRE-0002 is complete; PRs #12–#14 are merged, and issue #11 is closed.
-- IRE-0003 implementation issue #15 is ready to close after its closeout record is merged.
-- `pnpm check:static` passes ESLint, Ruff lint and format checks, and mypy on six operational Python modules with untyped definitions disallowed.
-- Required local gates pass: Node tests (25), public-surface scan, operational contract tests (41), and package dry run. Frozen/locked dependency installs and `git diff --check` pass.
+- Issue #15 is open again. The publisher now includes `pnpm check:static` before publication, with a regression test that asserts the gate precedes tests.
+- Static checks pass: ESLint, Ruff lint/format, mypy on six operational Python modules. Functional suites pass: 26 Node tests, public-surface scan, 41 operational tests, and package dry run. Locked installs and `git diff --check` pass.
 
 ## Next
 
-Publish the closeout checkpoint and close issue #15 with implementation merge evidence. Then triage the streaming/liveness and task-resume guidance listed in project issue #8; create a child issue and task file before implementation.
+Publish the correction checkpoint with issue #15, wait for both GitHub CI checks and auto-merge, finalize the canonical checkout, update closeout evidence, and then close issue #15. Afterward, triage streaming/liveness and task-resume guidance under issue #8.

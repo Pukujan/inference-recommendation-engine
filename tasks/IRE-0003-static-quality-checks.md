@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation is merged by PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`. Both required CI checks passed. GitHub issue [#15](https://github.com/Pukujan/inference-recommendation-engine/issues/15) remains open while this closeout record is published.
+Follow-up required — PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) merged as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`, but review of the completed workflow found the checkpoint publisher did not yet run the new static gate locally. Issue [#15](https://github.com/Pukujan/inference-recommendation-engine/issues/15) was reopened; do not close it until the helper and its regression test are merged.
 
 ## Goal
 
@@ -23,6 +23,7 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 - `checkpoints/CURRENT.md`
 - `AGENTS.md`
 - `.github/workflows/ci.yml`
+- `scripts/checkpoint.mjs` and `tests/checkpoint.test.mjs` to enforce all required local gates before publication
 - `.gitignore` and `src/check-public.mjs`
 - `package.json` and `pnpm-lock.yaml`
 - `pyproject.toml` and `uv.lock`
@@ -33,6 +34,7 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 
 - `pnpm check:static` exposes JS linting, Python linting/format verification, and the scoped Python type check.
 - CI runs all new checks on pushes and pull requests.
+- The checkpoint publisher runs `pnpm check:static` before publishing a checkpoint.
 - New tools are version-locked and installed reproducibly in CI.
 - Existing functional and operational tests, public-surface check, and package dry run remain in CI.
 - The checks pass without broad suppressions.
@@ -47,7 +49,9 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 - 2026-09-24: Added ignore/exclusion rules for Ruff and mypy caches after the public-surface scan correctly detected their generated contents.
 - 2026-09-24: Locked dependency installs passed. `pnpm check:static` passed (ESLint, Ruff lint, Ruff format check, mypy: six modules); `pnpm test` passed (25); `pnpm check:public` passed; `pnpm test:operational` passed (41); `pnpm pack --dry-run` passed; `git diff --check` passed.
 - 2026-09-24: Implementation PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) merged at `2026-09-24T02:59:23Z` as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; both required CI checks passed. The finalizer synchronized canonical `main` and removed only this checkpoint's local branch.
+- 2026-09-24: Reopened issue #15 after finding `scripts/checkpoint.mjs` did not run `pnpm check:static`; the prior closeout PR #18 is merged but this required local enforcement and a regression test remain outstanding.
+- 2026-09-24: Added `pnpm check:static` to the publisher's local gate sequence and a regression test asserting it runs before the Node tests; the Node suite now passes (26) and static checks plus `git diff --check` pass.
 
 ## Next action
 
-Publish this closeout record, then close issue #15 with the merged implementation and successful CI evidence. The next project-level work remains the streaming/liveness and task-resume guidance under issue #8.
+Add the static gate to the publisher's local gate list and test that requirement. Run all repository gates, publish the correction through issue #15, finalize the merge, update the closeout evidence, and then close issue #15. The next project-level work remains the streaming/liveness and task-resume guidance under issue #8.
