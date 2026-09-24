@@ -36,3 +36,25 @@ Model IDs and provider availability can change. Check InferHub's live
 [model catalog and pricing](https://inferhub.dev/pricing) before selecting a
 model or setting a spend limit. Do not assume that adding an API key or this
 configuration means a paid run has been approved.
+
+## Run an authorized long task with Codex CLI
+
+From a repository checkout, use the repository runner:
+
+```powershell
+.\run_codex_harness.ps1 -Model "<configured-model-id>" -Prompt "<authorized task>"
+```
+
+The runner explicitly sets `workspace-write`, `approval_policy=never`, and
+workspace network access for tool commands. It streams Codex JSONL progress
+and returns the CLI's exit code. The installed Codex configuration continues
+to supply the provider and credential; the runner does not replace or print
+them. Codex `exec` otherwise starts read-only unless the caller selects a
+writable sandbox, so agents should use the runner instead of making their own
+permission choice. See the official [Codex non-interactive mode
+documentation](https://developers.openai.com/codex/non-interactive-mode) and
+[sandbox settings](https://developers.openai.com/codex/sandboxing).
+
+This mode authorizes changes and command execution inside the repository
+workspace without additional routine permission prompts. It does not disable
+the project's task, checkpoint, credential, or receipt requirements.
