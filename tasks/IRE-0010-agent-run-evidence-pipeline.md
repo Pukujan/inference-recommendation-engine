@@ -5,9 +5,10 @@ part of [#40](https://github.com/Pukujan/inference-recommendation-engine/issues/
 
 ## Status
 
-- Checkpoint 1 (source sync): in review. P2/P3 were built and ticked on #41 while their code lived only on
-  the self-hosted host; this checkpoint puts that code in GitHub and makes the host deploy from `main`.
-- Checkpoint 2 (provider-error capture, #40 M0.6 context): pending.
+- Checkpoint 1 (source sync): merged in PR #42 at `2c45e74be95be9241fb2489abd195462af5a0450`; required
+  check `test` passed. Deployed to the collector host from `main` with `deploy.sh`
+  (`DEPLOYED sha=2c45e74…`); the next pipeline run succeeded. P2/P3 code is now in GitHub.
+- Checkpoint 2 (provider-error capture, #40 M0.6 context): in review.
 - Checkpoint 3 (P4 incident detectors + versioned signature catalog): pending.
 
 ## Goal
@@ -27,10 +28,24 @@ telemetry host runs whatever `main` holds, deployed by `operational/telemetry/gr
 - Python is formatted to the repository's ruff gates; changes are formatting and lint only (imports
   split, two lambdas turned into functions, two variables renamed), plus `git_head()` reading `DEPLOYED`.
 
+## Checkpoint 2: provider-error capture
+
+- Codex spans carry no response body, and the span of a failing request is usually lost when the
+  process exits before its exporter flushes, so the provider code only survives in the receipt.
+- `astra_otel.py end` now scans `codex-events.jsonl`, `codex-stderr.txt` and `launcher-error.txt`
+  (from `--receipt-dir`, which `Stop-AstraTelemetry` passes) and adds `provider.error.*` attributes
+  (count, occurrences, code, type, http_status, message, request id, retry hint, request-shape counts,
+  receipt source file:line) plus one `provider.error` span event per distinct request. `scan` prints the
+  same result without network access; `end --dry-run` prints the span.
+- Only `error` / `turn.failed` / `stream_error` events count; tool output that mentions a code is ignored.
+- Verified against real receipts on the PC and end-to-end through the collector with two synthetic
+  root spans (task ids `telemetry-verify-11133-*`). No Astra run was launched.
+
 ## Files in scope
 
 - `operational/telemetry/**`
 - `src/check-public.mjs`
+- `operational/tests/test_astra_otel_provider_errors.py`
 - `tasks/IRE-0010-agent-run-evidence-pipeline.md`
 - `checkpoints/CURRENT.md`
 

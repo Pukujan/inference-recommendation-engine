@@ -4,7 +4,7 @@ version: 1
 project: inference-recommendation-engine
 status: in_progress
 active_task: IRE-0010
-updated_at: 2026-09-24T22:20:00Z
+updated_at: 2026-09-24T22:30:00Z
 ---
 
 ## State
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0010 checkpoint 1 puts the agent-run evidence source (OTel collector, batch pipeline, systemd units, host helpers, Astra launcher helpers) under `operational/` for [issue #41](https://github.com/Pukujan/inference-recommendation-engine/issues/41). The self-hosted collector host deploys it from `main` with the checked-in `deploy.sh` (see `tasks/IRE-0010-agent-run-evidence-pipeline.md`). IRE-0009 remains merged in PR #37; the blinded benchmark remains open under issue #29.
+IRE-0010 checkpoint 1 merged in PR #42 at `2c45e74be95be9241fb2489abd195462af5a0450` and is deployed on the collector host from `main`. Checkpoint 2 puts provider errors (HTTP status, provider code such as 11133, request id) from Astra receipts on the launcher root span, for issue #41 in the #40 M0.6 context. IRE-0009 remains merged in PR #37; the blinded benchmark remains open under issue #29.
 
 ## Next
 
-Merge IRE-0010 checkpoint 1 and deploy it on the collector host. Then checkpoint 2 (provider-error capture on the launcher root span) and checkpoint 3 (P4 incident detectors). Issue #29 benchmark work continues afterwards.
+Merge IRE-0010 checkpoint 2, then checkpoint 3 (P4 incident detectors and a versioned signature catalog). Issue #29 benchmark work continues afterwards.
