@@ -3,13 +3,13 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0006
-updated_at: 2026-09-24T04:28:20Z
+active_task: IRE-0007
+updated_at: 2026-09-24T06:18:39Z
 ---
 
 ## State
 
-IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's InferHub API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006 extends the BYOK CLI runbook; issue #27 is active.
+IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is the current checkpoint.
 
 ## Verified
 
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's In
 
 ## Current checkpoint
 
-IRE-0005 standardizes the Codex CLI runner for authorized remote-model tasks: writable repository workspace, no routine approval prompts, network-enabled tool execution, and streamed JSONL events. PR #25 implemented it; PR #26 recorded verified closeout, and issue #24 is closed. IRE-0006 updates the InferHub setup guide with nested BYOK CLI routing and long-running stream/recovery guidance; see `tasks/IRE-0006-inferhub-cli-agent-runbook.md`.
+IRE-0007 corrects the durable BYOK model-selection guidance and prepares a blinded agent behavior benchmark. The benchmark is tracked in [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29); its PDD/SDD/TDD and exact test protocol must be finalized before any paid model run. See `tasks/IRE-0007-inferhub-agent-behavior-benchmark.md`.
 
 ## Next
 
-Run the required local gates and deliver IRE-0006 through the checkpoint helper. After required CI passes and the PR merges, close issue #27.
+Run the required local gates and deliver the IRE-0007 documentation checkpoint through the checkpoint helper. After required CI passes and the PR merges, continue the issue #29 benchmark with the documented under-$0.10 price preference.
