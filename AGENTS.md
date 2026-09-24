@@ -16,16 +16,19 @@ For README, product, visual, or marketing work, load the helper's README playboo
   delete unrelated worktrees.
 - Inspect the working tree before editing. Preserve user changes and never
   include unrelated work in a checkpoint.
-- A checkpoint is one independently verified increment. Before continuing to
-  the next increment, update the relevant task/checkpoint record, run the
-  repository gates, and deliver it with `node scripts/checkpoint.mjs` using an
-  explicit `--path` for each intended file or directory. Never use `git add
-  -A` for checkpoint delivery.
-- The checkpoint helper commits on `codex/checkpoint/<name>` in this checkout,
-  pushes it to `origin`, opens a PR to `main`, waits for the required CI checks,
-  merges only after they pass, and fast-forwards this checkout's `main`. Do not
-  continue implementation while that checkpoint is unmerged or checks are
-  failing. Fix a failed checkpoint on its existing branch and rerun the helper.
+- A checkpoint is one independently verified increment. Before publishing,
+  update the relevant task/checkpoint record, run the repository gates, and
+  deliver it with `node scripts/checkpoint.mjs` using an explicit `--path` for
+  each intended file or directory. Never use `git add -A` for checkpoint
+  delivery.
+- The publisher commits on `codex/checkpoint/<name>` in this checkout, pushes
+  it to `origin`, opens or updates a PR to `main`, and requests GitHub
+  auto-merge. It returns while required CI runs. Do not mark a checkpoint
+  complete, remove its branch, or start dependent implementation until its PR
+  is confirmed merged. Use `node scripts/finalize-checkpoint.mjs --pr <number>`
+  to verify the merge, synchronize this checkout's `main`, and clean up the
+  merged local branch. Resume a failed checkpoint on its existing branch after
+  fixing the cause.
 - Do not bypass required checks or push directly to `main`. The helper refuses
   pre-staged or leftover unstaged/untracked work, sensitive paths, and
   credential-like content. Never stage `.ire/`, credentials, or private source
@@ -38,3 +41,6 @@ For README, product, visual, or marketing work, load the helper's README playboo
   status, and code changes. Private operational records and evidence live only
   in the ignored `.ire/issue-ledger/ledger.sqlite3`; never commit or upload the
   database, its sidecar files, private source records, or credentials.
+- Use parent GitHub issues for project-level plans and sub-issues for
+  independently deliverable tasks. Reference the task issue in the task file
+  and pull request; do not maintain a parallel issue register.

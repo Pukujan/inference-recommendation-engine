@@ -3,17 +3,18 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: ready_for_checkpoint
-active_task: IRE-0002-streaming-liveness-and-resume-guidance
-updated_at: 2026-09-23T23:50:16Z
+active_task: IRE-0002-async-checkpoint-delivery
+updated_at: 2026-09-23
 ---
 
 ## State
 
 The v0.1 ranking core remains published and unchanged. The operational-ledger
-relocation, local SQLite storage, pnpm/uv toolchain, and CI-gated checkpoint
-workflow are integrated in the canonical checkout and pass their local gates.
-The private ledger projection remains separate from ranking behavior. GitHub
-issue #8 is the public plan and project-issue record for this work.
+relocation, local SQLite storage, pnpm/uv toolchain, and synchronous CI-gated
+checkpoint workflow are integrated in the canonical checkout. IRE-0002 tracks
+making checkpoint publishing asynchronous while preserving local gates, branch
+protection, and merge confirmation. GitHub issue #8 is the project-level plan;
+issue #11 is its checkpoint-automation sub-issue.
 
 ## Verified
 
@@ -31,6 +32,10 @@ issue #8 is the public plan and project-issue record for this work.
   was created;
 - GitHub Issues own project plans and project-wide issue status; pull requests
   and commit history own code changes;
+- issue #11 is attached beneath issue #8 for asynchronous checkpoint delivery;
+- GitHub auto-merge and delete-branch-on-merge are enabled; `main` still requires
+  strict `test`, enforces protection for administrators, disallows force-pushes
+  and deletion, and has zero required approvals;
 - private operational event storage defaults to ignored
   `.ire/issue-ledger/ledger.sqlite3`; that directory/database did not exist when
   this task resumed, so no local event history needed migration;
@@ -53,9 +58,10 @@ issue #8 is the public plan and project-issue record for this work.
 
 ## Next
 
-First deliver this merge-evidence update as a small checkpoint using the same
-helper, `--issue 8`, and only the two checkpoint-record paths. Then research and
-document evidence-based streaming/liveness and resume guidance as IRE-0002,
-keeping it separate from ranking. Treat the configured inference-gateway-only
-premium catalog lane as a later, separate increment; paid inference requires
-explicit human authorization and must not be called without it.
+Deliver IRE-0002 under issue #11 with the asynchronous checkpoint helper, wait
+for GitHub's required `test` check and auto-merge, and run the finalizer to
+confirm merge and synchronize local `main`. Then complete the merge-evidence
+record before beginning streaming/liveness and resume guidance. Keep
+operational guidance separate from ranking. The configured inference-gateway-
+only premium catalog lane remains separate; paid inference requires explicit
+human authorization and must not be called without it.
