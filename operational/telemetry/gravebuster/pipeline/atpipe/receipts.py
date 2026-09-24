@@ -5,7 +5,8 @@ launcher-error.txt are UTF-16LE with BOM; summary.txt / attempt.txt / BUG.md are
 Outputs (rebuilt when the receipt file set changes; small):
   clean/receipts/receipt_files.parquet   stamp, file, bytes, sha256, encoding
   clean/receipts/receipt_runs.parquet    one row per receipt dir (exit code, killed, duration, errors...)
-  clean/receipts/receipt_events.parquet  one row per codex exec JSON event (no message text, only metadata)
+  clean/receipts/receipt_events.parquet  one row per codex exec JSON event (no message text, only metadata;
+                                         line_no = physical 1-based line, command_class = coarse category)
 Only metadata is extracted; free text (agent messages, command output, stderr) is NOT copied, except a
 short first line of launcher-error/stderr with e-mails masked.
 """
@@ -20,6 +21,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from . import common as C
+from .cmdclass import command_class
 
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 STAMP = re.compile(r"^\d{8}T\d{6}Z$")
@@ -130,7 +132,7 @@ def parse_dir(d):
     thread_id = None
     usage = {}
     errors = []
-    for line in texts.get("codex-events.jsonl", "").splitlines():
+    for line_no, line in enumerate(texts.get("codex-events.jsonl", "").splitlines(), 1):
         line = line.strip()
         if not line:
             continue
@@ -147,12 +149,14 @@ def parse_dir(d):
         row = {
             "stamp": stamp,
             "seq": seq,
+            "line_no": line_no,
             "type": typ,
             "item_id": item.get("id"),
             "item_type": itype,
             "status": item.get("status"),
             "exit_code": item.get("exit_code"),
             "command_sha256": C.sha256_hex(item["command"])[:16] if item.get("command") else None,
+            "command_class": command_class(item.get("command")) if item.get("command") else None,
             "text_bytes": len(
                 item.get("text") or item.get("aggregated_output") or item.get("message") or ""
             )

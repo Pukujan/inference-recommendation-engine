@@ -1,4 +1,5 @@
-"""Pipeline entry point: seal -> raw Parquet (dedup) -> clean -> receipts -> dbt modeled snapshot.
+"""Pipeline entry point: seal -> raw Parquet (dedup) -> clean -> receipts -> dbt modeled snapshot
+-> incident detectors (fact_incidents) -> experiment manifests (dim_experiment, fact_experiment_trials).
 
 Usage: venv/bin/python -m atpipe.run [--reingest-all] [--rebuild-clean] [--force-model] [--prune-rotated]
 Runs then exits (no daemon). A flock prevents overlapping runs. Every run appends one line to
@@ -18,7 +19,7 @@ import sys
 import time
 import uuid
 
-from . import clean, ingest, receipts, seal
+from . import clean, detectors, experiments, ingest, receipts, seal
 from . import common as C
 
 META = os.path.join(C.LAKE, "meta")
@@ -26,6 +27,7 @@ ETL_RUNS = os.path.join(META, "etl_runs.jsonl")
 SNAPSHOTS = os.path.join(C.MODELED, "snapshots.jsonl")
 KEEP_SNAPSHOTS = int(os.environ.get("AT_KEEP_SNAPSHOTS", "10"))
 DBT_DIR = os.path.join(C.PIPE, "dbt")
+# Written by Python after dbt (detectors / experiments); dbt only declares their schema.
 STUB_TABLES = ("fact_incidents", "fact_experiment_trials", "dim_experiment")
 
 
@@ -42,6 +44,8 @@ def code_sha():
         "dbt/models/**/*.yml",
         "dbt/seeds/*.csv",
         "dbt/macros/*.sql",
+        "detectors/*.json",
+        "experiments/*.json",
     ):
         files += glob.glob(os.path.join(C.PIPE, pat), recursive=True)
     parts = sorted((os.path.relpath(p, C.PIPE), C.file_sha256(p)) for p in set(files))
@@ -156,7 +160,7 @@ def run_dbt(snapshot_id, out_dir, inputs_hash):
         log(r.stderr[-4000:])
         raise RuntimeError("dbt build failed")
     # dbt-duckdb's external materialization writes one all-NULL row for an empty result; the stub
-    # tables (no detectors / experiments yet) must be truly empty with their schema, so rewrite them.
+    # tables must be truly empty with their schema; detectors.run / experiments.run then fill them.
     import duckdb
 
     con = duckdb.connect()
@@ -252,6 +256,8 @@ def main(argv=None):
         )
         csha, nfiles = code_sha()
         vers = versions()
+        exp_files = experiments.manifest_files()
+        catalog = detectors.load_catalog()
         inputs = {
             "segment_sha256s": segs,
             "sqlite_backfill": sqlite_state,
@@ -260,18 +266,24 @@ def main(argv=None):
             "pipeline_git_head": git_head(),
             "versions": vers,
             "model_catalog_version": "ire-telemetry-model/v1",
+            "incident_catalog_version": catalog["catalog_version"],
+            "incident_catalog_sha256": catalog["_sha256"],
+            "experiment_manifests_sha256": experiments.manifests_set_sha256(exp_files),
+            "experiment_manifests": len(exp_files),
         }
         snapshot_id = C.sha256_hex(C.canon(inputs))
         inputs_hash = C.sha256_hex(
             C.canon({k: v for k, v in inputs.items() if k != "pipeline_git_head"})
         )
         out_dir = os.path.join(C.MODELED, "snap-" + snapshot_id[:16])
-        built, dbt_s = False, None
+        built, dbt_s, det, exp = False, None, None, None
         if a.force_model or not os.path.exists(os.path.join(out_dir, "_SUCCESS")):
             tmp_out = out_dir + ".building"
             shutil.rmtree(tmp_out, ignore_errors=True)
             os.makedirs(tmp_out)
             dbt_s = run_dbt(snapshot_id, tmp_out, inputs_hash)
+            det = detectors.run(tmp_out, snapshot_id, C.CLEAN, log=log)
+            exp = experiments.run(tmp_out, snapshot_id, exp_files, log=log)
             C.atomic_write_text(os.path.join(tmp_out, "_inputs.json"), json.dumps(inputs, indent=1))
             C.atomic_write_text(os.path.join(tmp_out, "_SUCCESS"), C.now_iso() + "\n")
             shutil.rmtree(out_dir, ignore_errors=True)
@@ -286,6 +298,8 @@ def main(argv=None):
                     "segments": len(segs),
                     "pipeline_code_sha256": csha,
                     "versions": vers,
+                    "incidents": det,
+                    "experiments": exp,
                 },
             )
             built = True
@@ -317,6 +331,8 @@ def main(argv=None):
                 "snapshot_dir": os.path.basename(out_dir),
                 "snapshot_built": built,
                 "dbt_seconds": dbt_s,
+                "incidents": det,
+                "experiments": exp,
                 "snapshots_pruned": removed,
                 "peak_rss_mb_self": round(ru_self / 1024, 1),
                 "peak_rss_mb_children": round(ru_kids / 1024, 1),

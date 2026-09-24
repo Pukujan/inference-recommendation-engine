@@ -68,10 +68,31 @@ dbt was chosen because it fits on this host. Measured on gravebuster: dbt-core 1
 | fact_tool_calls | one tool call | telemetry `codex.tool_result` + receipt `command_execution`; `is_primary` |
 | fact_idle_gaps | gaps between liveness events | the rank-1 gap per run plus every gap ≥30 s; noise that fires while idle (N001–N003, N009, N010) does not count as liveness |
 | dim_route / dim_model / dim_harness / dim_task / dim_github_ref | md5 surrogate keys | |
-| dim_experiment, fact_incidents, fact_experiment_trials | **stubs (0 rows)** | no source yet |
+| fact_incidents | one detected incident | written by `atpipe/detectors.py` after dbt; see "Incident detectors" below |
+| dim_experiment / fact_experiment_trials | experiment cell / trial | written by `atpipe/experiments.py` from trial manifests; empty (schema only) until a manifest exists |
 | model_snapshot | 1 row | snapshot_id, inputs_hash, built_at |
 
 `schema.yml` defines unique and not_null tests on keys, and `dbt build` runs them.
+
+## Incident detectors (P4)
+`atpipe/detectors.py` runs after dbt on every newly built snapshot and rewrites `fact_incidents.parquet` in it. Each detector is a pure function over modeled facts (runs, hops, model requests, tool calls, idle gaps), clean receipts and `provider.error.*` attributes on launcher root spans. It never reads harness-specific tables, so Kilo and OpenCode runs are covered once they are ingested into the facts.
+
+- **Catalog:** `detectors/catalog.json` (`ire-incident-signatures/v1`). Per signature: `incident_type`, `detector_version` (`<type>/<n>`), severity, MAST mode (or `infra: ...`), thresholds (`params`), description and a proposed fix. Every fix starts as `proposed`; only a verification experiment may change that. The catalog version and sha256 are snapshot inputs and are stamped on every incident row. Detectors and catalog must match one-to-one (`validate_catalog`).
+- **Ids:** `incident_id` = `INC-` + sha256(type, run, hop, evidence refs); `fingerprint` (`fp/v1`) = sha256 of the type plus signature-specific fields (provider, route, harness, code, status...), so recurring failures share a fingerprint across runs.
+- **Evidence:** `evidence_refs` cites `run:<run_id>`, `span:<trace>/<span>`, `trace:<trace>`, `receipt:<stamp>/<file>:L<line>` (1-based physical line in the receipt file), `gap:`, `hop:` and `tool_call:` ids. `metrics_json` holds bounded, text-free metrics.
+- **Exclusions:** pipeline verification traces (`task.id` starting `telemetry-`, harness `verify`, e2e/wrapper test runs) are not agent runs and are skipped.
+- **Signatures (v1):** unjustified_kill, terminated_without_closeout, provider_param_rejection, blind_resend, resume_retry_churn, launcher_error_or_early_exit, unattributed_failure, supervisor_polling_loop, long_idle_gap, permission_denied, unverified_hop, one_shot_capture.
+- `receipt_events` carries `line_no` and a coarse `command_class` (sleep_wait, status_poll, vcs_read, forge_read, file_read, search, build_test, ...; `atpipe/cmdclass.py`). Command text is still not stored.
+
+Example queries:
+```sql
+SELECT incident_type, severity, count(*) FROM 'data/lake/modeled/current/fact_incidents.parquet' GROUP BY ALL ORDER BY 3 DESC;
+SELECT fingerprint, incident_type, count(DISTINCT root_run_id) runs FROM 'data/lake/modeled/current/fact_incidents.parquet' GROUP BY ALL HAVING runs > 1;
+SELECT run_role, harness, incident_type, count(*) FROM 'data/lake/modeled/current/fact_incidents.parquet' GROUP BY ALL;  -- main vs child
+```
+
+## Experiment manifests (#40 M0.5)
+Drop one JSON file per preregistered experiment into `$AT_ROOT/data/experiments/` (schema `experiments/trial-manifest.schema.json`, example `experiments/example.trial-manifest.json`). The next pipeline run hashes the manifest set into the snapshot inputs, writes one `dim_experiment` row per cell and one `fact_experiment_trials` row per trial, links trials to runs by `run_id` or launcher `receipt_stamp`, and fills `kills_at_cap` / `incident_count` from `fact_incidents`. `success` comes from the manifest, else from the run outcome. Invalid manifests are skipped with a warning in the run log. With no manifest both tables stay empty; rows are never invented.
 
 ## Noise rules (`dbt/seeds/noise_rules.csv`)
 - N001 persist_rollout_items, N002 realtime_conversation.running_state, N003 append_items: Codex housekeeping, ~32k spans per run. They are **not** liveness.
@@ -121,7 +142,8 @@ Deploy: copy the code into `pipeline/`, then `git commit` in pipeline/ (HEAD is 
 - Rows: raw_spans 41,098, raw_logs 2,059, receipt_runs 19, receipt_events 1,040, fact_runs 30, fact_tool_calls 514, fact_model_requests 73, fact_idle_gaps 19, fact_hops 3, dim_harness 6, dim_task 6, dim_model 4, dim_route 4, dim_github_ref 1, stubs 0.
 
 ## Known gaps
-- Incidents and experiments are stubs. There are no permission-prompt, cost, resume or retry sources (those columns are NULL).
+- Experiments stay empty until the first #40 M0.5 manifest is registered. There are no permission-prompt, cost, resume or retry sources in fact_runs (those columns are NULL); resume churn is derived from receipt session chains by the detectors.
+- `justified` in fact_incidents is always NULL: detectors do not adjudicate; that belongs to the later evidence/hypothesis records (P5).
 - Receipt durations are stamp → latest file mtime; they are not precise end times.
 - On any input change the marts are fully rebuilt. This is cheap at the current volume; switch to incremental builds when a build exceeds a few minutes.
 - Raw Parquet part files accumulate, one per run with new rows per day. There is no compaction yet. `clean` is compacted per day.
