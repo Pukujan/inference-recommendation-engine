@@ -50,4 +50,8 @@ pipeline/venv/bin/python bin/at-duck.py etl 3
 pipeline/venv/bin/python bin/at-duck.py tables
 ```
 
+InferHub market + billing collector (IRE #46): `pipeline/ihub/README.md`. Its key lives in
+`secrets/inferhub.env` (0600, host only); enable its timers once with
+`sudo systemctl enable --now inferhub-collect-fast.timer inferhub-collect-logs.timer inferhub-snapshot-publish.timer`.
+
 See `pipeline/README.md` for the data layers and `HOST-NOTES.md` for how the host was set up.

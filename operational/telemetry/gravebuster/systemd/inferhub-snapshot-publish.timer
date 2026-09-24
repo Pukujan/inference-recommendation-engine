@@ -1,0 +1,10 @@
+[Unit]
+Description=Publish the InferHub daily price snapshot at 23:50 America/New_York
+
+[Timer]
+OnCalendar=*-*-* 23:50:00 America/New_York
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target
