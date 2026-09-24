@@ -4,6 +4,7 @@
 # and builds Codex --config overrides for OTLP/HTTP export. Every function is fail-open: telemetry
 # problems are written to the receipt dir and never stop or change the outcome of a run.
 # Added 2026-09-24 (IRE issue 40). Remove the dot-source line in a launcher to disable.
+# 2026-09-24 (IRE #41): Stop-AstraTelemetry also passes the receipt dir so provider errors reach the root span.
 
 $script:AstraOtelHelper = Join-Path $PSScriptRoot 'astra_otel.py'
 if (-not $script:AstraOtelHelper -or -not (Test-Path -LiteralPath $script:AstraOtelHelper)) {
@@ -71,7 +72,7 @@ function Start-AstraTelemetry {
 }
 
 function Stop-AstraTelemetry {
-    param($State, $ExitCode, [string]$StderrPath = '', [switch]$TimedOut)
+    param($State, $ExitCode, [string]$StderrPath = '', [string]$EventsPath = '', [switch]$TimedOut)
     $ErrorActionPreference = 'Continue'
     try {
         if (-not $State -or -not $State.trace_id) { return }
@@ -79,6 +80,10 @@ function Stop-AstraTelemetry {
                '--trace-id', $State.trace_id, '--span-id', $State.span_id, '--start-ns', "$($State.start_ns)",
                '--exit-code', "$ExitCode") + @($State.attrs)
         if ($StderrPath -and (Test-Path -LiteralPath $StderrPath)) { $a += @('--stderr-file', $StderrPath) }
+        # Provider-error capture (IRE #41 / #40 M0.6): astra_otel.py scans codex-events.jsonl, codex-stderr.txt
+        # and launcher-error.txt for HTTP status / provider code (e.g. 11133) / request id and puts them on the root span.
+        if ($EventsPath -and (Test-Path -LiteralPath $EventsPath)) { $a += @('--events-file', $EventsPath) }
+        if ($State.receipt_dir -and (Test-Path -LiteralPath $State.receipt_dir)) { $a += @('--receipt-dir', $State.receipt_dir) }
         if ($TimedOut) { $a += '--timed-out' }
         & python $script:AstraOtelHelper @a 2>$null | Out-Null
     } catch {
