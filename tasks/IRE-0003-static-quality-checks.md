@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation is complete locally and ready for its asynchronous checkpoint PR. GitHub issue [#15](https://github.com/Pukujan/inference-recommendation-engine/issues/15) remains open beneath project issue #8.
+Implementation is merged by PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`. Both required CI checks passed. GitHub issue [#15](https://github.com/Pukujan/inference-recommendation-engine/issues/15) remains open while this closeout record is published.
 
 ## Goal
 
@@ -46,7 +46,8 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 - 2026-09-24: Ruff identified two unused local assignments. Mypy identified object narrowing gaps; explicit object validation fixed those without suppressions. ESLint found an unnecessary regular-expression escape, which was removed.
 - 2026-09-24: Added ignore/exclusion rules for Ruff and mypy caches after the public-surface scan correctly detected their generated contents.
 - 2026-09-24: Locked dependency installs passed. `pnpm check:static` passed (ESLint, Ruff lint, Ruff format check, mypy: six modules); `pnpm test` passed (25); `pnpm check:public` passed; `pnpm test:operational` passed (41); `pnpm pack --dry-run` passed; `git diff --check` passed.
+- 2026-09-24: Implementation PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) merged at `2026-09-24T02:59:23Z` as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; both required CI checks passed. The finalizer synchronized canonical `main` and removed only this checkpoint's local branch.
 
 ## Next action
 
-Publish the implementation checkpoint through the asynchronous checkpoint helper, wait for all required CI checks and merge, then finalize the canonical checkout and record closeout evidence before closing issue #15.
+Publish this closeout record, then close issue #15 with the merged implementation and successful CI evidence. The next project-level work remains the streaming/liveness and task-resume guidance under issue #8.
