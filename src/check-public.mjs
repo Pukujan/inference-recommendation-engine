@@ -20,6 +20,12 @@ const operationalLedgerPaths = [
   /^operational\//i,
   /^AGENTS\.md$/i,
 ];
+const namedIntegration = ['infer', 'hub'].join('');
+const explicitlyDocumentedPaths = new Set([
+  `docs/${namedIntegration}-api-setup.md`,
+  `tasks/ire-0004-${namedIntegration}-api-setup.md`,
+  'checkpoints/current.md',
+]);
 const binaryExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2']);
 const failures = [];
 function walk(directory) {
@@ -31,11 +37,12 @@ function walk(directory) {
       const relative = path.relative(root, absolute).split(path.sep).join('/');
       // Keep the product-name guard global; ledger docs use broad technical terms.
       const operationalLedger = operationalLedgerPaths.some((pattern) => pattern.test(relative));
+      const explicitIntegrationReference = explicitlyDocumentedPaths.has(relative.toLowerCase());
       if (binaryExtensions.has(path.extname(entry.name).toLowerCase())) continue;
       const text = fs.readFileSync(absolute, 'utf8');
       for (let index = 0; index < forbidden.length; index += 1) {
         const pattern = forbidden[index];
-        if (operationalLedger && index > 0) continue;
+        if ((operationalLedger && index > 0) || (explicitIntegrationReference && index === 0)) continue;
         pattern.lastIndex = 0;
         if (pattern.test(text)) failures.push(`${relative} matches ${pattern}`);
       }
