@@ -1,0 +1,6 @@
+duckdb==1.5.5
+pyarrow
+zstandard
+numpy
+dbt-core==1.12.5
+dbt-duckdb==1.11.0

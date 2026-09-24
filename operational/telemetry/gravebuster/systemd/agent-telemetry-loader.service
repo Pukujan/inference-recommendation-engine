@@ -1,0 +1,17 @@
+[Unit]
+Description=agent-telemetry SQLite loader (tails otelcol file exporter into append-only SQLite)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=yoav
+Group=yoav
+ExecStart=/usr/bin/python3 /srv/agent-telemetry/loader/loader.py
+Restart=always
+RestartSec=5
+Nice=10
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

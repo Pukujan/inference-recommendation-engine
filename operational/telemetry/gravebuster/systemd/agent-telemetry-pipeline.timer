@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the agent-telemetry batch pipeline every 15 minutes
+
+[Timer]
+OnBootSec=5min
+OnCalendar=*:0/15
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,160 @@
+# agent-telemetry stack on gravebuster. See README.md.
+# Langfuse v3 reuses the pre-existing volumes from the old "cortex-langfuse" project (external).
+name: agent-telemetry
+
+x-langfuse-env: &langfuse-env
+  NEXTAUTH_URL: ${NEXTAUTH_URL}
+  DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/postgres
+  SALT: ${SALT}
+  ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+  TELEMETRY_ENABLED: "false"
+  LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "false"
+  CLICKHOUSE_MIGRATION_URL: clickhouse://clickhouse:9000
+  CLICKHOUSE_URL: http://clickhouse:8123
+  CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+  CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+  CLICKHOUSE_CLUSTER_ENABLED: "false"
+  LANGFUSE_S3_EVENT_UPLOAD_BUCKET: langfuse
+  LANGFUSE_S3_EVENT_UPLOAD_REGION: auto
+  LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+  LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+  LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT: http://minio:9000
+  LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE: "true"
+  LANGFUSE_S3_EVENT_UPLOAD_PREFIX: events/
+  LANGFUSE_S3_MEDIA_UPLOAD_BUCKET: langfuse
+  LANGFUSE_S3_MEDIA_UPLOAD_REGION: auto
+  LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID: ${MINIO_ROOT_USER}
+  LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD}
+  LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT: http://minio:9000
+  LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE: "true"
+  LANGFUSE_S3_MEDIA_UPLOAD_PREFIX: media/
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_AUTH: ${REDIS_AUTH}
+
+x-lf-depends: &lf-depends
+  postgres: {condition: service_healthy}
+  minio: {condition: service_healthy}
+  redis: {condition: service_healthy}
+  clickhouse: {condition: service_healthy}
+
+services:
+  langfuse-worker:
+    image: langfuse/langfuse-worker:3
+    restart: unless-stopped
+    depends_on: *lf-depends
+    environment: *langfuse-env
+
+  langfuse-web:
+    image: langfuse/langfuse:3
+    restart: unless-stopped
+    depends_on: *lf-depends
+    ports:
+      - "0.0.0.0:3000:3000"
+    environment:
+      <<: *langfuse-env
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      LANGFUSE_S3_MEDIA_UPLOAD_INTERNAL_ENDPOINT: http://minio:9000
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    restart: unless-stopped
+    user: "101:101"
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    volumes:
+      - langfuse_clickhouse_data:/var/lib/clickhouse
+      - langfuse_clickhouse_logs:/var/log/clickhouse-server
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+
+  minio:
+    image: cgr.dev/chainguard/minio:latest
+    restart: unless-stopped
+    entrypoint: sh
+    command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    # no host ports: 9090 is Cockpit on this host; minio is internal-only
+    volumes:
+      - langfuse_minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+      start_period: 2s
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: --requirepass ${REDIS_AUTH} --maxmemory-policy noeviction
+    volumes:
+      - langfuse_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+      TZ: UTC
+      PGTZ: UTC
+    volumes:
+      - langfuse_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    restart: unless-stopped
+    environment:
+      PHOENIX_WORKING_DIR: /mnt/data
+      PHOENIX_TELEMETRY_ENABLED: "false"
+    ports:
+      - "0.0.0.0:6006:6006"    # UI + OTLP/HTTP (/v1/traces)
+      # Phoenix OTLP gRPC (4317 in-container) is NOT published; 4317 on the host belongs to the collector.
+    volumes:
+      - phoenix_data:/mnt/data
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.155.0   # local tag of the :latest image in use on 2026-09-24
+    restart: unless-stopped
+    user: "1000:1000"          # writes data/otel as the host 'yoav' user so the loader can read it
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    env_file:
+      - ./collector/langfuse-auth.env   # LANGFUSE_OTEL_BASIC_AUTH=base64(pk:sk); chmod 600, not in git
+    volumes:
+      - ./collector/config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - ./data/otel:/data/otel
+    ports:
+      - "0.0.0.0:4317:4317"
+      - "0.0.0.0:4318:4318"
+      - "0.0.0.0:13133:13133"
+    depends_on:
+      - phoenix
+      - langfuse-web
+
+volumes:
+  langfuse_postgres_data:   {external: true, name: cortex-langfuse_langfuse_postgres_data}
+  langfuse_clickhouse_data: {external: true, name: cortex-langfuse_langfuse_clickhouse_data}
+  langfuse_clickhouse_logs: {external: true, name: cortex-langfuse_langfuse_clickhouse_logs}
+  langfuse_minio_data:      {external: true, name: cortex-langfuse_langfuse_minio_data}
+  langfuse_redis_data:      {external: true, name: cortex-langfuse_langfuse_redis_data}
+  phoenix_data: {}

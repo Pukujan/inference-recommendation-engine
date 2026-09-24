@@ -1,0 +1,20 @@
+[Unit]
+Description=agent-telemetry batch pipeline (seal raw -> dedup Parquet -> clean -> dbt modeled snapshot)
+After=docker.service
+Documentation=file:///srv/agent-telemetry/pipeline/README.md
+
+[Service]
+Type=oneshot
+User=yoav
+Group=yoav
+WorkingDirectory=/srv/agent-telemetry/pipeline
+Environment=AT_ROOT=/srv/agent-telemetry
+Environment=AT_DUCK_MEMORY=1500MB
+Environment=AT_DUCK_THREADS=2
+ExecStart=/srv/agent-telemetry/pipeline/venv/bin/python -m atpipe.run --prune-rotated
+Nice=19
+IOSchedulingClass=idle
+CPUSchedulingPolicy=batch
+MemoryMax=2G
+MemorySwapMax=0
+TimeoutStartSec=45min
