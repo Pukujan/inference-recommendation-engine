@@ -7,7 +7,7 @@ This task does not implement #32 and does not close #8 or #29.
 
 ## Status
 
-Documentation-only. No model request and no credential access are part of this checkpoint.
+Merged in PR #34 at `5d1d0b72f2f84adc73afb6aaf4cf95910604b0bb`. Documentation-only. No model request and no credential access were part of this checkpoint.
 
 ## Goal
 
@@ -50,6 +50,8 @@ Preserve a copyable operating setup so a fresh agent can reproduce the Astra own
 - 2026-09-24: Ignored private `.ire/**` in ESLint and the public-surface walk, skipped local `.kilo` worktrees in that walk, and scoped `pnpm test` to `tests/*.test.mjs`, so untracked local artifacts cannot fail the publisher. Those files stay untracked. The scoped run is the same 26 tracked tests.
 - 2026-09-24: No CLI was launched and no inference or credential access occurred during this documentation checkpoint.
 
+- 2026-09-24: PR #34 merged at `5d1d0b72f2f84adc73afb6aaf4cf95910604b0bb` after required CI check `test` passed. Auto-merge completed at 2026-09-24T17:50:05Z.
+
 ## Next action
 
-Run the required local gates, deliver this explicit-file checkpoint via the checkpoint helper, and confirm the GitHub PR's required checks and merge before closing issue #33. After that merge, return to the blinded benchmark on issue #29.
+Record this merge evidence, then close issue #33. Return to the blinded benchmark on issue #29.

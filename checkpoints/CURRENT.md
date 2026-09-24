@@ -3,13 +3,13 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0008
-updated_at: 2026-09-24T17:39:50Z
+active_task: IRE-0007
+updated_at: 2026-09-24T17:51:30Z
 ---
 
 ## State
 
-IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008 records the copyable Astra owner and Kilo background-staff setup in issue #33.
+IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008's copyable Astra owner and Kilo background-staff setup merged in PR #34 and issue #33 is the closeout record.
 
 ## Verified
 
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0008 records the copyable Astra owner and Kilo background-staff setup under [issue #33](https://github.com/Pukujan/inference-recommendation-engine/issues/33), a sub-issue of #8. The guide lives in `docs/INFERHUB-API-SETUP.md`. IRE-0007's price-preference correction remains merged in PR #30. The blinded benchmark stays open under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29) and is not part of this checkpoint. See `tasks/IRE-0008-kilo-staff-background-helpers.md`.
+IRE-0008 merged in [PR #34](https://github.com/Pukujan/inference-recommendation-engine/pull/34) at `5d1d0b72f2f84adc73afb6aaf4cf95910604b0bb` on 2026-09-24T17:50:05Z. Required CI check `test` passed. The copyable setup is the "Kilo staff and background in-session helpers" section of `docs/INFERHUB-API-SETUP.md`. The blinded benchmark remains open under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29).
 
 ## Next
 
-Deliver this explicit-file checkpoint and confirm its required checks and merge before closing issue #33. After that merge, return to the issue #29 benchmark fixture and eligible route selection.
+Close issue #33 after this closeout merges, then return to the issue #29 benchmark fixture and eligible route selection.
