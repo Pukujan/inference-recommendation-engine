@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repository = 'Pukujan/inference-recommendation-engine';
@@ -37,6 +37,14 @@ function invoke(command, args, { capture = false, allowFailure = false } = {}) {
 
 function git(...args) {
   return invoke('git', args, { capture: true }).stdout.trim();
+}
+
+export function checkpointPrBody(issue) {
+  return `Automated repository checkpoint.\n\nLocal gates and required GitHub CI must pass before this checkpoint is merged. The canonical checkout will return to main after merge.\n\nPart of #${issue}`;
+}
+
+export function autoMergeArgs(prNumber, headSha) {
+  return ['pr', 'merge', String(prNumber), '--auto', '--squash', '--match-head-commit', headSha];
 }
 
 function validatePath(input) {
@@ -76,6 +84,7 @@ function parseArgs(argv) {
     fail('--name must be a lowercase slug of 1–40 letters, digits, and hyphens');
   }
   if (!options.message || /[\r\n\0]/.test(options.message)) fail('--message must be one non-empty line');
+  if (options.issue === undefined) fail('--issue is required so every checkpoint links to its GitHub task.');
   if (options.issue !== undefined && !/^[1-9][0-9]*$/.test(options.issue)) {
     fail('--issue must be a positive GitHub issue number');
   }
@@ -117,12 +126,17 @@ function verifyProtection() {
   if (protection.allow_force_pushes?.enabled !== false || protection.allow_deletions?.enabled !== false) {
     fail('main protection must disallow force pushes and branch deletion.');
   }
+  const settingsResult = invoke('gh', ['api', `repos/${repository}`], { capture: true });
+  const settings = JSON.parse(settingsResult.stdout);
+  if (settings.allow_auto_merge !== true) fail('GitHub auto-merge must be enabled for this repository.');
+  if (settings.delete_branch_on_merge !== true) fail('GitHub must delete checkpoint branches after they merge.');
 }
 
 function printHelp() {
   process.stdout.write(
-    'Usage: node scripts/checkpoint.mjs --name <slug> --message <title> [--issue <number>] --path <path> [--path <path> ...]\n' +
-      'Runs local gates, commits and pushes one explicit checkpoint branch, waits for CI, merges the PR, and syncs main.\n',
+    'Usage: node scripts/checkpoint.mjs --name <slug> --message <title> --issue <number> --path <path> [--path <path> ...]\n' +
+      'Runs local gates, commits and pushes one explicit checkpoint branch, opens or updates its PR, and requests auto-merge without waiting for CI.\n' +
+      'After GitHub confirms the merge, run node scripts/finalize-checkpoint.mjs --pr <number> to sync main and clean up the local branch.\n',
   );
 }
 
@@ -137,6 +151,8 @@ async function main() {
   invoke('gh', ['auth', 'status'], { capture: true });
   verifyProtection();
   assertNoStagedChanges();
+  const issue = JSON.parse(invoke('gh', ['issue', 'view', options.issue, '--json', 'state'], { capture: true }).stdout);
+  if (issue.state !== 'OPEN') fail(`GitHub issue #${options.issue} is not open.`);
 
   const branch = `codex/checkpoint/${options.name}`;
   const currentBranch = git('branch', '--show-current');
@@ -193,36 +209,31 @@ async function main() {
   invoke('git', ['push', '--set-upstream', 'origin', branch]);
 
   let rows = JSON.parse(invoke('gh', ['pr', 'list', '--state', 'open', '--head', branch, '--base', 'main', '--json', 'number,url'], { capture: true }).stdout);
+  if (rows.length > 1) fail(`Multiple open PRs found for checkpoint branch ${branch}.`);
   let pr = rows[0];
+  const body = checkpointPrBody(options.issue);
   if (!pr) {
-    const issueReference = options.issue ? `\n\nPart of #${options.issue}` : '';
-    const body = `Automated repository checkpoint.\n\nLocal gates and required GitHub CI must pass before this checkpoint is merged. The canonical checkout will return to main after merge.${issueReference}`;
     const url = invoke('gh', ['pr', 'create', '--base', 'main', '--head', branch, '--title', options.message, '--body', body], { capture: true }).stdout.trim();
     rows = JSON.parse(invoke('gh', ['pr', 'view', url, '--json', 'number,url'], { capture: true }).stdout);
     pr = rows;
+  } else {
+    invoke('gh', ['pr', 'edit', String(pr.number), '--title', options.message, '--body', body]);
   }
   if (!pr?.number) fail('Could not identify the checkpoint pull request.');
 
-  process.stdout.write(`Waiting for required checks on PR #${pr.number}...\n`);
-  invoke('gh', ['pr', 'checks', String(pr.number), '--watch', '--interval', '10']);
-  const beforeMerge = JSON.parse(invoke('gh', ['pr', 'view', String(pr.number), '--json', 'state,headRefName,headRefOid,baseRefName'], { capture: true }).stdout);
+  const beforeMerge = JSON.parse(invoke('gh', ['pr', 'view', String(pr.number), '--json', 'state,headRefName,headRefOid,baseRefName,isDraft'], { capture: true }).stdout);
   if (beforeMerge.state !== 'OPEN' || beforeMerge.headRefName !== branch || beforeMerge.baseRefName !== 'main') {
     fail('The checkpoint PR changed state or target; inspect it before proceeding.');
   }
-  invoke('gh', ['pr', 'merge', String(pr.number), '--squash', '--match-head-commit', beforeMerge.headRefOid, '--delete-branch']);
-  const merged = JSON.parse(invoke('gh', ['pr', 'view', String(pr.number), '--json', 'state,mergedAt'], { capture: true }).stdout);
-  if (merged.state !== 'MERGED' || !merged.mergedAt) fail('GitHub did not confirm the checkpoint merge.');
-
-  invoke('git', ['switch', 'main']);
-  invoke('git', ['fetch', 'origin', 'main']);
-  invoke('git', ['merge', '--ff-only', 'origin/main']);
-  const status = git('status', '--porcelain');
-  if (status) fail('Checkpoint merged, but the canonical checkout is not clean; inspect before continuing.');
-
-  process.stdout.write(`Checkpoint merged: ${pr.url}\nCanonical checkout is synchronized on main.\n`);
+  if (beforeMerge.isDraft) fail('Checkpoint PR is a draft; mark it ready before requesting auto-merge.');
+  invoke('gh', autoMergeArgs(pr.number, beforeMerge.headRefOid));
+  process.stdout.write(`Checkpoint published: ${pr.url}\nGitHub auto-merge is requested. Required checks are running asynchronously.\n`);
+  process.stdout.write(`After GitHub confirms the merge, run: node scripts/finalize-checkpoint.mjs --pr ${pr.number}\n`);
 }
 
-main().catch((error) => {
-  process.stderr.write(`Checkpoint stopped: ${error.message}\n`);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  main().catch((error) => {
+    process.stderr.write(`Checkpoint stopped: ${error.message}\n`);
+    process.exitCode = 1;
+  });
+}
