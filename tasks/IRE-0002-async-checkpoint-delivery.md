@@ -2,7 +2,7 @@
 
 ## Status
 
-Ready for checkpoint — tracked by GitHub issue [#11](https://github.com/Pukujan/inference-recommendation-engine/issues/11), a sub-issue of project issue #8.
+Ready for closeout checkpoint — implementation is merged; tracked by GitHub issue [#11](https://github.com/Pukujan/inference-recommendation-engine/issues/11), a sub-issue of project issue #8.
 
 ## Goal
 
@@ -44,7 +44,8 @@ Update this list before editing any additional file.
 - 2026-09-23: The current helper waits on `gh pr checks --watch`, then merges synchronously. Repository auto-merge is disabled; `main` requires strict `test`, enforces protection for administrators, disallows force pushes/deletion, and requires zero approvals.
 - 2026-09-23: Implemented asynchronous publishing and merge finalization. Enabled repository auto-merge and delete-branch-on-merge; verified both settings and confirmed the original strict `test` protection and zero-approval rule remain unchanged.
 - 2026-09-23: `uv sync --locked` passed; `pnpm test` passed (25); `pnpm check:public` passed; `pnpm test:operational` passed (41); `pnpm pack --dry-run` passed; focused checkpoint tests passed (9); `git diff --check` passed.
+- 2026-09-24: PR [#12](https://github.com/Pukujan/inference-recommendation-engine/pull/12) merged at `2026-09-24T02:19:43Z` as `0a7fdc2d10c09ca6d9a9dfea30f4132c25b77b37`; both required `test` checks passed. The publisher returned after requesting auto-merge; the finalizer verified PR head `8683ddaad9517bda1d43ee2ae42546bd7c76a3ee`, synchronized canonical `main`, and removed its exact local checkpoint branch.
 
 ## Next action
 
-Deliver the explicit files in this task through `node scripts/checkpoint.mjs --name async-checkpoint-delivery --message "feat: async checkpoint delivery" --issue 11`, request auto-merge, then run the finalizer after GitHub confirms the PR merged. Do not mark the task complete before that confirmation.
+Deliver this merge-evidence closeout record through a final checkpoint under issue #11, confirm that PR merges, run the finalizer, then close issue #11. Only then begin IRE-0003 streaming/liveness and resume guidance.
