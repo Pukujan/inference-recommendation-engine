@@ -5,7 +5,7 @@ a sub-issue of [#8](https://github.com/Pukujan/inference-recommendation-engine/i
 
 ## Status
 
-Implementation. No model request and no credential access are part of this checkpoint.
+Merged in PR #37 at `27fe344951e9c597ea5e501864e18a3c65e97eff`. No model request and no credential access were part of this checkpoint.
 
 ## Goal
 
@@ -46,6 +46,8 @@ Import bounded Codex launch receipts into the local operational ledger without s
 - 2026-09-24: Red tests failed with `ModuleNotFoundError: codex_receipt_import`.
 - 2026-09-24: Importer and five property tests passed locally. No Codex process was launched.
 
+- 2026-09-24: PR #37 merged at `27fe344951e9c597ea5e501864e18a3c65e97eff` after required CI check `test` passed. Auto-merge completed at 2026-09-24T18:33:16Z.
+
 ## Next action
 
-Deliver this explicit-file checkpoint and confirm required checks and merge before closing issue #36.
+Record this merge evidence, then close issue #36. Return to the blinded benchmark on issue #29.

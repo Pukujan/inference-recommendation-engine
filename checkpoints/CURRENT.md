@@ -3,13 +3,13 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0009
-updated_at: 2026-09-24T18:16:00Z
+active_task: IRE-0007
+updated_at: 2026-09-24T18:34:00Z
 ---
 
 ## State
 
-IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008's copyable Astra owner and Kilo background-staff setup merged in PR #34 and issue #33 is closed. IRE-0009 imports Codex launch receipts into the local ledger under issue #36.
+IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008's copyable Astra owner and Kilo background-staff setup merged in PR #34 and issue #33 is closed. IRE-0009's Codex receipt importer merged in PR #37. Issue #36 is the closeout record.
 
 ## Verified
 
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0009 adds Codex receipt capture under [issue #36](https://github.com/Pukujan/inference-recommendation-engine/issues/36). The importer is `operational/scripts/codex_receipt_import.py`. It filters to `cb/gpt-6-astra` and does not read Kilo transcripts. The blinded benchmark remains open under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29) and is not part of this checkpoint.
+IRE-0009 merged in [PR #37](https://github.com/Pukujan/inference-recommendation-engine/pull/37) at `27fe344951e9c597ea5e501864e18a3c65e97eff` on 2026-09-24T18:33:16Z. Required CI check `test` passed. The importer is `operational/scripts/codex_receipt_import.py`. It filters to `cb/gpt-6-astra` and does not read Kilo transcripts. The blinded benchmark remains open under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29).
 
 ## Next
 
-Deliver this explicit-file checkpoint and confirm its required checks and merge before closing issue #36. After that merge, return to the issue #29 benchmark fixture.
+Close issue #36 after this closeout merges, then return to the issue #29 benchmark fixture.
