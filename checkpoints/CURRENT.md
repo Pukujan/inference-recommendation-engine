@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0007 corrects the durable BYOK model-selection guidance and prepares a blinded agent behavior benchmark. The benchmark is tracked in [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29); its PDD/SDD/TDD and exact test protocol must be finalized before any paid model run. See `tasks/IRE-0007-inferhub-agent-behavior-benchmark.md`.
+IRE-0007's model-price preference correction merged in PR #30 at `5dba69d3c666785057400065cc3677d4288b1dd0`; both required CI checks passed and the canonical checkout is synchronized. The blinded agent behavior benchmark remains active under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29). See `tasks/IRE-0007-inferhub-agent-behavior-benchmark.md`.
 
 ## Next
 
-Run the required local gates and deliver the IRE-0007 documentation checkpoint through the checkpoint helper. After required CI passes and the PR merges, continue the issue #29 benchmark with the documented under-$0.10 price preference.
+Prepare the issue #29 benchmark fixture and current eligible route selection, then continue with blinded runs under the documented under-$0.10-per-million preference.
