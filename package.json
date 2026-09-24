@@ -18,7 +18,7 @@
     "check:static": "pnpm lint:js && pnpm lint:python && pnpm format:python:check && pnpm typecheck:python",
     "test": "node --test tests/*.test.mjs",
     "test:properties": "node --test tests/properties.test.mjs tests/metamorphic.test.mjs",
-    "test:operational": "uv run --locked python -B -m unittest discover -s operational/tests -p \"test_issue_ledger_contract.py\"",
+    "test:operational": "uv run --locked python -B -m unittest discover -s operational/tests -p \"test_*.py\"",
     "check:public": "node src/check-public.mjs",
     "demo": "node src/cli.mjs"
   },

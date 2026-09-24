@@ -202,6 +202,36 @@ Full prompts and outputs are optional local artifacts. Their hashes and
 content-addressed references are sufficient for the operational ledger unless
 the user explicitly enables content capture.
 
+## Codex receipt capture
+
+Capture belongs at the Codex execution receipt, not inside every Kilo chat.
+
+A Kilo session may launch Codex. The stable evidence is the event stream written
+for that launch, plus a sibling summary that names the model, provider, and
+exit code. Kilo transcripts are not a capture source. They are not readable
+across workspaces, and this ledger must not store prompts, commands, tool
+output, or assistant text.
+
+The importer reads one receipt as UTF-8 or UTF-16 JSONL. It emits one
+`issue-ledger/report/v1` packet per thread. A route filter defaults to
+`cb/gpt-6-astra`. A receipt whose model does not match is skipped. A missing
+model stays unknown and is skipped by that filter; it is not inferred.
+
+The packet may include an error code, an outcome, and counts of messages and
+tool calls. It must not include command text, tool output, assistant text, or
+prompt text. `turn.failed` or an error event means outcome `failure`. A
+completed turn without an error event means outcome `success`. A receipt with
+no terminal event means outcome `partial`.
+
+Importing the same thread twice stores one report. The receipt stream has no
+trusted clock, so the importer uses a stable stamp and the thread id as the
+idempotency key. A later receipt for that thread with different bounded
+outcome or error code fails closed. Re-encoding the same events does not
+change the error code or outcome. A directory watcher may scan receipt
+folders and import new files. It must not modify the receipt, stop the Codex
+process, or install itself into a Kilo config. A reporting failure must not
+change the launch.
+
 ## Recommendation boundary
 
 IRE receives a read-only projection containing only accepted or explicitly
