@@ -3,13 +3,13 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0005
-updated_at: 2026-09-24T04:03:13Z
+active_task: IRE-0006
+updated_at: 2026-09-24T04:28:20Z
 ---
 
 ## State
 
-IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's InferHub API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; this record closes out issue #24.
+IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's InferHub API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006 extends the BYOK CLI runbook; issue #27 is active.
 
 ## Verified
 
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's In
 
 ## Current checkpoint
 
-IRE-0005 standardizes the Codex CLI runner for authorized remote-model tasks: writable repository workspace, no routine approval prompts, network-enabled tool execution, and streamed JSONL events. PR #25 is merged; this checkpoint records closeout before issue #24 is closed. See `tasks/IRE-0005-codex-harness-permissions.md`.
+IRE-0005 standardizes the Codex CLI runner for authorized remote-model tasks: writable repository workspace, no routine approval prompts, network-enabled tool execution, and streamed JSONL events. PR #25 implemented it; PR #26 recorded verified closeout, and issue #24 is closed. IRE-0006 updates the InferHub setup guide with nested BYOK CLI routing and long-running stream/recovery guidance; see `tasks/IRE-0006-inferhub-cli-agent-runbook.md`.
 
 ## Next
 
-Publish the verified IRE-0005 closeout record and close issue #24. Then create a child issue and task file for streaming/liveness and task-resume guidance under issue #8.
+Run the required local gates and deliver IRE-0006 through the checkpoint helper. After required CI passes and the PR merges, close issue #27.
