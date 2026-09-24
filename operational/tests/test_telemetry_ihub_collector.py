@@ -1,4 +1,4 @@
-"""Unit tests for the GET-only InferHub collector's pure transforms (IRE #46 M2/M3).
+"""Unit tests for the GET-only market collector (ihub)'s pure transforms (IRE #46 M2/M3).
 
 Only ``ihub/transform.py`` (standard library) is imported, so CI needs no DuckDB/zstandard.
 """

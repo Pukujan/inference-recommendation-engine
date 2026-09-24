@@ -386,6 +386,13 @@ def _fmt(v: Any) -> str:
     return str(v)
 
 
+def _jn(v: float | None) -> float | int | None:
+    """JSON number as in the Sep 22 CSV: integral prices without a trailing .0."""
+    if v is None:
+        return None
+    return int(v) if float(v).is_integer() else v
+
+
 def _disc(price: float, official: float | None) -> float | None:
     if not official:
         return None
@@ -432,10 +439,10 @@ def pricing_csv_rows(
                 _fmt(oo),
                 _fmt(bi[0][0]) if bi else "",
                 _fmt(bo[0][0]) if bo else "",
-                json.dumps([[p_, c] for p_, c in bi]),
-                json.dumps([[p_, c] for p_, c in bo]),
-                json.dumps([[p_, c, _disc(p_, oi)] for p_, c in bi]),
-                json.dumps([[p_, c, _disc(p_, oo)] for p_, c in bo]),
+                json.dumps([[_jn(p_), c] for p_, c in bi]),
+                json.dumps([[_jn(p_), c] for p_, c in bo]),
+                json.dumps([[_jn(p_), c, _jn(_disc(p_, oi))] for p_, c in bi]),
+                json.dumps([[_jn(p_), c, _jn(_disc(p_, oo))] for p_, c in bo]),
                 str(len(bi)),
                 str(len(bo)),
                 _fmt(max((c for _, c in bi), default=None)),
