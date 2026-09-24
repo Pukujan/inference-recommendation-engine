@@ -24,6 +24,7 @@ const namedIntegration = ['infer', 'hub'].join('');
 const explicitlyDocumentedPaths = new Set([
   `docs/${namedIntegration}-api-setup.md`,
   `tasks/ire-0004-${namedIntegration}-api-setup.md`,
+  'tasks/ire-0005-codex-harness-permissions.md',
   'checkpoints/current.md',
 ]);
 const binaryExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2']);
