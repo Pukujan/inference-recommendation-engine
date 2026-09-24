@@ -1,0 +1,20 @@
+[Unit]
+Description=InferHub curated daily price snapshot CSV -> data branch (IRE #46)
+Documentation=file:///srv/agent-telemetry/pipeline/ihub/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=yoav
+Group=yoav
+WorkingDirectory=/srv/agent-telemetry/pipeline
+Environment=AT_ROOT=/srv/agent-telemetry
+Environment=IHUB_DUCK_MEMORY=256MB
+Environment=HOME=/home/yoav
+ExecStart=/srv/agent-telemetry/pipeline/venv/bin/python -m ihub publish
+Nice=15
+IOSchedulingClass=idle
+MemoryMax=384M
+MemorySwapMax=0
+TimeoutStartSec=10min

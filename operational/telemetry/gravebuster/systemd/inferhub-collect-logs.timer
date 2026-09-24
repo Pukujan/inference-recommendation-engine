@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the InferHub logs collector (*:2/15)
+
+[Timer]
+OnCalendar=*:2/15
+RandomizedDelaySec=20
+AccuracySec=10s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,24 @@
+[Unit]
+Description=InferHub GET-only collector (logs): per-request billing logs (overlap window, dedup by id) (IRE #46)
+Documentation=file:///srv/agent-telemetry/pipeline/ihub/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=yoav
+Group=yoav
+WorkingDirectory=/srv/agent-telemetry/pipeline
+Environment=AT_ROOT=/srv/agent-telemetry
+Environment=IHUB_ENV_FILE=/srv/agent-telemetry/secrets/inferhub.env
+Environment=IHUB_DUCK_MEMORY=256MB
+ExecStart=/srv/agent-telemetry/pipeline/venv/bin/python -m ihub logs
+Nice=15
+IOSchedulingClass=idle
+CPUSchedulingPolicy=batch
+MemoryMax=384M
+MemorySwapMax=0
+TimeoutStartSec=12min
+# exit 2 = API errors with nothing new stored (retried next run); keep the unit visible as failed
+NoNewPrivileges=true
+PrivateTmp=true
