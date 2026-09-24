@@ -2,19 +2,18 @@
 kind: current
 version: 1
 project: inference-recommendation-engine
-status: ready_for_checkpoint
-active_task: IRE-0002-async-checkpoint-delivery
-updated_at: 2026-09-24T02:20:00Z
+status: ready_for_next_task
+active_task: none
+updated_at: 2026-09-24T02:23:00Z
 ---
 
 ## State
 
 The v0.1 ranking core remains published and unchanged. The operational-ledger
 relocation, local SQLite storage, pnpm/uv toolchain, and asynchronous,
-CI-gated checkpoint workflow are integrated in the canonical checkout. The
-IRE-0002 implementation merged as PR #12; its issue/task closeout record is the
-remaining atomic action. GitHub issue #8 is the project-level plan; issue #11
-tracks this checkpoint-automation subtask.
+CI-gated checkpoint workflow are integrated in the canonical checkout. IRE-0002
+is complete: PRs #12 and #13 are merged, required CI passed, and child issue
+#11 is closed. GitHub issue #8 remains the project-level plan.
 
 ## Verified
 
@@ -32,14 +31,18 @@ tracks this checkpoint-automation subtask.
   was created;
 - GitHub Issues own project plans and project-wide issue status; pull requests
   and commit history own code changes;
-- issue #11 is attached beneath issue #8 for asynchronous checkpoint delivery;
+- issue #11 was attached beneath issue #8 and closed after the async checkpoint
+  delivery and merge-evidence PRs passed required CI;
 - GitHub auto-merge and delete-branch-on-merge are enabled; `main` still requires
   strict `test`, enforces protection for administrators, disallows force-pushes
   and deletion, and has zero required approvals;
 - PR #12 merged at `2026-09-24T02:19:43Z` as
-  `0a7fdc2d10c09ca6d9a9dfea30f4132c25b77b37`; both required `test` checks passed;
-- `scripts/finalize-checkpoint.mjs --pr 12` verified the merged head and
-  synchronized canonical `main`; the task branch was removed;
+  `0a7fdc2d10c09ca6d9a9dfea30f4132c25b77b37`, and PR #13 merged at
+  `2026-09-24T02:21:46Z` as `5ccd1ef75867b28151fa304cba3491a9624291ac`; both
+  PRs passed both required `test` checks;
+- the finalizer verified each merged head, synchronized canonical `main`, and
+  removed only its matching local checkpoint branch; issue #11 closed at
+  `2026-09-24T02:22:30Z` with merge evidence recorded;
 - private operational event storage defaults to ignored
   `.ire/issue-ledger/ledger.sqlite3`; that directory/database did not exist when
   this task resumed, so no local event history needed migration;
@@ -62,9 +65,8 @@ tracks this checkpoint-automation subtask.
 
 ## Next
 
-Deliver this merge-evidence record as the closeout checkpoint for issue #11,
-wait for required CI and auto-merge, then run the finalizer and close #11. Next,
-begin IRE-0003 streaming/liveness and resume guidance, keeping operational
-guidance separate from ranking. The configured inference-gateway-only premium
-catalog lane remains separate; paid inference requires explicit human
-authorization and must not be called without it.
+Next: triage the streaming/liveness and task-resume guidance in issue #8. Create
+a child issue and task file before implementation, keeping operational guidance
+separate from ranking. The configured inference-gateway-only premium catalog
+lane remains separate; paid inference requires explicit human authorization
+and must not be called without it.
