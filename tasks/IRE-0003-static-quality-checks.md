@@ -2,7 +2,7 @@
 
 ## Status
 
-Follow-up required — PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) merged as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`, but review of the completed workflow found the checkpoint publisher did not yet run the new static gate locally. Issue [#15](https://github.com/Pukujan/inference-recommendation-engine/issues/15) was reopened; do not close it until the helper and its regression test are merged.
+Implementation and the local publisher follow-up are merged. PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) merged as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; the publisher regression fix in PR [#19](https://github.com/Pukujan/inference-recommendation-engine/pull/19) merged as `1e3c0a0698e892dd587712773afc78447163530b`. Both PRs passed both required CI checks. Issue [#15](https://github.com/Pukujan/inference-recommendation-engine/issues/15) remains open until this final closeout record is merged.
 
 ## Goal
 
@@ -16,6 +16,7 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 - No TypeScript or broad JavaScript migration was introduced. Reassess JS type checking separately if the code adopts JSDoc annotations or TypeScript.
 - Existing tests, public-surface scan, operational contract tests, and package dry run remain required.
 - Ruff and mypy cache directories are ignored by Git and excluded from the public-surface scan.
+- The checkpoint publisher runs `pnpm check:static` before other tests and before any push.
 
 ## Files in scope
 
@@ -23,20 +24,20 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 - `checkpoints/CURRENT.md`
 - `AGENTS.md`
 - `.github/workflows/ci.yml`
-- `scripts/checkpoint.mjs` and `tests/checkpoint.test.mjs` to enforce all required local gates before publication
 - `.gitignore` and `src/check-public.mjs`
 - `package.json` and `pnpm-lock.yaml`
 - `pyproject.toml` and `uv.lock`
 - `eslint.config.mjs`
+- `scripts/checkpoint.mjs` and `tests/checkpoint.test.mjs`
 - JavaScript and Python modules requiring lint, formatting, or type corrections
 
 ## Acceptance criteria
 
 - `pnpm check:static` exposes JS linting, Python linting/format verification, and the scoped Python type check.
 - CI runs all new checks on pushes and pull requests.
-- The checkpoint publisher runs `pnpm check:static` before publishing a checkpoint.
+- The checkpoint publisher runs `pnpm check:static` before publishing.
 - New tools are version-locked and installed reproducibly in CI.
-- Existing functional and operational tests, public-surface check, and package dry run remain in CI.
+- Existing functional and operational tests, public-surface check, and package dry run remain in CI and the publisher's gates.
 - The checks pass without broad suppressions.
 
 ## Checkpoint log
@@ -47,11 +48,11 @@ Add repeatable local and CI static-quality gates for Python operational tools an
 - 2026-09-24: Added locked Ruff, mypy, and ESLint dependencies; configured `pnpm check:static`; added it to CI and the required local gates. Ruff formatting was applied to the existing Python files so format verification starts cleanly.
 - 2026-09-24: Ruff identified two unused local assignments. Mypy identified object narrowing gaps; explicit object validation fixed those without suppressions. ESLint found an unnecessary regular-expression escape, which was removed.
 - 2026-09-24: Added ignore/exclusion rules for Ruff and mypy caches after the public-surface scan correctly detected their generated contents.
-- 2026-09-24: Locked dependency installs passed. `pnpm check:static` passed (ESLint, Ruff lint, Ruff format check, mypy: six modules); `pnpm test` passed (25); `pnpm check:public` passed; `pnpm test:operational` passed (41); `pnpm pack --dry-run` passed; `git diff --check` passed.
-- 2026-09-24: Implementation PR [#17](https://github.com/Pukujan/inference-recommendation-engine/pull/17) merged at `2026-09-24T02:59:23Z` as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; both required CI checks passed. The finalizer synchronized canonical `main` and removed only this checkpoint's local branch.
-- 2026-09-24: Reopened issue #15 after finding `scripts/checkpoint.mjs` did not run `pnpm check:static`; the prior closeout PR #18 is merged but this required local enforcement and a regression test remain outstanding.
-- 2026-09-24: Added `pnpm check:static` to the publisher's local gate sequence and a regression test asserting it runs before the Node tests; the Node suite now passes (26) and static checks plus `git diff --check` pass.
+- 2026-09-24: PR #17 merged at `2026-09-24T02:59:23Z` as `50b9353f41598a5a5afd2e79dc5f9e09f4411461`; both required CI checks passed. The finalizer synchronized canonical `main` and removed only this checkpoint's local branch.
+- 2026-09-24: Reopened issue #15 after finding the publisher omitted the new static gate. Added `pnpm check:static` to `scripts/checkpoint.mjs` and a regression test asserting it runs before test gates.
+- 2026-09-24: Correction PR [#19](https://github.com/Pukujan/inference-recommendation-engine/pull/19) merged at `2026-09-24T03:04:48Z` as `1e3c0a0698e892dd587712773afc78447163530b`; both required CI checks passed. The finalizer synchronized canonical `main` and removed only its verified local checkpoint branch.
+- 2026-09-24: All required local gates pass: `pnpm check:static` (ESLint, Ruff lint and format check, mypy on six modules); `pnpm test` (26); `pnpm check:public`; `pnpm test:operational` (41); `pnpm pack --dry-run`; locked installs; and `git diff --check`.
 
 ## Next action
 
-Add the static gate to the publisher's local gate list and test that requirement. Run all repository gates, publish the correction through issue #15, finalize the merge, update the closeout evidence, and then close issue #15. The next project-level work remains the streaming/liveness and task-resume guidance under issue #8.
+Publish this final closeout record, then close issue #15 with both merge SHAs and CI evidence. The next project-level work remains streaming/liveness and task-resume guidance under issue #8.
