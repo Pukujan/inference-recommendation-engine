@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ire-trial-manifest/v1",
+  "title": "IRE experiment trial manifest (#40 M0.5 experiment matrix)",
+  "description": "One file per preregistered experiment, dropped into $AT_ROOT/data/experiments/. The pipeline loads it into dim_experiment (one row per cell) and fact_experiment_trials (one row per trial), links trials to runs by run_id or launcher receipt stamp, and fills kills_at_cap from fact_incidents. The manifest file hash is part of the snapshot inputs.",
+  "type": "object",
+  "required": ["manifest_version", "experiment_id", "hypothesis_id", "varied_factor", "cells", "trials"],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": {"const": "ire-trial-manifest/v1"},
+    "experiment_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
+    "hypothesis_id": {"type": "string"},
+    "preregistered_at": {"type": "string", "format": "date-time"},
+    "varied_factor": {"type": "string"},
+    "fixed_factors": {"type": "object", "description": "Hashed into fixed_factors_hash; values are not stored in the modeled layer."},
+    "decision_rule": {"type": "string", "description": "Hashed into decision_rule_hash."},
+    "cells": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {"type": "string"},
+          {"type": "object", "required": ["cell"], "properties": {"cell": {"type": "string"}, "value": {}}}
+        ]
+      }
+    },
+    "trials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["trial_id", "cell"],
+        "anyOf": [{"required": ["run_id"]}, {"required": ["receipt_stamp"]}, {"required": ["planned"]}],
+        "additionalProperties": false,
+        "properties": {
+          "trial_id": {"type": "string"},
+          "cell": {"type": "string"},
+          "block": {"type": "string"},
+          "randomization_seed": {"type": "integer"},
+          "run_id": {"type": "string"},
+          "receipt_stamp": {"type": "string", "pattern": "^\\d{8}T\\d{6}Z$"},
+          "planned": {"type": "boolean", "description": "Trial registered before it ran; no run linked yet."},
+          "success": {"type": ["boolean", "null"], "description": "Judged outcome; when absent the run outcome ('completed') is used."},
+          "early_stop": {"type": ["boolean", "null"]}
+        }
+      }
+    }
+  }
+}

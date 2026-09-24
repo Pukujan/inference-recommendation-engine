@@ -1,0 +1,14 @@
+{
+  "manifest_version": "ire-trial-manifest/v1",
+  "experiment_id": "m05-example-c-vs-d",
+  "hypothesis_id": "H-liveness",
+  "preregistered_at": "2026-09-24T00:00:00Z",
+  "varied_factor": "kill_policy",
+  "fixed_factors": {"route": "<provider/model-id>", "task": "TASK-IRE-00xx", "harness": "codex"},
+  "decision_rule": "Confirm if cell C shows kills at the cap while the child was live and cell D does not.",
+  "cells": [{"cell": "C", "value": "wall_clock_180s"}, {"cell": "D", "value": "idle_threshold"}],
+  "trials": [
+    {"trial_id": "C-01", "cell": "C", "block": "b1", "randomization_seed": 1, "planned": true},
+    {"trial_id": "D-01", "cell": "D", "block": "b1", "randomization_seed": 2, "planned": true}
+  ]
+}

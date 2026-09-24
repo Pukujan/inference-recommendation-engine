@@ -1,0 +1,133 @@
+{
+  "catalog_version": "ire-incident-signatures/v1",
+  "fingerprint_version": "fp/v1",
+  "description": "Versioned failure-signature catalog for the agent run evidence pipeline (IRE #41 P4). Each entry names one detector, its version, thresholds, and a proposed fix. Every fix starts as 'proposed'; only a verification experiment (#40 M0.5 / M0.6) may move it on. Detectors read harness-neutral modeled facts, so they apply to Codex, Kilo and OpenCode runs alike unless 'applies_to' narrows them.",
+  "exclusions": {
+    "task_id_prefixes": ["telemetry-"],
+    "harnesses": ["verify"],
+    "run_id_substrings": ["-verify", "wrappertest", "e2e-test"],
+    "note": "Pipeline verification traces (collector checks, e2e wrapper tests, 11133 capture checks) are not agent runs."
+  },
+  "signatures": [
+    {
+      "incident_type": "unjustified_kill",
+      "detector_version": "unjustified_kill/1",
+      "severity": "high",
+      "mast_mode": "MAST FM-3.1 premature termination",
+      "applies_to": ["*"],
+      "params": {"live_threshold_s": 60},
+      "description": "A run was killed or timed out while it still showed liveness: a command was in flight (started, never completed), or the last event came less than live_threshold_s before the end. #40 violation detectors 1 and 2.",
+      "proposed_fix": {"id": "FIX-liveness-based-kill", "status": "proposed", "summary": "Replace fixed wall-clock caps with an idle threshold over child events and process activity (#40 H: liveness)."}
+    },
+    {
+      "incident_type": "terminated_without_closeout",
+      "detector_version": "terminated_without_closeout/1",
+      "severity": "medium",
+      "mast_mode": "infra: untracked termination",
+      "applies_to": ["*"],
+      "params": {},
+      "description": "A launcher receipt has agent events but no terminal event, no exit code and no kill record: the process ended (or was stopped) without the launcher closing out the run, so the cause is not recorded.",
+      "proposed_fix": {"id": "FIX-launcher-finally-closeout", "status": "proposed", "summary": "Write summary/exit metadata from a finally block and record the stopping actor when the launcher itself is stopped."}
+    },
+    {
+      "incident_type": "provider_param_rejection",
+      "detector_version": "provider_param_rejection/1",
+      "severity": "high",
+      "mast_mode": "infra: provider contract",
+      "applies_to": ["*"],
+      "params": {"min_status": 400, "max_status": 499, "ignore_statuses": [408, 429]},
+      "description": "The provider rejected a request with a 4xx status and a provider error code (for example 11133 model_param_invalid, HTTP 400). One incident per root run and code; request ids and request-shape counts are kept as metrics.",
+      "proposed_fix": {"id": "FIX-11133-request-normalization", "status": "proposed", "summary": "Fuzz the request shape one factor at a time and add a request-normalization fix or documented workaround (#40 M0.6)."}
+    },
+    {
+      "incident_type": "blind_resend",
+      "detector_version": "blind_resend/1",
+      "severity": "high",
+      "mast_mode": "MAST FM-1.3 step repetition",
+      "applies_to": ["*"],
+      "params": {"window_min": 120},
+      "description": "After a provider parameter rejection, a follow-up run in the same session chain (resume or fresh launch linked by prior session) hit the same provider error code again. #40 violation detector 6.",
+      "proposed_fix": {"id": "FIX-classify-param-rejection-no-resend", "status": "proposed", "summary": "Classify known provider parameter rejections as non-retryable until the request shape changes."}
+    },
+    {
+      "incident_type": "resume_retry_churn",
+      "detector_version": "resume_retry_churn/1",
+      "severity": "medium",
+      "mast_mode": "MAST FM-1.5 unaware of termination conditions",
+      "applies_to": ["*"],
+      "params": {"window_min": 60, "min_runs": 3, "min_failures": 2},
+      "description": "At least min_runs runs in one session chain within window_min minutes, with at least min_failures that did not complete.",
+      "proposed_fix": {"id": "FIX-bounded-resume-policy", "status": "proposed", "summary": "Bound resumes per session and require a classified cause before another resume."}
+    },
+    {
+      "incident_type": "launcher_error_or_early_exit",
+      "detector_version": "launcher_error_or_early_exit/1",
+      "severity": "high",
+      "mast_mode": "infra: launcher",
+      "applies_to": ["*"],
+      "params": {"early_exit_s": 30},
+      "description": "The launcher recorded an error (launcher-error.txt), or a top-level run failed or was killed within early_exit_s without a provider error code, before any agent work.",
+      "proposed_fix": {"id": "FIX-launcher-stderr-tolerance", "status": "proposed", "summary": "Do not treat Codex stderr warnings as fatal under PowerShell 5.1 ErrorActionPreference=Stop; verify the model route before launch."}
+    },
+    {
+      "incident_type": "unattributed_failure",
+      "detector_version": "unattributed_failure/1",
+      "severity": "low",
+      "mast_mode": "infra: observability gap",
+      "applies_to": ["*"],
+      "params": {},
+      "description": "A top-level run failed (non-zero exit) but no provider error, launcher error, kill or early exit explains it. The cause was not captured.",
+      "proposed_fix": {"id": "FIX-capture-provider-error-on-root", "status": "proposed", "summary": "Scan receipts at run end and put provider.error.* on the launcher root span (IRE #44)."}
+    },
+    {
+      "incident_type": "supervisor_polling_loop",
+      "detector_version": "supervisor_polling_loop/1",
+      "severity": "medium",
+      "mast_mode": "MAST FM-1.3 step repetition",
+      "applies_to": ["*"],
+      "params": {"min_repeats": 3, "min_poll_commands": 6, "min_poll_share": 0.3},
+      "description": "The same command (by hash) ran at least min_repeats times in one run, or wait/status-poll commands made up at least min_poll_share of the run's commands (and at least min_poll_commands).",
+      "proposed_fix": {"id": "FIX-event-driven-wait", "status": "proposed", "summary": "Wait on child events or a bounded watch command instead of re-running status checks."}
+    },
+    {
+      "incident_type": "long_idle_gap",
+      "detector_version": "long_idle_gap/1",
+      "severity": "medium",
+      "mast_mode": "infra: stall",
+      "applies_to": ["*"],
+      "params": {"min_gap_s": 300},
+      "description": "A gap of at least min_gap_s with no events inside a run, ended by a later event (not by the run end).",
+      "proposed_fix": {"id": "FIX-stall-classification", "status": "proposed", "summary": "Correlate long gaps with process CPU/IO to separate quiet work from real hangs."}
+    },
+    {
+      "incident_type": "permission_denied",
+      "detector_version": "permission_denied/1",
+      "severity": "medium",
+      "mast_mode": "infra: permission",
+      "applies_to": ["*"],
+      "params": {},
+      "description": "A tool call was denied by the permission or sandbox policy. #40 M5 permission_denied detector.",
+      "proposed_fix": {"id": "FIX-per-hop-permission-verification", "status": "proposed", "summary": "Verify the permission mode per hop at first response (#40 M5)."}
+    },
+    {
+      "incident_type": "unverified_hop",
+      "detector_version": "unverified_hop/1",
+      "severity": "high",
+      "mast_mode": "infra: route verification",
+      "applies_to": ["*"],
+      "params": {},
+      "description": "A child hop requested one model route but a different route was observed (fallback). #40 violation detector 4; #32.",
+      "proposed_fix": {"id": "FIX-first-response-route-check", "status": "proposed", "summary": "Stop the hop when the first response shows a route other than the requested one (#32)."}
+    },
+    {
+      "incident_type": "one_shot_capture",
+      "detector_version": "one_shot_capture/1",
+      "severity": "medium",
+      "mast_mode": "infra: capture mode",
+      "applies_to": ["*"],
+      "params": {"min_child_wall_s": 30},
+      "description": "A child hop that ran at least min_child_wall_s produced no streamed output visible to its parent. #40 violation detector 3.",
+      "proposed_fix": {"id": "FIX-streaming-launch-mode", "status": "proposed", "summary": "Launch task owners in a streaming mode and tee child events."}
+    }
+  ]
+}
