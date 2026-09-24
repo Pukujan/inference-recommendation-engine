@@ -101,6 +101,12 @@ uv run --locked python -B operational/scripts/run_with_issue_ledger.py `
   --provider provider-id --route route-id --execution-id run-id -- `
   opencode run "task"
 
+# Import Codex launch receipts. This does not read Kilo transcripts.
+# The default route filter is cb/gpt-6-astra. --once scans one time.
+uv run --locked python -B operational/scripts/codex_receipt_import.py `
+  --db .ire/issue-ledger/ledger.sqlite3 watch `
+  --root <receipt-directory> --once
+
 # Import secret-free agent telemetry; failures become report_submitted events.
 uv run --locked python -B operational/scripts/telemetry_to_issue_events.py `
   --telemetry telemetry/agent-events.jsonl `

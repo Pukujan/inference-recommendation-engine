@@ -111,6 +111,11 @@ relation:
 | Add a counterexample | claim becomes disputed/retracted/reopened, never deleted |
 | Resolve then replay the original failure | issue becomes regressed/reopened |
 | Change provider or route identity | distinct subject/fingerprint |
+| Import the same Codex thread twice | one stored report |
+| Re-encode the same Codex receipt as UTF-16 | error code and outcome unchanged |
+| Insert prompt or tool text into a Codex receipt | stored report does not contain that text |
+| Change only the assistant wording | error code and outcome unchanged |
+| Offer a non-matching model under the owner-route filter | no report stored |
 
 ## Test layers
 

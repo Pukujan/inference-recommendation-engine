@@ -63,6 +63,12 @@ Installation is explicit:
 4. Send a synthetic hook payload and inspect the local ledger before enabling
    it for live sessions.
 
-The repository does not silently modify those host settings. Codex, ChatGPT
-Web, Hermes, and other hosts remain sidecar-only until their actual hook
-surface is separately verified.
+The repository does not silently modify those host settings. ChatGPT Web,
+Hermes, and other hosts remain sidecar-only until their actual hook surface is
+separately verified.
+
+Codex capture does not use a Kilo chat hook. The verified surface is the
+receipt directory written by a Codex launch. `operational/scripts/codex_receipt_import.py`
+imports that receipt into the local ledger and can scan a directory once or
+until stopped. It filters to `cb/gpt-6-astra` unless another route is named.
+It does not read Kilo transcripts, and it does not edit a Kilo config.
