@@ -3,13 +3,13 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0007
-updated_at: 2026-09-24T06:18:39Z
+active_task: IRE-0008
+updated_at: 2026-09-24T17:39:50Z
 ---
 
 ## State
 
-IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is the current checkpoint.
+IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008 records the copyable Astra owner and Kilo background-staff setup in issue #33.
 
 ## Verified
 
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0007's model-price preference correction merged in PR #30 at `5dba69d3c666785057400065cc3677d4288b1dd0`; both required CI checks passed and the canonical checkout is synchronized. The blinded agent behavior benchmark remains active under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29). See `tasks/IRE-0007-inferhub-agent-behavior-benchmark.md`.
+IRE-0008 records the copyable Astra owner and Kilo background-staff setup under [issue #33](https://github.com/Pukujan/inference-recommendation-engine/issues/33), a sub-issue of #8. The guide lives in `docs/INFERHUB-API-SETUP.md`. IRE-0007's price-preference correction remains merged in PR #30. The blinded benchmark stays open under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29) and is not part of this checkpoint. See `tasks/IRE-0008-kilo-staff-background-helpers.md`.
 
 ## Next
 
-Prepare the issue #29 benchmark fixture and current eligible route selection, then continue with blinded runs under the documented under-$0.10-per-million preference.
+Deliver this explicit-file checkpoint and confirm its required checks and merge before closing issue #33. After that merge, return to the issue #29 benchmark fixture and eligible route selection.

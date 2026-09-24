@@ -177,7 +177,9 @@ Verify delegation at every level:
 If a root's direct native spawn path produces no child requests, diagnose it
 separately. Do not label a sibling session or second top-level process as
 native subagents. Success of the nested-process pattern does not prove the
-direct native route works.
+direct native route works. The Kilo staff pattern below is a different
+topology. Do not use this nested CLI chain when the assigned workers are Kilo
+in-session subagents.
 
 ## Streaming, long silence, and liveness
 
@@ -231,9 +233,74 @@ approved ignored receipt store; GitHub records the public plan and durable
 code/checkpoint state. Confirm the child CLI and every subagent have completed
 or are explicitly handed off before marking the task done.
 
+## Kilo staff and background in-session helpers
+
+Future agents copy this setup when Astra owns the plan and Grok staff execute
+it inside Kilo. The source record is the merged operating model in
+[project-continuity-modules `docs/ASTRA_GROK_STAFF.md`](https://github.com/Pukujan/project-continuity-modules/blob/main/docs/ASTRA_GROK_STAFF.md),
+child issue
+[#69](https://github.com/Pukujan/project-continuity-modules/issues/69).
+That file is an operating record from 2026-09-24. This section is the
+copyable guide for this repository. It is not a new measurement, and it does
+not replace the nested CLI pattern above.
+
+### Command split
+
+Astra, on route `cb/gpt-6-astra`, is the planner, researcher, owner, and
+verifier. Kilo and its in-session subagents are the execution staff. Staff do
+not choose the next slice. Astra does not spawn Codex or Luna subagents for
+this staff pattern.
+
+Use the nested-process pattern earlier in this guide only when the task needs
+another coding CLI's own native subagents. Do not relabel a Kilo `task` child
+as a native subagent, and do not relabel an Agent Manager session as staff.
+
+### Spawn rule to copy
+
+Helpers must be in-session subagents, not new Agent Manager sessions. Agent
+Manager sessions do not block this chat, but they open extra tabs and do not
+auto-close. They are not staff.
+
+Start a helper with `background: true` when the parent does not need the
+child's result before continuing. A foreground `task` makes the parent wait
+until the child finishes, which stops the main project. Use foreground only
+when the next step depends on the child.
+
+Spawn one background in-session subagent per assigned task. Do not wait on
+that child before the owner's planning continues. Do not poll a background
+child. Do not edit the same files it is editing. When the result arrives,
+record the evidence and changed paths in the parent task, then close the
+worker immediately. A completed worker left open still consumes a slot.
+
+### What not to copy
+
+Do not copy key values, tokens, or another project's local launcher scripts
+into this repository. Load the key named `INFERHUB_API_KEY` from the approved
+secret source. Never print it.
+
+This repository's authorized Codex runner remains `.\run_codex_harness.ps1`
+with workspace-write scope. A full-access relaunch recorded for another
+project is not authorization here. If the BYOK route is unavailable, stop
+rather than fall back to a subscription route. That routing rule stays on
+issue #32 and is not implemented by this guide.
+
+### Checklist
+
+1. Confirm the owner route is `cb/gpt-6-astra` through the configured BYOK
+   endpoint, without printing the key.
+2. Give staff one bounded task, the allowed files, and a stop boundary. Staff
+   do not pick the next slice.
+3. Spawn that worker as an in-session subagent with `background: true`, unless
+   the next parent step depends on it.
+4. Keep moving. Do not poll. Do not edit the child's files.
+5. On result, record the evidence and changed paths, then close the worker.
+6. Record the GitHub issue, branch, and checkpoint. Keep private receipts out
+   of the repository.
+
 ## References
 
 - [InferHub API and coding CLI setup](https://inferhub.dev/docs)
+- [Astra owner and Grok staff operating model](https://github.com/Pukujan/project-continuity-modules/blob/main/docs/ASTRA_GROK_STAFF.md)
 - [Codex configuration reference](https://developers.openai.com/codex/config-reference)
 - [Claude Code CLI usage](https://code.claude.com/docs/en/cli-usage)
 - [Pi models and compatible endpoints](https://pi.dev/docs/latest/models)
