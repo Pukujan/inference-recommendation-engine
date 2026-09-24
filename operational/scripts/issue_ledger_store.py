@@ -6,15 +6,17 @@ operational events in the ignored ``.ire/`` directory, does not contact
 providers, run reproductions, or grant recommendation authority. GitHub remains
 the source of truth for project plans, issues, and code changes.
 """
+
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager
 import json
-from pathlib import Path
 import sqlite3
 import sys
-from typing import Any, Iterable, Iterator
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any
 
 from issue_ledger import (
     LedgerError,
@@ -25,7 +27,6 @@ from issue_ledger import (
     reduce_events,
     validate_event,
 )
-
 
 DEFAULT_DB_PATH = Path(".ire/issue-ledger/ledger.sqlite3")
 SCHEMA_VERSION = "1"
@@ -160,7 +161,9 @@ class AppendOnlyEventStore:
                     event_keys = self._identity_keys(event)
                     identity = str(event.get("idempotency_key") or event["event_id"])
                     if event_keys & existing_ids or identity in seen_new:
-                        receipts.append({"event_id": event["event_id"], "stored": False, "reason": "duplicate"})
+                        receipts.append(
+                            {"event_id": event["event_id"], "stored": False, "reason": "duplicate"}
+                        )
                         continue
                     seen_new.add(identity)
                     existing_ids.update(event_keys)
@@ -171,7 +174,12 @@ class AppendOnlyEventStore:
                     """INSERT INTO ledger_events(event_id, idempotency_key, recorded_at, canonical_json)
                        VALUES (?, ?, ?, ?)""",
                     [
-                        (event["event_id"], event.get("idempotency_key"), event["recorded_at"], _canonical(event))
+                        (
+                            event["event_id"],
+                            event.get("idempotency_key"),
+                            event["recorded_at"],
+                            _canonical(event),
+                        )
                         for event in new_events
                     ],
                 )
@@ -196,7 +204,9 @@ class AppendOnlyEventStore:
         as_of: str | None = None,
         trusted_verifier_ids: Iterable[str] | None = None,
     ) -> dict[str, Any]:
-        return export_ire(self.project(policy_hash, trusted_verifier_ids), policy_hash, window_days, as_of)
+        return export_ire(
+            self.project(policy_hash, trusted_verifier_ids), policy_hash, window_days, as_of
+        )
 
     def diagnose(
         self,
@@ -225,12 +235,24 @@ def _read_report(path: str) -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Append and inspect the local SQLite Issue Ledger.")
-    parser.add_argument("--db", default=str(DEFAULT_DB_PATH), type=Path, help="local SQLite database path (default: .ire/issue-ledger/ledger.sqlite3)")
+    parser = argparse.ArgumentParser(
+        description="Append and inspect the local SQLite Issue Ledger."
+    )
+    parser.add_argument(
+        "--db",
+        default=str(DEFAULT_DB_PATH),
+        type=Path,
+        help="local SQLite database path (default: .ire/issue-ledger/ledger.sqlite3)",
+    )
     parser.add_argument("--policy-hash", default="policy:issue-ledger-v1")
     parser.add_argument("--window-days", type=int, help="optional valid-time window for IRE export")
     parser.add_argument("--as-of", help="window end timestamp; defaults to latest observed event")
-    parser.add_argument("--trusted-verifier-id", action="append", default=[], help="authorized verifier actor ID; repeatable")
+    parser.add_argument(
+        "--trusted-verifier-id",
+        action="append",
+        default=[],
+        help="authorized verifier actor ID; repeatable",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     append = sub.add_parser("append", help="append one event JSON object")
     append.add_argument("event", help="JSON file path or - for stdin")
@@ -250,7 +272,9 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "project":
             output = store.project(args.policy_hash, args.trusted_verifier_id or None)
         elif args.command == "ire":
-            output = store.ire(args.policy_hash, args.window_days, args.as_of, args.trusted_verifier_id or None)
+            output = store.ire(
+                args.policy_hash, args.window_days, args.as_of, args.trusted_verifier_id or None
+            )
         else:
             output = store.diagnose(args.issue_id, args.trusted_verifier_id or None)
     except (LedgerError, OSError) as exc:

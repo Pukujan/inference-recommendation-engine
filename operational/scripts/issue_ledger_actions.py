@@ -5,17 +5,18 @@ These commands record what an adapter actually did; they do not execute a
 reproduction, authenticate a verifier, or promote an issue by themselves.
 Projection authority remains the configured trusted-verifier allowlist.
 """
+
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import json
-from pathlib import Path
 import sys
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from issue_ledger import LedgerError, _hash, validate_event
-from issue_ledger_store import AppendOnlyEventStore, DEFAULT_DB_PATH
+from issue_ledger_store import DEFAULT_DB_PATH, AppendOnlyEventStore
 
 
 def _now() -> str:
@@ -92,50 +93,62 @@ def build_action_event(args: argparse.Namespace) -> dict[str, Any]:
     }
     top_level: dict[str, Any] = {}
     if action == "attach-evidence":
-        payload.update({
-            "receipt_ref": args.receipt_ref,
-            "evidence_role": args.evidence_role,
-            "deterministic_verifier": args.deterministic_verifier,
-            "verified": args.verified,
-            "accept_for_recommendation": args.accept_for_recommendation,
-        })
-        top_level["evidence_refs"] = [{
-            "ref_id": args.receipt_ref,
-            "role": args.evidence_role,
-            "content_hash": args.content_hash,
-        }]
-        provenance = _provenance(args, args.deterministic_verifier or args.accept_for_recommendation)
+        payload.update(
+            {
+                "receipt_ref": args.receipt_ref,
+                "evidence_role": args.evidence_role,
+                "deterministic_verifier": args.deterministic_verifier,
+                "verified": args.verified,
+                "accept_for_recommendation": args.accept_for_recommendation,
+            }
+        )
+        top_level["evidence_refs"] = [
+            {
+                "ref_id": args.receipt_ref,
+                "role": args.evidence_role,
+                "content_hash": args.content_hash,
+            }
+        ]
+        provenance = _provenance(
+            args, args.deterministic_verifier or args.accept_for_recommendation
+        )
         if provenance is not None:
             top_level["provenance"] = provenance
     elif action == "start-reproduction":
-        payload.update({
-            "recipe_ref": args.recipe_ref,
-            "independent": args.independent,
-            "result": "pending",
-        })
+        payload.update(
+            {
+                "recipe_ref": args.recipe_ref,
+                "independent": args.independent,
+                "result": "pending",
+            }
+        )
     elif action == "propose-fix":
         payload["fix_ref"] = args.fix_ref
     elif action == "record-reproduction":
-        payload.update({
-            "result": args.result,
-            "independent": args.independent,
-            "verified": args.verified,
-            "recipe_ref": args.recipe_ref,
-            "receipt_ref": args.receipt_ref,
-        })
+        payload.update(
+            {
+                "result": args.result,
+                "independent": args.independent,
+                "verified": args.verified,
+                "recipe_ref": args.recipe_ref,
+                "receipt_ref": args.receipt_ref,
+            }
+        )
         provenance = _provenance(args, args.verified)
         if provenance is not None:
             top_level["provenance"] = provenance
     elif action == "verify-resolution":
         if args.replay_receipt_ref == args.regression_receipt_ref:
             raise LedgerError("replay and regression receipts must be distinct")
-        payload.update({
-            "fix_ref": args.fix_ref,
-            "verified": True,
-            "accept_for_recommendation": args.accept_for_recommendation,
-            "replay_receipt_ref": args.replay_receipt_ref,
-            "regression_receipt_ref": args.regression_receipt_ref,
-        })
+        payload.update(
+            {
+                "fix_ref": args.fix_ref,
+                "verified": True,
+                "accept_for_recommendation": args.accept_for_recommendation,
+                "replay_receipt_ref": args.replay_receipt_ref,
+                "regression_receipt_ref": args.regression_receipt_ref,
+            }
+        )
         top_level["evidence_refs"] = [
             {"ref_id": args.replay_receipt_ref, "role": "reproduction"},
             {"ref_id": args.regression_receipt_ref, "role": "reproduction"},
@@ -145,7 +158,13 @@ def build_action_event(args: argparse.Namespace) -> dict[str, Any]:
             "policy_hash": args.policy_hash,
         }
     elif action == "counterexample":
-        payload.update({"counterexample": True, "verified": True, "counterexample_ref": args.counterexample_ref})
+        payload.update(
+            {
+                "counterexample": True,
+                "verified": True,
+                "counterexample_ref": args.counterexample_ref,
+            }
+        )
         top_level["provenance"] = _provenance(args, True)
         event_type = "issue_retracted"
     elif action == "reopen":
@@ -182,9 +201,15 @@ def build_action_event(args: argparse.Namespace) -> dict[str, Any]:
     return validate_event(event)
 
 
-def _add_common(parser: argparse.ArgumentParser, actor_id: str = "agent:unknown", actor_kind: str = "agent") -> None:
+def _add_common(
+    parser: argparse.ArgumentParser, actor_id: str = "agent:unknown", actor_kind: str = "agent"
+) -> None:
     parser.add_argument("--actor-id", default=actor_id)
-    parser.add_argument("--actor-kind", default=actor_kind, choices=["human", "agent", "service", "importer", "system"])
+    parser.add_argument(
+        "--actor-kind",
+        default=actor_kind,
+        choices=["human", "agent", "service", "importer", "system"],
+    )
     parser.add_argument("--harness")
     parser.add_argument("--provider", required=True)
     parser.add_argument("--route", required=True)
@@ -195,8 +220,25 @@ def _add_common(parser: argparse.ArgumentParser, actor_id: str = "agent:unknown"
     parser.add_argument("--execution-id", required=True)
     parser.add_argument("--correlation-id")
     parser.add_argument("--summary", required=True)
-    parser.add_argument("--classification", default="unknown", choices=["protocol", "client", "provider", "model_behavior", "harness", "telemetry", "evaluation", "unknown"])
-    parser.add_argument("--outcome", default="unknown", choices=["success", "failure", "timeout", "cancelled", "partial", "unknown"])
+    parser.add_argument(
+        "--classification",
+        default="unknown",
+        choices=[
+            "protocol",
+            "client",
+            "provider",
+            "model_behavior",
+            "harness",
+            "telemetry",
+            "evaluation",
+            "unknown",
+        ],
+    )
+    parser.add_argument(
+        "--outcome",
+        default="unknown",
+        choices=["success", "failure", "timeout", "cancelled", "partial", "unknown"],
+    )
     parser.add_argument("--observed-at")
     parser.add_argument("--recorded-at")
     parser.add_argument("--event-id")
@@ -211,43 +253,66 @@ def _add_common(parser: argparse.ArgumentParser, actor_id: str = "agent:unknown"
 
 
 def _parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Append an evidence-bound Issue Ledger lifecycle action.")
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB_PATH, help="local SQLite database (default: .ire/issue-ledger/ledger.sqlite3)")
+    parser = argparse.ArgumentParser(
+        description="Append an evidence-bound Issue Ledger lifecycle action."
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=DEFAULT_DB_PATH,
+        help="local SQLite database (default: .ire/issue-ledger/ledger.sqlite3)",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     proposed = sub.add_parser("propose-fix", help="record a proposed workaround or fix")
     _add_common(proposed)
     proposed.add_argument("--fix-ref", required=True)
 
-    evidence = sub.add_parser("attach-evidence", help="attach a bounded receipt or artifact reference")
+    evidence = sub.add_parser(
+        "attach-evidence", help="attach a bounded receipt or artifact reference"
+    )
     _add_common(evidence)
     evidence.add_argument("--receipt-ref", required=True)
-    evidence.add_argument("--evidence-role", choices=["receipt", "trace", "artifact", "source", "reproduction", "counterexample"], default="receipt")
+    evidence.add_argument(
+        "--evidence-role",
+        choices=["receipt", "trace", "artifact", "source", "reproduction", "counterexample"],
+        default="receipt",
+    )
     evidence.add_argument("--content-hash")
     evidence.add_argument("--deterministic-verifier", action="store_true")
     evidence.add_argument("--verified", action="store_true")
     evidence.add_argument("--accept-for-recommendation", action="store_true")
 
-    started = sub.add_parser("start-reproduction", help="record that a declared reproduction recipe was started")
+    started = sub.add_parser(
+        "start-reproduction", help="record that a declared reproduction recipe was started"
+    )
     _add_common(started)
     started.add_argument("--recipe-ref", required=True)
     started.add_argument("--independent", action="store_true")
 
-    reproduced = sub.add_parser("record-reproduction", help="record the result of an already-run reproduction recipe")
+    reproduced = sub.add_parser(
+        "record-reproduction", help="record the result of an already-run reproduction recipe"
+    )
     _add_common(reproduced)
-    reproduced.add_argument("--result", choices=["reproduced", "not_reproduced", "inconclusive"], required=True)
+    reproduced.add_argument(
+        "--result", choices=["reproduced", "not_reproduced", "inconclusive"], required=True
+    )
     reproduced.add_argument("--recipe-ref", required=True)
     reproduced.add_argument("--receipt-ref", required=True)
     reproduced.add_argument("--independent", action="store_true")
     reproduced.add_argument("--verified", action="store_true")
 
-    verified = sub.add_parser("verify-resolution", help="record replay plus regression verification")
+    verified = sub.add_parser(
+        "verify-resolution", help="record replay plus regression verification"
+    )
     _add_common(verified, "system:issue-ledger-verifier", "system")
     verified.add_argument("--fix-ref", required=True)
     verified.add_argument("--replay-receipt-ref", required=True)
     verified.add_argument("--regression-receipt-ref", required=True)
     verified.add_argument("--accept-for-recommendation", action="store_true")
 
-    counter = sub.add_parser("counterexample", help="record a verifier-marked contradictory receipt")
+    counter = sub.add_parser(
+        "counterexample", help="record a verifier-marked contradictory receipt"
+    )
     _add_common(counter)
     counter.add_argument("--counterexample-ref", required=True)
 
@@ -266,7 +331,16 @@ def main(argv: list[str] | None = None) -> int:
     except (LedgerError, OSError) as exc:
         print(f"issue-ledger-actions: {exc}", file=sys.stderr)
         return 2
-    print(json.dumps({"event": event["event_id"], "event_type": event["event_type"], "stored": receipt["stored"]}, sort_keys=True))
+    print(
+        json.dumps(
+            {
+                "event": event["event_id"],
+                "event_type": event["event_type"],
+                "stored": receipt["stored"],
+            },
+            sort_keys=True,
+        )
+    )
     return 0
 
 

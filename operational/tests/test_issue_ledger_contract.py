@@ -7,18 +7,17 @@ properties must remain present before a runtime projection is added.
 
 from __future__ import annotations
 
-import json
 import importlib.util
 import itertools
+import json
 import os
-from pathlib import Path
-import sqlite3
 import shutil
+import sqlite3
 import subprocess
 import sys
 import tempfile
 import unittest
-
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_ROOT = REPO_ROOT / "schemas" / "issue-ledger"
@@ -28,16 +27,15 @@ REPORT_FIXTURE = REPO_ROOT / "operational" / "examples" / "issue-ledger-report-v
 SCRIPT_DIR = REPO_ROOT / "operational" / "scripts"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
-LEDGER_SPEC = importlib.util.spec_from_file_location(
-    "issue_ledger", SCRIPT_DIR / "issue_ledger.py"
-)
+LEDGER_SPEC = importlib.util.spec_from_file_location("issue_ledger", SCRIPT_DIR / "issue_ledger.py")
 ledger = importlib.util.module_from_spec(LEDGER_SPEC)
 LEDGER_SPEC.loader.exec_module(ledger)
-from issue_ledger_store import AppendOnlyEventStore, StoreError, main as store_main  # noqa: E402
-from telemetry_to_issue_events import convert_record  # noqa: E402
-from issue_ledger_agent import main as agent_main  # noqa: E402
-from run_with_issue_ledger import main as wrapper_main  # noqa: E402
 from issue_ledger_actions import main as actions_main  # noqa: E402
+from issue_ledger_agent import main as agent_main  # noqa: E402
+from issue_ledger_store import AppendOnlyEventStore, StoreError  # noqa: E402
+from issue_ledger_store import main as store_main  # noqa: E402
+from run_with_issue_ledger import main as wrapper_main  # noqa: E402
+from telemetry_to_issue_events import convert_record  # noqa: E402
 
 
 def load_schema(name: str) -> dict:
@@ -60,18 +58,18 @@ def valid_report_packet() -> dict:
         "correlation_id": "turn:fixture-001",
         "summary": "the stream ended without a terminal marker",
         "classification": "harness",
-            "outcome": "partial",
-            "observed_at": "2026-09-22T12:00:00Z",
-            "recorded_at": "2026-09-22T12:00:01Z",
-            "receipt_refs": ["sha256:fixture-receipt"],
-            "runbook_refs": ["runbook:stream-capture"],
-            "attempted_recovery": {
-                "status": "failed",
-                "action": "reconnect the stream",
-                "result": "no terminal event arrived",
-            },
-            "proposed_next_action": "replay with the same fixture under the verifier",
-            "observation": {
+        "outcome": "partial",
+        "observed_at": "2026-09-22T12:00:00Z",
+        "recorded_at": "2026-09-22T12:00:01Z",
+        "receipt_refs": ["sha256:fixture-receipt"],
+        "runbook_refs": ["runbook:stream-capture"],
+        "attempted_recovery": {
+            "status": "failed",
+            "action": "reconnect the stream",
+            "result": "no terminal event arrived",
+        },
+        "proposed_next_action": "replay with the same fixture under the verifier",
+        "observation": {
             "failure_phase": "capture",
             "stream_mode": "sse",
             "finish_reason_capture_status": "partial",
@@ -117,10 +115,10 @@ def valid_issue() -> dict:
         },
         "evidence_summary": {
             "level": "reported_only",
-        "report_count": 1,
-        "distinct_execution_count": 1,
-        "distinct_actor_count": 1,
-        "distinct_correlation_count": 1,
+            "report_count": 1,
+            "distinct_execution_count": 1,
+            "distinct_actor_count": 1,
+            "distinct_correlation_count": 1,
             "independent_reproduction_count": 0,
             "deterministic_receipt_count": 0,
             "counterexample_count": 0,
@@ -156,7 +154,9 @@ def valid_issue() -> dict:
     }
 
 
-def report_event(event_id: str, execution_id: str, recorded_at: str = "2026-09-22T12:00:00Z") -> dict:
+def report_event(
+    event_id: str, execution_id: str, recorded_at: str = "2026-09-22T12:00:00Z"
+) -> dict:
     event = valid_event()
     event.update({"event_id": event_id, "recorded_at": recorded_at})
     event["correlation_id"] = execution_id
@@ -175,7 +175,11 @@ def report_event(event_id: str, execution_id: str, recorded_at: str = "2026-09-2
             "workload_class": "long_horizon",
             "stream_mode": "sse",
         },
-        "observation": {"failure_phase": "capture", "stream_mode": "sse", "finish_reason_capture_status": "partial"},
+        "observation": {
+            "failure_phase": "capture",
+            "stream_mode": "sse",
+            "finish_reason_capture_status": "partial",
+        },
     }
     return event
 
@@ -187,9 +191,11 @@ class IssueLedgerContractTests(unittest.TestCase):
         report = load_schema("v1.report.schema.json")
         ire = load_schema("v1.ire.schema.json")
         for schema in (event, issue, report, ire):
-            self.assertTrue(schema["$id"].startswith(
-                "https://inference-recommendation-engine.local/schemas/issue-ledger/"
-            ))
+            self.assertTrue(
+                schema["$id"].startswith(
+                    "https://inference-recommendation-engine.local/schemas/issue-ledger/"
+                )
+            )
         self.assertEqual(event["$id"].rsplit("/", 1)[-1], "v1.event.schema.json")
         self.assertEqual(issue["$id"].rsplit("/", 1)[-1], "v1.issue.schema.json")
         self.assertEqual(event["additionalProperties"], False)
@@ -264,7 +270,7 @@ class IssueLedgerContractTests(unittest.TestCase):
             "rolling",
             "resolution",
         ):
-            self.assertIn(marker.lower(), SPEC.read_text(encoding="utf-8" ).lower(), marker)
+            self.assertIn(marker.lower(), SPEC.read_text(encoding="utf-8").lower(), marker)
 
     def test_event_types_are_explicit_and_not_free_form(self):
         event_types = load_schema("v1.event.schema.json")["properties"]["event_type"]["enum"]
@@ -284,7 +290,9 @@ class IssueLedgerContractTests(unittest.TestCase):
             ledger.validate_event(actor_unknown)
 
     def test_operational_guidance_points_to_the_ledger_contract(self):
-        operational_reference = (REPO_ROOT / "operational" / "references" / "issue-ledger.md").read_text(encoding="utf-8")
+        operational_reference = (
+            REPO_ROOT / "operational" / "references" / "issue-ledger.md"
+        ).read_text(encoding="utf-8")
         operations = (REPO_ROOT / "docs" / "ISSUE-LEDGER-OPERATIONS.md").read_text(encoding="utf-8")
         self.assertIn("Operational Issue Ledger", operational_reference)
         for text in (operational_reference, operations):
@@ -295,10 +303,17 @@ class IssueLedgerContractTests(unittest.TestCase):
         self.assertIn("diagnose", operational_reference)
 
     def test_fingerprint_is_stable_for_prose_and_author_changes(self):
-        subject = {"provider": "P", "route": "R", "operation": "completion", "workload_class": "long"}
+        subject = {
+            "provider": "P",
+            "route": "R",
+            "operation": "completion",
+            "workload_class": "long",
+        }
         observation = {"failure_phase": "capture", "stream_mode": "sse", "error_code": "partial"}
         first = ledger.make_fingerprint(subject, observation)
-        second = ledger.make_fingerprint(subject, {**observation, "summary": "different words", "actor": "another"})
+        second = ledger.make_fingerprint(
+            subject, {**observation, "summary": "different words", "actor": "another"}
+        )
         changed = ledger.make_fingerprint(subject, {**observation, "stream_mode": "buffered"})
         self.assertEqual(first, second)
         self.assertNotEqual(first["value"], changed["value"])
@@ -328,7 +343,11 @@ class IssueLedgerContractTests(unittest.TestCase):
     def test_shared_execution_preserves_multiple_reporting_agents(self):
         first = report_event("ILE-shared-execution-a", "run-shared")
         second = report_event("ILE-shared-execution-b", "run-shared", "2026-09-22T12:01:00Z")
-        second["actor"] = {"id": "agent:independent-observer", "kind": "agent", "harness": "fixture"}
+        second["actor"] = {
+            "id": "agent:independent-observer",
+            "kind": "agent",
+            "harness": "fixture",
+        }
         issue = ledger.reduce_events([first, second])[0]
         self.assertEqual(issue["evidence_summary"]["report_count"], 2)
         self.assertEqual(issue["evidence_summary"]["distinct_execution_count"], 1)
@@ -346,7 +365,9 @@ class IssueLedgerContractTests(unittest.TestCase):
 
     def test_conflicting_correlation_for_one_execution_fails_closed(self):
         first = report_event("ILE-correlation-conflict-a", "run-correlation-conflict")
-        second = report_event("ILE-correlation-conflict-b", "run-correlation-conflict", "2026-09-22T12:01:00Z")
+        second = report_event(
+            "ILE-correlation-conflict-b", "run-correlation-conflict", "2026-09-22T12:01:00Z"
+        )
         second["correlation_id"] = "different-correlation"
         with self.assertRaises(ledger.LedgerError):
             ledger.reduce_events([first, second])
@@ -373,12 +394,14 @@ class IssueLedgerContractTests(unittest.TestCase):
         receipt["event_type"] = "evidence_attached"
         receipt["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         receipt["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        receipt["payload"].update({
-            "receipt_ref": "sha256:receipt",
-            "deterministic_verifier": True,
-            "verified": True,
-            "accept_for_recommendation": True,
-        })
+        receipt["payload"].update(
+            {
+                "receipt_ref": "sha256:receipt",
+                "deterministic_verifier": True,
+                "verified": True,
+                "accept_for_recommendation": True,
+            }
+        )
         projections = ledger.reduce_events([report, receipt])
         issue = projections[0]
         self.assertTrue(issue["evidence_summary"]["accepted_for_recommendation"])
@@ -391,6 +414,7 @@ class IssueLedgerContractTests(unittest.TestCase):
         self.assertIn("reproduction", exported["issues"][0])
         self.assertIn("resolution", exported["issues"][0])
         from jsonschema import Draft202012Validator
+
         Draft202012Validator(load_schema("v1.ire.schema.json")).validate(exported)
         exported["issues"].clear()
         self.assertEqual(len(ledger.export_ire(projections)["issues"]), 1)
@@ -400,17 +424,33 @@ class IssueLedgerContractTests(unittest.TestCase):
         receipt = report_event("ILE-untrusted-receipt", "run-untrusted", "2026-09-22T12:01:00Z")
         receipt["event_type"] = "evidence_attached"
         receipt["actor"] = {"id": "agent:pretending-to-verify", "kind": "system"}
-        receipt["payload"].update({"receipt_ref": "sha256:untrusted", "deterministic_verifier": True, "verified": True, "accept_for_recommendation": True})
+        receipt["payload"].update(
+            {
+                "receipt_ref": "sha256:untrusted",
+                "deterministic_verifier": True,
+                "verified": True,
+                "accept_for_recommendation": True,
+            }
+        )
         issue = ledger.reduce_events([report, receipt])[0]
         self.assertFalse(issue["evidence_summary"]["accepted_for_recommendation"])
         self.assertEqual(issue["evidence_summary"]["deterministic_receipt_count"], 0)
 
     def test_allowlisted_verifier_without_provenance_cannot_promote(self):
         report = report_event("ILE-missing-provenance-report", "run-missing-provenance")
-        receipt = report_event("ILE-missing-provenance-receipt", "run-missing-provenance", "2026-09-22T12:01:00Z")
+        receipt = report_event(
+            "ILE-missing-provenance-receipt", "run-missing-provenance", "2026-09-22T12:01:00Z"
+        )
         receipt["event_type"] = "evidence_attached"
         receipt["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
-        receipt["payload"].update({"receipt_ref": "sha256:missing-provenance", "deterministic_verifier": True, "verified": True, "accept_for_recommendation": True})
+        receipt["payload"].update(
+            {
+                "receipt_ref": "sha256:missing-provenance",
+                "deterministic_verifier": True,
+                "verified": True,
+                "accept_for_recommendation": True,
+            }
+        )
         issue = ledger.reduce_events([report, receipt])[0]
         self.assertFalse(issue["evidence_summary"]["accepted_for_recommendation"])
         self.assertEqual(issue["evidence_summary"]["deterministic_receipt_count"], 0)
@@ -421,7 +461,14 @@ class IssueLedgerContractTests(unittest.TestCase):
         receipt["event_type"] = "evidence_attached"
         receipt["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         receipt["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        receipt["payload"].update({"receipt_ref": "sha256:window", "deterministic_verifier": True, "verified": True, "accept_for_recommendation": True})
+        receipt["payload"].update(
+            {
+                "receipt_ref": "sha256:window",
+                "deterministic_verifier": True,
+                "verified": True,
+                "accept_for_recommendation": True,
+            }
+        )
         projections = ledger.reduce_events([report, receipt])
         self.assertEqual(len(projections[0]["occurrences"]), 1)
         current = ledger.export_ire(projections, window_days=7, as_of="2026-09-22T23:59:59Z")
@@ -433,11 +480,20 @@ class IssueLedgerContractTests(unittest.TestCase):
 
     def test_counterexample_removes_issue_from_recommendation_export(self):
         report = report_event("ILE-report-counterexample", "run-counterexample")
-        receipt = report_event("ILE-receipt-counterexample", "run-counterexample", "2026-09-22T12:01:00Z")
+        receipt = report_event(
+            "ILE-receipt-counterexample", "run-counterexample", "2026-09-22T12:01:00Z"
+        )
         receipt["event_type"] = "evidence_attached"
         receipt["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         receipt["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        receipt["payload"].update({"receipt_ref": "sha256:receipt-2", "deterministic_verifier": True, "verified": True, "accept_for_recommendation": True})
+        receipt["payload"].update(
+            {
+                "receipt_ref": "sha256:receipt-2",
+                "deterministic_verifier": True,
+                "verified": True,
+                "accept_for_recommendation": True,
+            }
+        )
         counter = report_event("ILE-counterexample", "run-counterexample-2", "2026-09-22T12:02:00Z")
         counter["event_type"] = "issue_retracted"
         counter["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
@@ -451,33 +507,54 @@ class IssueLedgerContractTests(unittest.TestCase):
         report = report_event("ILE-resolution-report", "run-resolution")
         proposed = report_event("ILE-resolution-proposal", "run-resolution", "2026-09-22T12:01:00Z")
         proposed["event_type"] = "resolution_proposed"
-        proposed["payload"].update({"fix_ref": "commit:fixture-fix", "summary": "proposed a capture fix"})
+        proposed["payload"].update(
+            {"fix_ref": "commit:fixture-fix", "summary": "proposed a capture fix"}
+        )
         verified = report_event("ILE-resolution-verified", "run-resolution", "2026-09-22T12:02:00Z")
         verified["event_type"] = "resolution_verified"
         verified["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         verified["evidence_refs"] = [{"ref_id": "sha256:regression", "role": "reproduction"}]
         verified["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        verified["payload"].update({"fix_ref": "commit:fixture-fix", "verified": True, "replay_receipt_ref": "sha256:replay", "regression_receipt_ref": "sha256:regression"})
+        verified["payload"].update(
+            {
+                "fix_ref": "commit:fixture-fix",
+                "verified": True,
+                "replay_receipt_ref": "sha256:replay",
+                "regression_receipt_ref": "sha256:regression",
+            }
+        )
         resolved = ledger.reduce_events([report, proposed, verified])[0]
         self.assertEqual(resolved["lifecycle"], "RESOLVED")
         self.assertEqual(resolved["resolution"]["status"], "fix_verified")
         self.assertIn("next_action", resolved["diagnostics"])
-        reopened = report_event("ILE-resolution-regression", "run-resolution-regression", "2026-09-22T12:03:00Z")
+        reopened = report_event(
+            "ILE-resolution-regression", "run-resolution-regression", "2026-09-22T12:03:00Z"
+        )
         reopened["event_type"] = "issue_reopened"
         reopened["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         reopened["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        reopened["payload"].update({"verified": True, "reopen_receipt_ref": "sha256:regression-reopen"})
+        reopened["payload"].update(
+            {"verified": True, "reopen_receipt_ref": "sha256:regression-reopen"}
+        )
         regressed = ledger.reduce_events([report, proposed, verified, reopened])[0]
         self.assertEqual(regressed["lifecycle"], "REGRESSED")
 
     def test_resolution_without_replay_and_regression_receipts_stays_unresolved(self):
         report = report_event("ILE-incomplete-resolution-report", "run-incomplete-resolution")
-        verified = report_event("ILE-incomplete-resolution", "run-incomplete-resolution", "2026-09-22T12:01:00Z")
+        verified = report_event(
+            "ILE-incomplete-resolution", "run-incomplete-resolution", "2026-09-22T12:01:00Z"
+        )
         verified["event_type"] = "resolution_verified"
         verified["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         verified["evidence_refs"] = [{"ref_id": "sha256:only-one", "role": "reproduction"}]
         verified["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        verified["payload"].update({"fix_ref": "commit:fixture-fix", "verified": True, "regression_receipt_ref": "sha256:regression"})
+        verified["payload"].update(
+            {
+                "fix_ref": "commit:fixture-fix",
+                "verified": True,
+                "regression_receipt_ref": "sha256:regression",
+            }
+        )
         issue = ledger.reduce_events([report, verified])[0]
         self.assertNotEqual(issue["lifecycle"], "RESOLVED")
         self.assertEqual(issue["resolution"]["status"], "unknown")
@@ -488,12 +565,23 @@ class IssueLedgerContractTests(unittest.TestCase):
         receipt["event_type"] = "evidence_attached"
         receipt["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
         receipt["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
-        receipt["payload"].update({"receipt_ref": "sha256:authority", "deterministic_verifier": True, "verified": True, "accept_for_recommendation": True})
-        fake_counterexample = report_event("ILE-fake-counterexample", "run-authority-fake", "2026-09-22T12:02:00Z")
+        receipt["payload"].update(
+            {
+                "receipt_ref": "sha256:authority",
+                "deterministic_verifier": True,
+                "verified": True,
+                "accept_for_recommendation": True,
+            }
+        )
+        fake_counterexample = report_event(
+            "ILE-fake-counterexample", "run-authority-fake", "2026-09-22T12:02:00Z"
+        )
         fake_counterexample["event_type"] = "issue_retracted"
         fake_counterexample["actor"] = {"id": "agent:hallucinating", "kind": "agent"}
         fake_counterexample["payload"].update({"counterexample": True, "verified": True})
-        fake_reopen = report_event("ILE-fake-reopen", "run-authority-fake-2", "2026-09-22T12:03:00Z")
+        fake_reopen = report_event(
+            "ILE-fake-reopen", "run-authority-fake-2", "2026-09-22T12:03:00Z"
+        )
         fake_reopen["event_type"] = "issue_reopened"
         fake_reopen["actor"] = {"id": "agent:hallucinating", "kind": "agent"}
         issue = ledger.reduce_events([report, receipt, fake_counterexample, fake_reopen])[0]
@@ -524,9 +612,14 @@ class IssueLedgerStoreTests(unittest.TestCase):
             connection = sqlite3.connect(database)
             try:
                 with self.assertRaisesRegex(sqlite3.IntegrityError, "append-only"):
-                    connection.execute("UPDATE ledger_events SET canonical_json = '{}' WHERE event_id = ?", (event["event_id"],))
+                    connection.execute(
+                        "UPDATE ledger_events SET canonical_json = '{}' WHERE event_id = ?",
+                        (event["event_id"],),
+                    )
                 with self.assertRaisesRegex(sqlite3.IntegrityError, "append-only"):
-                    connection.execute("DELETE FROM ledger_events WHERE event_id = ?", (event["event_id"],))
+                    connection.execute(
+                        "DELETE FROM ledger_events WHERE event_id = ?", (event["event_id"],)
+                    )
             finally:
                 connection.close()
 
@@ -551,7 +644,7 @@ class IssueLedgerStoreTests(unittest.TestCase):
             self.assertEqual(store.events(), before)
 
     def test_concurrent_process_appenders_preserve_all_events(self):
-        child_code = r'''
+        child_code = r"""
 import sys
 from pathlib import Path
 sys.path.insert(0, sys.argv[3])
@@ -578,7 +671,7 @@ for index in range(5):
         "observation": {"failure_phase": "capture", "stream_mode": "sse", "error_code": "fixture"},
     }
     store.append(make_report_event(packet))
-'''
+"""
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
             children = [
@@ -607,37 +700,49 @@ for index in range(5):
         with tempfile.TemporaryDirectory() as directory:
             packet_path = Path(directory) / "report.json"
             log_path = Path(directory) / "ledger.sqlite3"
-            packet_path.write_text(json.dumps({
-                "schema_version": "issue-ledger/report/v1",
-                "actor": {"id": "agent:cli", "kind": "agent"},
-                "subject": {"provider": "provider:test", "route": "route:test", "operation": "completion", "workload_class": "short"},
-                "execution_id": "run-cli",
-                "observed_at": "2026-09-22T12:00:00Z",
-                "recorded_at": "2026-09-22T12:00:01Z",
-                "summary": "provider returned a timeout",
-                "outcome": "timeout",
-            }), encoding="utf-8")
+            packet_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "issue-ledger/report/v1",
+                        "actor": {"id": "agent:cli", "kind": "agent"},
+                        "subject": {
+                            "provider": "provider:test",
+                            "route": "route:test",
+                            "operation": "completion",
+                            "workload_class": "short",
+                        },
+                        "execution_id": "run-cli",
+                        "observed_at": "2026-09-22T12:00:00Z",
+                        "recorded_at": "2026-09-22T12:00:01Z",
+                        "summary": "provider returned a timeout",
+                        "outcome": "timeout",
+                    }
+                ),
+                encoding="utf-8",
+            )
             self.assertEqual(store_main(["--db", str(log_path), "report", str(packet_path)]), 0)
             self.assertEqual(len(AppendOnlyEventStore(log_path).events()), 1)
 
 
 class TelemetryAdapterTests(unittest.TestCase):
     def test_failure_telemetry_becomes_report_only_issue_event(self):
-        event = convert_record({
-            "event_time": "2026-09-22T12:00:00Z",
-            "ingested_at": "2026-09-22T12:00:01Z",
-            "event_id": "telemetry-001",
-            "agent": "runner-a",
-            "provider": "provider:test",
-            "model": "model:test",
-            "route": "route:test",
-            "operation": "chat",
-            "streaming": True,
-            "outcome": "failure",
-            "error_class": "content_empty_with_tokens",
-            "request_id": "request-001",
-            "workload_class": "agent_tool_call",
-        })
+        event = convert_record(
+            {
+                "event_time": "2026-09-22T12:00:00Z",
+                "ingested_at": "2026-09-22T12:00:01Z",
+                "event_id": "telemetry-001",
+                "agent": "runner-a",
+                "provider": "provider:test",
+                "model": "model:test",
+                "route": "route:test",
+                "operation": "chat",
+                "streaming": True,
+                "outcome": "failure",
+                "error_class": "content_empty_with_tokens",
+                "request_id": "request-001",
+                "workload_class": "agent_tool_call",
+            }
+        )
         self.assertEqual(event["event_type"], "report_submitted")
         self.assertEqual(event["payload"]["classification"], "telemetry")
         self.assertEqual(event["payload"]["outcome"], "failure")
@@ -666,30 +771,55 @@ class AgentAdapterTests(unittest.TestCase):
     def test_sidecar_cli_reports_bounded_metadata_and_keeps_candidate_status(self):
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
-            result = agent_main([
-                "--db", str(log_path), "report",
-                "--actor-id", "agent:sidecar",
-                "--harness", "fixture-tui",
-                "--provider", "provider:test",
-                "--route", "route:test",
-                "--model", "model:test",
-                "--operation", "completion",
-                "--workload-class", "long_horizon",
-                "--stream-mode", "sse",
-                "--execution-id", "run:sidecar-001",
-                "--summary", "capture ended without a terminal marker",
-                "--classification", "harness",
-                "--outcome", "partial",
-                "--observed-at", "2026-09-22T12:00:00Z",
-                "--recorded-at", "2026-09-22T12:00:01Z",
-                "--failure-phase", "capture",
-                "--finish-reason-capture-status", "partial",
-                "--timeout-policy", "inactivity-20m",
-                "--recovery-status", "failed",
-                "--recovery-action", "reconnect the stream",
-                "--recovery-result", "no terminal event arrived",
-                "--next-action", "replay under the verifier",
-            ])
+            result = agent_main(
+                [
+                    "--db",
+                    str(log_path),
+                    "report",
+                    "--actor-id",
+                    "agent:sidecar",
+                    "--harness",
+                    "fixture-tui",
+                    "--provider",
+                    "provider:test",
+                    "--route",
+                    "route:test",
+                    "--model",
+                    "model:test",
+                    "--operation",
+                    "completion",
+                    "--workload-class",
+                    "long_horizon",
+                    "--stream-mode",
+                    "sse",
+                    "--execution-id",
+                    "run:sidecar-001",
+                    "--summary",
+                    "capture ended without a terminal marker",
+                    "--classification",
+                    "harness",
+                    "--outcome",
+                    "partial",
+                    "--observed-at",
+                    "2026-09-22T12:00:00Z",
+                    "--recorded-at",
+                    "2026-09-22T12:00:01Z",
+                    "--failure-phase",
+                    "capture",
+                    "--finish-reason-capture-status",
+                    "partial",
+                    "--timeout-policy",
+                    "inactivity-20m",
+                    "--recovery-status",
+                    "failed",
+                    "--recovery-action",
+                    "reconnect the stream",
+                    "--recovery-result",
+                    "no terminal event arrived",
+                    "--next-action",
+                    "replay under the verifier",
+                ]
+            )
             self.assertEqual(result, 0)
             events = AppendOnlyEventStore(log_path).events()
             self.assertEqual(len(events), 1)
@@ -701,15 +831,25 @@ class AgentAdapterTests(unittest.TestCase):
     def test_process_wrapper_reports_failure_without_imposing_timeout(self):
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
-            result = wrapper_main([
-                "--db", str(log_path), "run",
-                "--provider", "provider:test",
-                "--route", "route:test",
-                "--execution-id", "run:wrapper-001",
-                "--stream-mode", "sse",
-                "--",
-                sys.executable, "-c", "import sys; sys.exit(3)",
-            ])
+            result = wrapper_main(
+                [
+                    "--db",
+                    str(log_path),
+                    "run",
+                    "--provider",
+                    "provider:test",
+                    "--route",
+                    "route:test",
+                    "--execution-id",
+                    "run:wrapper-001",
+                    "--stream-mode",
+                    "sse",
+                    "--",
+                    sys.executable,
+                    "-c",
+                    "import sys; sys.exit(3)",
+                ]
+            )
             self.assertEqual(result, 3)
             events = AppendOnlyEventStore(log_path).events()
             self.assertEqual(len(events), 1)
@@ -719,11 +859,19 @@ class AgentAdapterTests(unittest.TestCase):
     def test_process_wrapper_does_not_create_success_issue_by_default(self):
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
-            result = wrapper_main([
-                "--db", str(log_path), "run",
-                "--execution-id", "run:wrapper-success",
-                "--", sys.executable, "-c", "pass",
-            ])
+            result = wrapper_main(
+                [
+                    "--db",
+                    str(log_path),
+                    "run",
+                    "--execution-id",
+                    "run:wrapper-success",
+                    "--",
+                    sys.executable,
+                    "-c",
+                    "pass",
+                ]
+            )
             self.assertEqual(result, 0)
             self.assertEqual(AppendOnlyEventStore(log_path).events(), [])
 
@@ -733,28 +881,82 @@ class AgentAdapterTests(unittest.TestCase):
             report = report_event("ILE-action-report", "run-action", "2026-09-22T12:00:00Z")
             AppendOnlyEventStore(log_path).append(report)
             common = [
-                "--db", str(log_path), "propose-fix",
-                "--provider", "provider:test", "--route", "route:test", "--model", "model:test",
-                "--operation", "completion", "--workload-class", "long_horizon", "--stream-mode", "sse",
-                "--execution-id", "run-action", "--summary", "use the stream-aware capture path",
-                "--classification", "harness", "--fix-ref", "commit:fixture-fix",
-                "--observed-at", "2026-09-22T12:01:00Z", "--recorded-at", "2026-09-22T12:01:00Z",
+                "--db",
+                str(log_path),
+                "propose-fix",
+                "--provider",
+                "provider:test",
+                "--route",
+                "route:test",
+                "--model",
+                "model:test",
+                "--operation",
+                "completion",
+                "--workload-class",
+                "long_horizon",
+                "--stream-mode",
+                "sse",
+                "--execution-id",
+                "run-action",
+                "--summary",
+                "use the stream-aware capture path",
+                "--classification",
+                "harness",
+                "--fix-ref",
+                "commit:fixture-fix",
+                "--observed-at",
+                "2026-09-22T12:01:00Z",
+                "--recorded-at",
+                "2026-09-22T12:01:00Z",
             ]
             self.assertEqual(actions_main(common), 0)
             verify = [
-                "--db", str(log_path), "verify-resolution",
-                "--actor-id", "system:issue-ledger-verifier", "--actor-kind", "system",
-                "--provider", "provider:test", "--route", "route:test", "--model", "model:test",
-                "--operation", "completion", "--workload-class", "long_horizon", "--stream-mode", "sse",
-                "--execution-id", "run-action", "--summary", "replay and regression passed",
-                "--classification", "harness", "--fix-ref", "commit:fixture-fix",
-                "--replay-receipt-ref", "sha256:replay-action", "--regression-receipt-ref", "sha256:regression-action",
-                "--provenance-producer", "fixture-verifier", "--policy-hash", "policy:test",
-                "--observed-at", "2026-09-22T12:02:00Z", "--recorded-at", "2026-09-22T12:02:00Z",
+                "--db",
+                str(log_path),
+                "verify-resolution",
+                "--actor-id",
+                "system:issue-ledger-verifier",
+                "--actor-kind",
+                "system",
+                "--provider",
+                "provider:test",
+                "--route",
+                "route:test",
+                "--model",
+                "model:test",
+                "--operation",
+                "completion",
+                "--workload-class",
+                "long_horizon",
+                "--stream-mode",
+                "sse",
+                "--execution-id",
+                "run-action",
+                "--summary",
+                "replay and regression passed",
+                "--classification",
+                "harness",
+                "--fix-ref",
+                "commit:fixture-fix",
+                "--replay-receipt-ref",
+                "sha256:replay-action",
+                "--regression-receipt-ref",
+                "sha256:regression-action",
+                "--provenance-producer",
+                "fixture-verifier",
+                "--policy-hash",
+                "policy:test",
+                "--observed-at",
+                "2026-09-22T12:02:00Z",
+                "--recorded-at",
+                "2026-09-22T12:02:00Z",
             ]
             self.assertEqual(actions_main(verify), 0)
             events = AppendOnlyEventStore(log_path).events()
-            self.assertEqual({event["event_type"] for event in events}, {"report_submitted", "resolution_proposed", "resolution_verified"})
+            self.assertEqual(
+                {event["event_type"] for event in events},
+                {"report_submitted", "resolution_proposed", "resolution_verified"},
+            )
             issue = AppendOnlyEventStore(log_path).project()[0]
             self.assertEqual(issue["lifecycle"], "RESOLVED")
             self.assertEqual(issue["resolution"]["status"], "fix_verified")
@@ -762,35 +964,115 @@ class AgentAdapterTests(unittest.TestCase):
     def test_lifecycle_cli_exposes_evidence_and_two_step_reproduction(self):
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
-            AppendOnlyEventStore(log_path).append(report_event("ILE-evidence-lifecycle-report", "run-evidence-lifecycle"))
+            AppendOnlyEventStore(log_path).append(
+                report_event("ILE-evidence-lifecycle-report", "run-evidence-lifecycle")
+            )
             prefix = ["--db", str(log_path)]
             common = [
-                "--provider", "provider:test", "--route", "route:test", "--model", "model:test",
-                "--operation", "completion", "--workload-class", "long_horizon", "--stream-mode", "sse",
-                "--failure-phase", "capture", "--finish-reason-capture-status", "partial",
-                "--classification", "harness",
+                "--provider",
+                "provider:test",
+                "--route",
+                "route:test",
+                "--model",
+                "model:test",
+                "--operation",
+                "completion",
+                "--workload-class",
+                "long_horizon",
+                "--stream-mode",
+                "sse",
+                "--failure-phase",
+                "capture",
+                "--finish-reason-capture-status",
+                "partial",
+                "--classification",
+                "harness",
             ]
-            self.assertEqual(actions_main(prefix + ["start-reproduction"] + common + [
-                "--execution-id", "run-reproduction-start",
-                "--summary", "reproduction started", "--recipe-ref", "recipe:fixture", "--independent",
-            ]), 0)
-            self.assertEqual(actions_main(prefix + ["record-reproduction"] + common + [
-                "--actor-id", "system:issue-ledger-verifier", "--actor-kind", "system",
-                "--execution-id", "run-reproduction-complete", "--summary", "failure reproduced",
-                "--result", "reproduced", "--recipe-ref", "recipe:fixture", "--receipt-ref", "sha256:reproduction",
-                "--independent", "--verified", "--provenance-producer", "fixture-verifier", "--policy-hash", "policy:test",
-            ]), 0)
-            self.assertEqual(actions_main(prefix + ["attach-evidence"] + common + [
-                "--actor-id", "system:issue-ledger-verifier", "--actor-kind", "system",
-                "--execution-id", "run-evidence", "--summary", "deterministic receipt attached",
-                "--receipt-ref", "sha256:deterministic", "--evidence-role", "receipt",
-                "--deterministic-verifier", "--verified", "--accept-for-recommendation",
-                "--provenance-producer", "fixture-verifier", "--policy-hash", "policy:test",
-            ]), 0)
+            self.assertEqual(
+                actions_main(
+                    prefix
+                    + ["start-reproduction"]
+                    + common
+                    + [
+                        "--execution-id",
+                        "run-reproduction-start",
+                        "--summary",
+                        "reproduction started",
+                        "--recipe-ref",
+                        "recipe:fixture",
+                        "--independent",
+                    ]
+                ),
+                0,
+            )
+            self.assertEqual(
+                actions_main(
+                    prefix
+                    + ["record-reproduction"]
+                    + common
+                    + [
+                        "--actor-id",
+                        "system:issue-ledger-verifier",
+                        "--actor-kind",
+                        "system",
+                        "--execution-id",
+                        "run-reproduction-complete",
+                        "--summary",
+                        "failure reproduced",
+                        "--result",
+                        "reproduced",
+                        "--recipe-ref",
+                        "recipe:fixture",
+                        "--receipt-ref",
+                        "sha256:reproduction",
+                        "--independent",
+                        "--verified",
+                        "--provenance-producer",
+                        "fixture-verifier",
+                        "--policy-hash",
+                        "policy:test",
+                    ]
+                ),
+                0,
+            )
+            self.assertEqual(
+                actions_main(
+                    prefix
+                    + ["attach-evidence"]
+                    + common
+                    + [
+                        "--actor-id",
+                        "system:issue-ledger-verifier",
+                        "--actor-kind",
+                        "system",
+                        "--execution-id",
+                        "run-evidence",
+                        "--summary",
+                        "deterministic receipt attached",
+                        "--receipt-ref",
+                        "sha256:deterministic",
+                        "--evidence-role",
+                        "receipt",
+                        "--deterministic-verifier",
+                        "--verified",
+                        "--accept-for-recommendation",
+                        "--provenance-producer",
+                        "fixture-verifier",
+                        "--policy-hash",
+                        "policy:test",
+                    ]
+                ),
+                0,
+            )
             events = AppendOnlyEventStore(log_path).events()
             self.assertEqual(
                 {event["event_type"] for event in events},
-                {"report_submitted", "reproduction_attempted", "reproduction_completed", "evidence_attached"},
+                {
+                    "report_submitted",
+                    "reproduction_attempted",
+                    "reproduction_completed",
+                    "evidence_attached",
+                },
             )
             issue = AppendOnlyEventStore(log_path).project()[0]
             self.assertEqual(issue["lifecycle"], "ACCEPTED")
@@ -801,12 +1083,31 @@ class AgentAdapterTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
             args = [
-                "--db", str(log_path), "verify-resolution",
-                "--actor-id", "agent:claiming-verifier", "--actor-kind", "agent",
-                "--provider", "provider:test", "--route", "route:test", "--execution-id", "run-self",
-                "--summary", "agent says it verified the fix", "--fix-ref", "commit:self",
-                "--replay-receipt-ref", "sha256:self-replay", "--regression-receipt-ref", "sha256:self-regression",
-                "--provenance-producer", "agent", "--policy-hash", "policy:test",
+                "--db",
+                str(log_path),
+                "verify-resolution",
+                "--actor-id",
+                "agent:claiming-verifier",
+                "--actor-kind",
+                "agent",
+                "--provider",
+                "provider:test",
+                "--route",
+                "route:test",
+                "--execution-id",
+                "run-self",
+                "--summary",
+                "agent says it verified the fix",
+                "--fix-ref",
+                "commit:self",
+                "--replay-receipt-ref",
+                "sha256:self-replay",
+                "--regression-receipt-ref",
+                "sha256:self-regression",
+                "--provenance-producer",
+                "agent",
+                "--policy-hash",
+                "policy:test",
             ]
             self.assertEqual(actions_main(args), 0)
             issue = AppendOnlyEventStore(log_path).project()[0]
@@ -817,20 +1118,24 @@ class AgentAdapterTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             log_path = Path(directory) / "ledger.sqlite3"
             environment = os.environ.copy()
-            environment.update({
-                "IRE_ISSUE_LEDGER_DB": str(log_path),
-                "IRE_ISSUE_LEDGER_AGENT_SCRIPT": str(SCRIPT_DIR / "issue_ledger_agent.py"),
-                "IRE_ISSUE_LEDGER_PROVIDER": "provider:test",
-                "IRE_ISSUE_LEDGER_ROUTE": "route:test",
-            })
+            environment.update(
+                {
+                    "IRE_ISSUE_LEDGER_DB": str(log_path),
+                    "IRE_ISSUE_LEDGER_AGENT_SCRIPT": str(SCRIPT_DIR / "issue_ledger_agent.py"),
+                    "IRE_ISSUE_LEDGER_PROVIDER": "provider:test",
+                    "IRE_ISSUE_LEDGER_ROUTE": "route:test",
+                }
+            )
             result = subprocess.run(
                 [sys.executable, str(hook)],
-                input=json.dumps({
-                    "hook_event_name": "StopFailure",
-                    "session_id": "session-hook-test",
-                    "error": "rate_limit",
-                    "last_assistant_message": "secret response must not be stored",
-                }),
+                input=json.dumps(
+                    {
+                        "hook_event_name": "StopFailure",
+                        "session_id": "session-hook-test",
+                        "error": "rate_limit",
+                        "last_assistant_message": "secret response must not be stored",
+                    }
+                ),
                 text=True,
                 capture_output=True,
                 env=environment,

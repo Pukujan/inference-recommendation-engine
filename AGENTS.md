@@ -36,7 +36,9 @@ For README, product, visual, or marketing work, load the helper's README playboo
 - Use pnpm for Node.js and uv for Python. Keep `pnpm-lock.yaml` and `uv.lock`
   current and use frozen/locked installs in CI.
 - Required local gates are `pnpm test`, `pnpm check:public`,
-  `pnpm test:operational`, and `pnpm pack --dry-run`; CI runs the same gates.
+  `pnpm test:operational`, `pnpm check:static`, and `pnpm pack --dry-run`; CI
+  runs the same gates. `pnpm check:static` runs ESLint for JavaScript, Ruff
+  lint and format checks for Python, and mypy for `operational/scripts`.
 - GitHub Issues, pull requests, and commit history own project plans, issue
   status, and code changes. Private operational records and evidence live only
   in the ignored `.ire/issue-ledger/ledger.sqlite3`; never commit or upload the

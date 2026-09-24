@@ -26,6 +26,7 @@ jobs:
           enable-cache: true
       - run: uv sync --locked
       - run: pnpm install --frozen-lockfile
+      - run: pnpm check:static
       - run: pnpm test
       - run: pnpm check:public
       - run: pnpm test:operational
