@@ -19,7 +19,7 @@ import sys
 import time
 import uuid
 
-from . import clean, detectors, experiments, ingest, receipts, seal
+from . import clean, detectors, experiments, ingest, ingest_kilo, receipts, seal
 from . import common as C
 
 META = os.path.join(C.LAKE, "meta")
@@ -172,6 +172,7 @@ def run_dbt(snapshot_id, out_dir, inputs_hash):
             )
             os.replace(f + ".tmp", f)
     con.close()
+    ingest_kilo.fix_empty_marts(out_dir)
     return round(time.time() - t, 2)
 
 
@@ -247,6 +248,7 @@ def main(argv=None):
             log=log,
         )
         rc = receipts.run(log=log)
+        kc = ingest_kilo.run(log=log)
         leaks = leak_check(con, stats.plaintexts)
         con.close()
 
@@ -262,6 +264,7 @@ def main(argv=None):
             "segment_sha256s": segs,
             "sqlite_backfill": sqlite_state,
             "receipts_set_sha256": rc["receipts_set_sha256"],
+            "kilo_set_sha256": kc["kilo_set_sha256"],
             "pipeline_code_sha256": csha,
             "pipeline_git_head": git_head(),
             "versions": vers,
@@ -325,6 +328,7 @@ def main(argv=None):
                 "ingest": ing,
                 "clean_rows_rebuilt": cl,
                 "receipts": {k: v for k, v in rc.items() if k != "file_hashes"},
+                "kilo": kc,
                 "scrub": stats.as_dict(),
                 "leak_check": leaks,
                 "snapshot_id": snapshot_id,
