@@ -4,7 +4,7 @@ version: 1
 project: inference-recommendation-engine
 status: in_progress
 active_task: IRE-0010
-updated_at: 2026-09-24T22:40:00Z
+updated_at: 2026-09-24T22:55:00Z
 ---
 
 ## State
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0010 checkpoint 1 merged in PR #42 at `2c45e74be95be9241fb2489abd195462af5a0450` and is deployed on the collector host from `main`. Checkpoint 2 merged in PR #44 at `b891a7da89286a78baaec56c3037f2bcb9f48e88`: provider errors (HTTP status, provider code such as 11133, request id) from Astra receipts land on the launcher root span (#40 M0.6 context). Checkpoint 3 adds the P4 incident detectors, the versioned signature catalog `ire-incident-signatures/v1`, and experiment manifest loading for the #40 M0.5 matrix. IRE-0009 remains merged in PR #37; the blinded benchmark remains open under issue #29.
+IRE-0010 checkpoint 1 merged in PR #42 at `2c45e74be95be9241fb2489abd195462af5a0450` and is deployed on the collector host from `main`. Checkpoint 2 merged in PR #44 at `b891a7da89286a78baaec56c3037f2bcb9f48e88`: provider errors (HTTP status, provider code such as 11133, request id) from Astra receipts land on the launcher root span (#40 M0.6 context). Checkpoint 3 merged in PR #45 at `62a409cc6cba2cc6f69d505d19360ce887ebb07e` and is deployed: P4 incident detectors, the versioned signature catalog `ire-incident-signatures/v1`, and experiment manifest loading for the #40 M0.5 matrix. Checkpoint 4 stops double counting a fast provider rejection as an early launcher exit. IRE-0009 remains merged in PR #37; the blinded benchmark remains open under issue #29.
 
 ## Next
 
-Merge IRE-0010 checkpoint 3, deploy it from `main`, and record the incident counts on issue #41. Then P5 (evidence, provenance and hypothesis records). Issue #29 benchmark work continues afterwards.
+Merge IRE-0010 checkpoint 4, deploy it from `main`, and record the incident counts on issue #41. Then P5 (evidence, provenance and hypothesis records). Issue #29 benchmark work continues afterwards.

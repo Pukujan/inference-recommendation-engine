@@ -333,6 +333,25 @@ class KillAndLauncherTests(unittest.TestCase):
         self.assertEqual(json.loads(e["metrics_json"])["stderr_class"], "models_refresh_warning")
         self.assertEqual([r["run_id"] for r in rows["unattributed_failure"]], ["astra-G"])
 
+    def test_fast_provider_rejection_is_not_also_an_early_exit(self) -> None:
+        # Launcher root span carries provider.error.* (fact_runs has no code): one incident, not two.
+        inputs = {
+            "runs": [run("astra-R", outcome="failed", exit_code=1, wall_s=6.0, n_tool_calls=0)],
+            "root_errors": [
+                {
+                    "run_id": "astra-R",
+                    "trace_id": "tR",
+                    "span_id": "root",
+                    "code": 11133,
+                    "http_status": 400,
+                    "type": "model_param_invalid",
+                    "request_ids": ["req-r"],
+                }
+            ],
+        }
+        rows = by_type(detect(inputs))
+        self.assertEqual(sorted(rows), ["provider_param_rejection"])
+
     def test_terminated_without_closeout(self) -> None:
         inputs = {
             "runs": [
