@@ -1,7 +1,8 @@
 -- Long form of the error mix behind fact_route_reliability: route x window x (status, http_status).
 -- Same windows (ending at the request-log coverage end) and error_type mapping.
 WITH w(win, hours) AS (VALUES ('1h', 1), ('24h', 24), ('7d', 168)),
-cov AS (SELECT max(fetched_at) AS window_end FROM fact_request_billing),
+cov AS (SELECT greatest(max(fetched_at), coalesce({LOGS_FETCHED_AT}, max(fetched_at))) AS window_end
+         FROM fact_request_billing),
 b AS (
   SELECT route, rail, ts, status, http_status, is_error,
     CASE

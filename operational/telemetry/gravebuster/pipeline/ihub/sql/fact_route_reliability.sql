@@ -1,13 +1,15 @@
 -- Rolling reliability per route (<rail>/<model>) and window (1h / 24h / 7d), ending at the request
--- log coverage end (window_end = max fetched_at of the billing rows, i.e. the last log fetch), so a
--- window is never cut short by the 15-min log cadence. One row per route x window with >= 1 request.
+-- log coverage end (window_end = last successful log fetch from state/logs_state.json, else max
+-- fetched_at of the billing rows), so a window is never cut short by the 15-min log cadence.
+-- One row per route x window with >= 1 request.
 -- error_type: ok | upstream_unavailable (502/503) | timeout (408/504) | rate_limited (429) |
 --   server_error (other 5xx) | client_request_error (other 4xx) | client_cancelled (499) |
 --   auth (401/403) | payment_required (402) | failed_http_200 | unknown.
 -- service_* excludes client/account-attributable errors (client_request_error, client_cancelled,
 -- auth, payment_required) like IRE's metrics exclude client-caused attempts; raw rates keep them.
 WITH w(win, hours) AS (VALUES ('1h', 1), ('24h', 24), ('7d', 168)),
-cov AS (SELECT max(fetched_at) AS window_end FROM fact_request_billing),
+cov AS (SELECT greatest(max(fetched_at), coalesce({LOGS_FETCHED_AT}, max(fetched_at))) AS window_end
+         FROM fact_request_billing),
 b AS (
   SELECT *,
     CASE
