@@ -40,6 +40,7 @@ For README, product, visual, or marketing work, load the helper's README playboo
   runs the same gates. `pnpm check:static` runs ESLint for JavaScript, Ruff
   lint and format checks for Python, and mypy for `operational/scripts`.
 - For user-authorized long-running model-agent tasks, run `.\run_codex_harness.ps1` with the selected model and task prompt. It supplies repository-scoped workspace write access, disables routine command approval prompts, enables network for tool execution, and streams JSONL progress. Do not silently switch these runs to read-only or add permission prompts after authorization. If Codex or a managed policy rejects the requested mode, stop and report that concrete error. Preserve the configured model-provider credential source and existing receipt procedures.
+- Before configuring, launching, or spawning any coding CLI through a BYOK inference endpoint, read `docs/INFERHUB-API-SETUP.md`. Apply its provider-specific URL/auth setup, explicit model routing at every CLI/subagent hop, full authorized tool access, stream/liveness handling, retry/resume rules, and evidence receipt requirements. This applies to Codex CLI, Claude Code, Pi, and compatible coding CLIs; do not assume a child process inherited the parent CLI's provider, key, model, or permissions.
 - GitHub Issues, pull requests, and commit history own project plans, issue
   status, and code changes. Private operational records and evidence live only
   in the ignored `.ire/issue-ledger/ledger.sqlite3`; never commit or upload the

@@ -7,7 +7,7 @@ a sub-issue of [#8](https://github.com/Pukujan/inference-recommendation-engine/i
 
 The runner and policy merged in PR [#25](https://github.com/Pukujan/inference-recommendation-engine/pull/25)
 as `2eab9ee9cd43effff3c47455a08c8ab4f43a3605`; both required CI checks passed.
-This follow-up records verified closeout before issue #24 is closed.
+Issue #24 was closed on 2026-09-24 after the merged closeout record in PR #26.
 
 ## Goal
 
@@ -73,5 +73,5 @@ read-only mode or ask repeatedly for routine tool permission.
 
 ## Next action
 
-Publish this verified closeout record and close issue #24. Then create the next
-issue for streaming/liveness and task-resume behavior under issue #8.
+The verified closeout record and issue #24 closure are complete. See IRE-0006
+and issue #27 for the follow-up BYOK CLI, streaming, and task-resume runbook.
