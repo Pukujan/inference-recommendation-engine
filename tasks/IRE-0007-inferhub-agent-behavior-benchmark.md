@@ -69,13 +69,17 @@ receipts remain in the approved private receipt store.
 - 2026-09-24: Added the effective-free threshold and Top 20/Top 20+ preference
   to the canonical runbook. Corrected issue #29 PDD/SDD/TDD before any model
   run. No model request or credential access occurred.
+- 2026-09-24: Documentation checkpoint PR [#30](https://github.com/Pukujan/inference-recommendation-engine/pull/30)
+  merged at `5dba69d3c666785057400065cc3677d4288b1dd0` after both required CI
+  checks passed. `node scripts/finalize-checkpoint.mjs --pr 30` synchronized
+  the canonical `main` checkout and removed only its verified local branch.
 - 2026-09-24: Local validation passed: `pnpm check:static`, `pnpm test` (26),
   `pnpm check:public`, `pnpm test:operational` (41), `pnpm pack --dry-run`,
-  and `git diff --check`.
+  and `git diff --check`. No model request or credential access occurred.
 
 ## Next action
 
-Run the repository gates and deliver this documentation increment with the
-checkpoint helper. After its required CI passes and it merges, run the blind
-benchmark specified in issue #29 and append the observed results to that issue
-and the durable task/checkpoint records.
+Prepare the blinded benchmark fixture, current eligible route selection,
+private receipt destination, and verifier under issue #29 before requesting
+any inference. Then run the documented benchmark and append observed results
+to the issue and durable task/checkpoint records.
