@@ -12,6 +12,8 @@ const allowed = new Set([
   'node_modules',
   'coverage',
   'local',
+  '.ire',
+  '.kilo',
 ]);
 const operationalLedgerPaths = [
   /^checkpoints\/2026-09-22-operational-ledger-relocation\.md$/i,
@@ -28,6 +30,7 @@ const explicitlyDocumentedPaths = new Set([
   'tasks/ire-0005-codex-harness-permissions.md',
   `tasks/ire-0006-${namedIntegration}-cli-agent-runbook.md`,
   `tasks/ire-0007-${namedIntegration}-agent-behavior-benchmark.md`,
+  'tasks/ire-0008-kilo-staff-background-helpers.md',
   'checkpoints/current.md',
 ]);
 const binaryExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2']);

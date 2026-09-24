@@ -3,7 +3,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['.venv/**', 'coverage/**', 'node_modules/**'],
+    ignores: ['.venv/**', 'coverage/**', 'node_modules/**', '.ire/**'],
   },
   {
     files: ['**/*.mjs'],
