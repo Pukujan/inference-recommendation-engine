@@ -1,0 +1,24 @@
+version: 2
+# Kilo marts (atpipe/ingest_kilo.py). Only `unique` tests: an empty source makes dbt-duckdb's external
+# materialization write one all-NULL row, which ingest_kilo.fix_empty_marts drops after the build.
+models:
+  - name: kilo_fact_runs
+    columns:
+      - name: run_id
+        tests: [unique]
+  - name: kilo_fact_hops
+    columns:
+      - name: hop_id
+        tests: [unique]
+  - name: kilo_fact_model_requests
+    columns:
+      - name: request_id
+        tests: [unique]
+  - name: kilo_fact_tool_calls
+    columns:
+      - name: tool_call_id
+        tests: [unique]
+  - name: kilo_fact_idle_gaps
+    columns:
+      - name: gap_id
+        tests: [unique]
