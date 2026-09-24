@@ -1,38 +1,65 @@
 {
- "collector_git_sha": "55316c7a536987ee0bddd8c5927030b74975e707",
+ "catalogue": {
+  "generated_at": "2026-09-24T23:49:54Z",
+  "routes": 61,
+  "schema": "ihub-route-catalogue/v1",
+  "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
+  "schema_sha256": "816973ec9a5b60ce6aebcfcb1bd40ebee187a426d98cd01ba7b8868db7460f65",
+  "status_counts": {
+   "degraded": 0,
+   "failing": 1,
+   "healthy": 6,
+   "insufficient_data": 54
+  }
+ },
+ "collector_git_sha": "3492b2d014edd1ac40e583a55d465e17f884634b",
  "day_et": "2026-09-24",
  "files": {
   "pricing.csv": {
-   "bytes": 126370,
+   "bytes": 126292,
    "rows": 264,
-   "sha256": "76d4076cf8e58ed253aa46a0918ad4b9c62c1c4d95945fa5cd8725a767ab5078"
+   "sha256": "41418a3e87f5a865f080d05f9e14f00dca6913fcec9c26dc3f06fd4ad34d2b28"
   },
   "providers.csv": {
    "bytes": 775,
    "rows": 11,
-   "sha256": "1afebdd019260c0c897c1cf1860a11a50ff4030565b0b061c0b431a6562b4151"
+   "sha256": "c5f66475e1b77ce17c6295f72a96cd771e0ff14fcab24c9d847efd901991a845"
+  },
+  "route-catalogue.csv": {
+   "bytes": 33896,
+   "rows": 61,
+   "sha256": "16a0fe938f76875906ab480f33c2f76a4299389ba00d5be8cb744e99e7c70f1c"
+  },
+  "route-catalogue.json": {
+   "bytes": 175000,
+   "sha256": "93a8c0c8b0073705f72b4bb946784ba36370607104a6200aba4875ce35327329"
   },
   "route-daily-summary.csv": {
-   "bytes": 14774,
+   "bytes": 15010,
    "rows": 125,
-   "sha256": "c64cc3863172013b280f340e217ad915b892d0085d14c628e11db0ede248411a"
+   "sha256": "77ff2c845d6b09fe35f34a7c02b9cb8e853d0618e1096cfb70914a94d67608ae"
+  },
+  "route-reliability.csv": {
+   "bytes": 17464,
+   "rows": 28,
+   "sha256": "c2dcb8487e8a6fd78b0cf020c8430b00a3834f02cf6b3b0850fc4fb7ff9b088a"
   }
  },
- "generated_utc": "2026-09-24T23:24:10+00:00",
+ "generated_utc": "2026-09-24T23:49:54+00:00",
  "note": "Asks are listed prices, not guaranteed; InferHub may route to a higher tier when cheaper sellers are at their concurrency limit. Served prices are in request logs.",
  "raw_host": "gravebuster:/srv/agent-telemetry/data/inferhub/raw",
  "schema": "ihub-daily-snapshot/v1",
- "snapshot_utc": "2026-09-24T23:20:19.115Z",
+ "snapshot_utc": "2026-09-24T23:45:24.629Z",
  "sources": {
   "catalog": {
-   "bytes": 81899,
+   "bytes": 81884,
    "endpoint": "catalog",
-   "fetched_at": "2026-09-24T23:20:19.115Z",
-   "path": "catalog/2026-09-24/232019115Z-4146fc56.json.zst",
-   "sha256": "4146fc5646934a9ab8c7b4e91755b29d405e205cd7d1d1b902abe5696d605129",
+   "fetched_at": "2026-09-24T23:45:24.629Z",
+   "path": "catalog/2026-09-24/234524629Z-faf16f50.json.zst",
+   "sha256": "faf16f508c32718115e5403744c9a4883da72cd63e721b03988a048c85c60bd7",
    "url": "https://inferhub.dev/api/catalog",
-   "zst_bytes": 13257,
-   "zst_sha256": "6fb29537173e48060f02d0572aeceadf64274b02fa149221b03a6271cb753ef4"
+   "zst_bytes": 13261,
+   "zst_sha256": "6292af4799d9b090db202d1f44fdcf6f8c61f70125f97aca7ac162e64422ad04"
   },
   "models": {
    "bytes": 70717,

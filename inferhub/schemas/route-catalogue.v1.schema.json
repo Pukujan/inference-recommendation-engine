@@ -1,0 +1,1728 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Pukujan/inference-recommendation-engine/blob/main/operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
+ "title": "ihub-route-catalogue/v1",
+ "description": "Reliability-adjusted InferHub route catalogue for agents (IRE #46 M4). Generated every 15 min on the telemetry host (catalogue/route-catalogue.json) and published daily to the data branch. Every status is an evidence-backed hypothesis, not a fact. The CSV sibling (route-catalogue.csv) flattens routes[] one row per route.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema",
+  "schema_file",
+  "hypothesis_notice",
+  "generated_at",
+  "code_commit",
+  "evidence",
+  "method",
+  "status_counts",
+  "models",
+  "routes"
+ ],
+ "properties": {
+  "schema": {
+   "const": "ihub-route-catalogue/v1"
+  },
+  "schema_file": {
+   "type": "string"
+  },
+  "hypothesis_notice": {
+   "type": "string"
+  },
+  "generated_at": {
+   "type": "string",
+   "description": "UTC time the artifact was written."
+  },
+  "code_commit": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "description": "Deployed IRE commit (DEPLOYED sha) of the generating code."
+  },
+  "evidence": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "request_log_coverage_end",
+    "modeled_snapshot",
+    "latest_catalog_fetch",
+    "inputs_sha256",
+    "static_lists"
+   ],
+   "properties": {
+    "request_log_coverage_end": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "ISO 8601 UTC timestamp (Z)"
+    },
+    "modeled_snapshot": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "properties": {
+      "dir": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "run_id": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "built_at": {
+       "type": [
+        "string",
+        "null"
+       ]
+      }
+     }
+    },
+    "latest_catalog_fetch": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "description": "Last successful /api/catalog fetch: raw body sha256 = snapshot hash of the order book.",
+     "properties": {
+      "fetched_at": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "sha256": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "raw_path": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "dup_of_previous": {
+       "type": "boolean"
+      }
+     }
+    },
+    "inputs_sha256": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "sha256 over the modeled parquet files read (reliability, route price, dim route, status)."
+    },
+    "static_lists": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "list",
+       "file",
+       "sha256",
+       "sha256_verified"
+      ],
+      "properties": {
+       "list": {
+        "type": "string"
+       },
+       "file": {
+        "type": "string"
+       },
+       "sha256": {
+        "type": "string"
+       },
+       "sha256_verified": {
+        "type": "boolean"
+       },
+       "meaning": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "profile": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "generated_utc": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "method": {
+   "type": "object",
+   "required": [
+    "windows",
+    "status_values",
+    "thresholds"
+   ]
+  },
+  "status_counts": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "healthy",
+    "insufficient_data",
+    "degraded",
+    "failing"
+   ],
+   "properties": {
+    "healthy": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "insufficient_data": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "degraded": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "failing": {
+     "type": "integer",
+     "minimum": 0
+    }
+   }
+  },
+  "models": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "model_family",
+     "vendor",
+     "lists",
+     "routes",
+     "static_cost_usd_per_mtok",
+     "price_regime",
+     "performance_evidence_status",
+     "recommendation_eligible_static",
+     "route_status",
+     "best_route",
+     "best_route_status",
+     "best_route_confidence",
+     "best_route_live_min_ask_in",
+     "best_route_live_min_ask_out",
+     "reliability_adjusted_rank"
+    ],
+    "properties": {
+     "model_family": {
+      "type": "string"
+     },
+     "vendor": {
+      "type": "string"
+     },
+     "lists": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "required": [
+        "list",
+        "rank",
+        "recommendation_eligible",
+        "gate_reasons"
+       ],
+       "properties": {
+        "list": {
+         "type": "string"
+        },
+        "rank": {
+         "type": "integer"
+        },
+        "recommendation_eligible": {
+         "type": "boolean"
+        },
+        "gate_reasons": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       }
+      }
+     },
+     "routes": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "static_cost_usd_per_mtok": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "price_regime": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "performance_evidence_status": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "recommendation_eligible_static": {
+      "type": "boolean"
+     },
+     "route_status": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string",
+       "enum": [
+        "healthy",
+        "insufficient_data",
+        "degraded",
+        "failing"
+       ]
+      }
+     },
+     "best_route": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "best_route_status": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "enum": [
+       "healthy",
+       "insufficient_data",
+       "degraded",
+       "failing",
+       null
+      ]
+     },
+     "best_route_confidence": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "enum": [
+       "low",
+       "medium",
+       "high",
+       null
+      ]
+     },
+     "best_route_live_min_ask_in": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_live_min_ask_out": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "reliability_adjusted_rank": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Hypothesis ordering: best route status, then static rank. Not a replacement for the static lists."
+     }
+    }
+   }
+  },
+  "routes": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "route",
+     "rail",
+     "model_id",
+     "model_label",
+     "lists",
+     "recommendation_eligible_static",
+     "in_live_catalog",
+     "enabled",
+     "status",
+     "confidence",
+     "status_reasons",
+     "price",
+     "reliability",
+     "evidence"
+    ],
+    "properties": {
+     "route": {
+      "type": "string",
+      "description": "<rail>/<model id> as sent in the model field."
+     },
+     "rail": {
+      "type": "string"
+     },
+     "model_id": {
+      "type": "string"
+     },
+     "model_label": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "lists": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "required": [
+        "list",
+        "rank",
+        "model_family",
+        "recommendation_eligible",
+        "gate_reasons",
+        "route_position"
+       ],
+       "properties": {
+        "list": {
+         "type": "string",
+         "enum": [
+          "top20",
+          "daily_shortlist"
+         ]
+        },
+        "rank": {
+         "type": "integer",
+         "minimum": 1
+        },
+        "model_family": {
+         "type": "string"
+        },
+        "recommendation_eligible": {
+         "type": "boolean",
+         "description": "Copied unchanged from the static list."
+        },
+        "gate_reasons": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "route_position": {
+         "type": "integer",
+         "minimum": 1,
+         "description": "Position of this route in the list row's model_ids."
+        }
+       }
+      }
+     },
+     "recommendation_eligible_static": {
+      "type": [
+       "boolean",
+       "null"
+      ],
+      "description": "Any static list row marks it eligible; null = route not in any static list (observed traffic only)."
+     },
+     "in_live_catalog": {
+      "type": "boolean"
+     },
+     "enabled": {
+      "type": [
+       "boolean",
+       "null"
+      ]
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "healthy",
+       "insufficient_data",
+       "degraded",
+       "failing"
+      ]
+     },
+     "confidence": {
+      "type": "string",
+      "enum": [
+       "low",
+       "medium",
+       "high"
+      ]
+     },
+     "status_reasons": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "minItems": 1
+     },
+     "price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "live_price_ts",
+       "live_min_ask_in",
+       "live_min_ask_out",
+       "live_min_tier_avail_in",
+       "live_cw_median_ask_in",
+       "live_cw_median_ask_out",
+       "official_in",
+       "official_out",
+       "live_listings_in",
+       "policy_threshold_usd_per_mtok",
+       "live_min_ask_in_under_policy",
+       "live_min_ask_out_under_policy",
+       "live_cw_median_ask_in_under_policy",
+       "served_ask_in_median_24h",
+       "served_ask_out_median_24h",
+       "served_tier_rank_in_median_24h",
+       "share_served_at_min_tier_24h",
+       "share_served_under_policy_24h"
+      ],
+      "properties": {
+       "live_price_ts": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "description": "ISO 8601 UTC timestamp (Z)"
+       },
+       "live_min_ask_in": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "live_min_ask_out": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "live_min_tier_avail_in": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "minimum": 0
+       },
+       "live_cw_median_ask_in": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "live_cw_median_ask_out": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "official_in": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "official_out": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "live_listings_in": {
+        "type": [
+         "integer",
+         "null"
+        ],
+        "minimum": 0
+       },
+       "policy_threshold_usd_per_mtok": {
+        "type": "number"
+       },
+       "live_min_ask_in_under_policy": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "live_min_ask_out_under_policy": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "live_cw_median_ask_in_under_policy": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "served_ask_in_median_24h": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "served_ask_out_median_24h": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "served_tier_rank_in_median_24h": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "share_served_at_min_tier_24h": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "share_served_under_policy_24h": {
+        "type": [
+         "number",
+         "null"
+        ]
+       }
+      },
+      "description": "USD per 1M tokens. live_* = latest /api/catalog order book (listed asks, not guaranteed); cw_median = capacity-weighted median tier; served_* = what this account was actually charged (request logs, 24h). Policy threshold from docs/INFERHUB-API-SETUP.md (not edited here)."
+     },
+     "reliability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "1h",
+       "24h",
+       "7d"
+      ],
+      "properties": {
+       "1h": {
+        "type": [
+         "object",
+         "null"
+        ],
+        "additionalProperties": false,
+        "required": [
+         "window_start",
+         "window_end",
+         "requests",
+         "ok",
+         "errors",
+         "client_errors",
+         "service_attempts",
+         "err_upstream_unavailable",
+         "err_timeout",
+         "err_rate_limited",
+         "err_server_error",
+         "err_client_request_error",
+         "err_client_cancelled",
+         "err_auth",
+         "err_payment_required",
+         "err_other",
+         "served_tier_known",
+         "served_at_min_tier",
+         "tokens_in",
+         "tokens_out",
+         "tokens_cached",
+         "success_rate",
+         "service_success_rate",
+         "ttft_ms_p50",
+         "ttft_ms_p95",
+         "duration_ms_p50",
+         "duration_ms_p95",
+         "served_ask_in_median",
+         "served_ask_out_median",
+         "served_ask_in_min",
+         "served_ask_in_max",
+         "served_tier_rank_in_median",
+         "share_served_at_min_tier",
+         "share_served_under_policy",
+         "billed_cost_usdc",
+         "last_request_at",
+         "last_ok_at",
+         "last_service_error_at"
+        ],
+        "properties": {
+         "window_start": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "window_end": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "requests": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "All request-log rows (attempts) of this account on the route inside the window."
+         },
+         "ok": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "errors": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "client_errors": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "service_attempts": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
+         },
+         "err_upstream_unavailable": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "HTTP 502/503 failures."
+         },
+         "err_timeout": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "HTTP 408/504 failures."
+         },
+         "err_rate_limited": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_server_error": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_client_request_error": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_client_cancelled": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_auth": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_payment_required": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_other": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "served_tier_known": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "served_at_min_tier": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_in": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_out": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_cached": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "success_rate": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "ok / requests."
+         },
+         "service_success_rate": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "ok / service_attempts (basis of status)."
+         },
+         "ttft_ms_p50": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Time to first token, successful rows, ms."
+         },
+         "ttft_ms_p95": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "duration_ms_p50": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "duration_ms_p95": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_median": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
+         },
+         "served_ask_out_median": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_min": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_max": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_tier_rank_in_median": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
+         },
+         "share_served_at_min_tier": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "share_served_under_policy": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Share of priced successful rows with served input ask below the policy threshold."
+         },
+         "billed_cost_usdc": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Sum of cost_consumer_usdc from the request logs."
+         },
+         "last_request_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "last_ok_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "last_service_error_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         }
+        },
+        "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+       },
+       "24h": {
+        "type": [
+         "object",
+         "null"
+        ],
+        "additionalProperties": false,
+        "required": [
+         "window_start",
+         "window_end",
+         "requests",
+         "ok",
+         "errors",
+         "client_errors",
+         "service_attempts",
+         "err_upstream_unavailable",
+         "err_timeout",
+         "err_rate_limited",
+         "err_server_error",
+         "err_client_request_error",
+         "err_client_cancelled",
+         "err_auth",
+         "err_payment_required",
+         "err_other",
+         "served_tier_known",
+         "served_at_min_tier",
+         "tokens_in",
+         "tokens_out",
+         "tokens_cached",
+         "success_rate",
+         "service_success_rate",
+         "ttft_ms_p50",
+         "ttft_ms_p95",
+         "duration_ms_p50",
+         "duration_ms_p95",
+         "served_ask_in_median",
+         "served_ask_out_median",
+         "served_ask_in_min",
+         "served_ask_in_max",
+         "served_tier_rank_in_median",
+         "share_served_at_min_tier",
+         "share_served_under_policy",
+         "billed_cost_usdc",
+         "last_request_at",
+         "last_ok_at",
+         "last_service_error_at"
+        ],
+        "properties": {
+         "window_start": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "window_end": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "requests": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "All request-log rows (attempts) of this account on the route inside the window."
+         },
+         "ok": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "errors": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "client_errors": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "service_attempts": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
+         },
+         "err_upstream_unavailable": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "HTTP 502/503 failures."
+         },
+         "err_timeout": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "HTTP 408/504 failures."
+         },
+         "err_rate_limited": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_server_error": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_client_request_error": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_client_cancelled": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_auth": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_payment_required": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_other": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "served_tier_known": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "served_at_min_tier": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_in": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_out": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_cached": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "success_rate": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "ok / requests."
+         },
+         "service_success_rate": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "ok / service_attempts (basis of status)."
+         },
+         "ttft_ms_p50": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Time to first token, successful rows, ms."
+         },
+         "ttft_ms_p95": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "duration_ms_p50": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "duration_ms_p95": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_median": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
+         },
+         "served_ask_out_median": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_min": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_max": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_tier_rank_in_median": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
+         },
+         "share_served_at_min_tier": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "share_served_under_policy": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Share of priced successful rows with served input ask below the policy threshold."
+         },
+         "billed_cost_usdc": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Sum of cost_consumer_usdc from the request logs."
+         },
+         "last_request_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "last_ok_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "last_service_error_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         }
+        },
+        "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+       },
+       "7d": {
+        "type": [
+         "object",
+         "null"
+        ],
+        "additionalProperties": false,
+        "required": [
+         "window_start",
+         "window_end",
+         "requests",
+         "ok",
+         "errors",
+         "client_errors",
+         "service_attempts",
+         "err_upstream_unavailable",
+         "err_timeout",
+         "err_rate_limited",
+         "err_server_error",
+         "err_client_request_error",
+         "err_client_cancelled",
+         "err_auth",
+         "err_payment_required",
+         "err_other",
+         "served_tier_known",
+         "served_at_min_tier",
+         "tokens_in",
+         "tokens_out",
+         "tokens_cached",
+         "success_rate",
+         "service_success_rate",
+         "ttft_ms_p50",
+         "ttft_ms_p95",
+         "duration_ms_p50",
+         "duration_ms_p95",
+         "served_ask_in_median",
+         "served_ask_out_median",
+         "served_ask_in_min",
+         "served_ask_in_max",
+         "served_tier_rank_in_median",
+         "share_served_at_min_tier",
+         "share_served_under_policy",
+         "billed_cost_usdc",
+         "last_request_at",
+         "last_ok_at",
+         "last_service_error_at"
+        ],
+        "properties": {
+         "window_start": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "window_end": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "requests": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "All request-log rows (attempts) of this account on the route inside the window."
+         },
+         "ok": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "errors": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "client_errors": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "service_attempts": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
+         },
+         "err_upstream_unavailable": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "HTTP 502/503 failures."
+         },
+         "err_timeout": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0,
+          "description": "HTTP 408/504 failures."
+         },
+         "err_rate_limited": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_server_error": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_client_request_error": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_client_cancelled": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_auth": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_payment_required": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "err_other": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "served_tier_known": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "served_at_min_tier": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_in": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_out": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "tokens_cached": {
+          "type": [
+           "integer",
+           "null"
+          ],
+          "minimum": 0
+         },
+         "success_rate": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "ok / requests."
+         },
+         "service_success_rate": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "ok / service_attempts (basis of status)."
+         },
+         "ttft_ms_p50": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Time to first token, successful rows, ms."
+         },
+         "ttft_ms_p95": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "duration_ms_p50": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "duration_ms_p95": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_median": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
+         },
+         "served_ask_out_median": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_min": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_ask_in_max": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "served_tier_rank_in_median": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
+         },
+         "share_served_at_min_tier": {
+          "type": [
+           "number",
+           "null"
+          ]
+         },
+         "share_served_under_policy": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Share of priced successful rows with served input ask below the policy threshold."
+         },
+         "billed_cost_usdc": {
+          "type": [
+           "number",
+           "null"
+          ],
+          "description": "Sum of cost_consumer_usdc from the request logs."
+         },
+         "last_request_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "last_ok_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         },
+         "last_service_error_at": {
+          "type": [
+           "string",
+           "null"
+          ],
+          "description": "ISO 8601 UTC timestamp (Z)"
+         }
+        },
+        "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+       }
+      }
+     },
+     "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "decided_window",
+       "decided_service_attempts",
+       "decided_ok",
+       "wilson_lower",
+       "wilson_upper",
+       "request_log_coverage_end",
+       "live_book_hash",
+       "platform_rail_state",
+       "platform_availability_24h_pct",
+       "source"
+      ],
+      "properties": {
+       "decided_window": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "enum": [
+         "1h",
+         "24h",
+         "7d",
+         null
+        ]
+       },
+       "decided_service_attempts": {
+        "type": "integer",
+        "minimum": 0
+       },
+       "decided_ok": {
+        "type": "integer",
+        "minimum": 0
+       },
+       "wilson_lower": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "wilson_upper": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "request_log_coverage_end": {
+        "type": [
+         "string",
+         "null"
+        ],
+        "description": "ISO 8601 UTC timestamp (Z)"
+       },
+       "live_book_hash": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "platform_rail_state": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "platform_availability_24h_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "source": {
+        "type": "string"
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "x-csv": {
+  "file": "route-catalogue.csv",
+  "description": "One row per routes[] entry; lists = 'list:rank;...'; status_reasons joined with ' | '; empty cell = null.",
+  "columns": [
+   "route",
+   "rail",
+   "model_id",
+   "model_label",
+   "lists",
+   "recommendation_eligible_static",
+   "in_live_catalog",
+   "enabled",
+   "status",
+   "confidence",
+   "decided_window",
+   "decided_service_attempts",
+   "decided_ok",
+   "wilson_lower",
+   "wilson_upper",
+   "status_reasons",
+   "live_min_ask_in",
+   "live_min_ask_out",
+   "live_min_tier_avail_in",
+   "live_cw_median_ask_in",
+   "live_cw_median_ask_out",
+   "official_in",
+   "official_out",
+   "live_min_ask_in_under_policy",
+   "served_ask_in_median_24h",
+   "served_ask_out_median_24h",
+   "served_tier_rank_in_median_24h",
+   "share_served_under_policy_24h",
+   "requests_1h",
+   "ok_1h",
+   "errors_1h",
+   "client_errors_1h",
+   "service_attempts_1h",
+   "service_success_rate_1h",
+   "err_upstream_unavailable_1h",
+   "err_timeout_1h",
+   "err_rate_limited_1h",
+   "err_server_error_1h",
+   "ttft_ms_p50_1h",
+   "ttft_ms_p95_1h",
+   "duration_ms_p50_1h",
+   "duration_ms_p95_1h",
+   "requests_24h",
+   "ok_24h",
+   "errors_24h",
+   "client_errors_24h",
+   "service_attempts_24h",
+   "service_success_rate_24h",
+   "err_upstream_unavailable_24h",
+   "err_timeout_24h",
+   "err_rate_limited_24h",
+   "err_server_error_24h",
+   "ttft_ms_p50_24h",
+   "ttft_ms_p95_24h",
+   "duration_ms_p50_24h",
+   "duration_ms_p95_24h",
+   "requests_7d",
+   "ok_7d",
+   "errors_7d",
+   "client_errors_7d",
+   "service_attempts_7d",
+   "service_success_rate_7d",
+   "err_upstream_unavailable_7d",
+   "err_timeout_7d",
+   "err_rate_limited_7d",
+   "err_server_error_7d",
+   "ttft_ms_p50_7d",
+   "ttft_ms_p95_7d",
+   "duration_ms_p50_7d",
+   "duration_ms_p95_7d",
+   "platform_rail_state",
+   "live_book_hash",
+   "live_price_ts",
+   "request_log_coverage_end",
+   "generated_at",
+   "code_commit",
+   "catalog_raw_sha256"
+  ]
+ }
+}

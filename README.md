@@ -12,6 +12,10 @@ GET-only collector on the telemetry host (IRE issue #46). Not merged into `main`
   snapshots, % of snapshots under the $0.10/1M policy threshold).
 - `manifest.json`: sha256 of each CSV and of the raw API responses they came from (raw stays on the
   telemetry host under data/inferhub/raw, append-only, zstd).
+- `route-catalogue.json` / `.csv`, `route-reliability.csv` (from 2026-09-24): reliability-adjusted
+  route catalogue (static Top 20 / daily shortlist joined with live price and rolling 1h/24h/7d
+  request-log reliability; statuses are evidence-backed hypotheses) as of the publish time.
+  Latest copy: `inferhub/route-catalogue/latest/`; JSON Schema: `inferhub/schemas/`.
 - `index.csv`: one line per day.
 
 Prices are listed asks, not guarantees. Code, schemas and docs live on `main` under

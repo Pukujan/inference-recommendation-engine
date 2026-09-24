@@ -1,0 +1,5975 @@
+{
+ "schema": "ihub-route-catalogue/v1",
+ "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
+ "hypothesis_notice": "Statuses, confidence and reliability_adjusted_rank are evidence-backed hypotheses from this account's own request logs and the live order book at generated_at, not facts or guarantees. Static list fields are copied from the 2026-09-22 lists unchanged. Prices are listed asks (USD per 1M tokens); served prices can be higher.",
+ "generated_at": "2026-09-24T23:49:54Z",
+ "code_commit": "3492b2d014edd1ac40e583a55d465e17f884634b",
+ "evidence": {
+  "request_log_coverage_end": "2026-09-24T23:48:40Z",
+  "modeled_snapshot": {
+   "dir": "snap-20260924T234827Z-cddbda",
+   "run_id": "20260924T234827Z-cddbda",
+   "built_at": "2026-09-24T23:48:41Z"
+  },
+  "latest_catalog_fetch": {
+   "fetched_at": "2026-09-24T23:45:24.629Z",
+   "sha256": "faf16f508c32718115e5403744c9a4883da72cd63e721b03988a048c85c60bd7",
+   "raw_path": "catalog/2026-09-24/234524629Z-faf16f50.json.zst",
+   "dup_of_previous": false
+  },
+  "inputs_sha256": "8ed20f6d9f59e531daf964524b26ce1d01ce8b89e7d30065733a6ec91bc1a280",
+  "static_lists": [
+   {
+    "list": "top20",
+    "file": "research_model_top20_recommendations.csv",
+    "sha256": "8e2b1b323cf9438b1274f321c309729d60f133ef14915895265ca76758570e7c",
+    "sha256_verified": true,
+    "meaning": "Top 20 recommendation view by empirical score; gated rows stay visible, recommendation_eligible marks rows allowed into the operational shortlist.",
+    "profile": "daily-cheap-reliable-recent",
+    "generated_utc": "2026-09-22T17:10:44.385Z"
+   },
+   {
+    "list": "daily_shortlist",
+    "file": "research_model_daily_shortlist.csv",
+    "sha256": "51cd8f45bc4acacc09f531f07a35d9e5a5f529d7d645965c92d062ab18362e5b",
+    "sha256_verified": true,
+    "meaning": "Operational shortlist selected from all eligible candidates (includes eligible models beyond the Top 20 view, e.g. MiMo V2.5). Treated as the 'Top 20+' list; that mapping is an interpretation (unverified).",
+    "profile": "daily-cheap-reliable-recent",
+    "generated_utc": "2026-09-22T17:10:44.385Z"
+   }
+  ]
+ },
+ "method": {
+  "windows": [
+   "1h",
+   "24h",
+   "7d"
+  ],
+  "window_end": "request-log coverage end (last log fetch), not generated_at",
+  "status_values": [
+   "healthy",
+   "insufficient_data",
+   "degraded",
+   "failing"
+  ],
+  "service_attempts": "requests minus client/account-attributable errors (client_request_error, client_cancelled, auth, payment_required)",
+  "thresholds": {
+   "min_service_attempts_1h": 5,
+   "min_service_attempts_24h": 10,
+   "failing_below_success_rate": 0.5,
+   "degraded_below_success_rate_1h": 0.9,
+   "healthy_min_success_rate_24h": 0.95,
+   "healthy_min_wilson_lower_24h": 0.9,
+   "wilson_z": 1.645,
+   "confidence_high": {
+    "min_attempts": 100,
+    "max_interval_width": 0.1
+   },
+   "confidence_medium": {
+    "min_attempts": 30,
+    "max_interval_width": 0.25
+   }
+  },
+  "platform_bad_states": [
+   "degraded",
+   "degraded_performance",
+   "down",
+   "major_outage",
+   "partial_outage"
+  ],
+  "best_route_order": "status (healthy, insufficient_data, degraded, failing), then in live catalog + enabled, then live capacity-weighted median input ask, then list position",
+  "reliability_adjusted_rank_order": "best route status, then static rank (top20 before daily_shortlist-only models)"
+ },
+ "status_counts": {
+  "healthy": 6,
+  "insufficient_data": 54,
+  "degraded": 0,
+  "failing": 1
+ },
+ "models": [
+  {
+   "model_family": "DeepSeek V4.1 Flash",
+   "vendor": "DeepSeek",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 1,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 1,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cb/deepseek-v4.1-flash",
+    "cbcn/deepseek-v4.1-flash",
+    "ali/deepseek-v4.1-flash",
+    "cp/cline-pass/deepseek-v4.1-flash",
+    "ocg/deepseek-v4.1-flash"
+   ],
+   "static_cost_usd_per_mtok": 0.022108,
+   "price_regime": "near_free",
+   "performance_evidence_status": "qualified_private",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cb/deepseek-v4.1-flash": "healthy",
+    "cbcn/deepseek-v4.1-flash": "insufficient_data",
+    "ocg/deepseek-v4.1-flash": "insufficient_data",
+    "ali/deepseek-v4.1-flash": "insufficient_data",
+    "cp/cline-pass/deepseek-v4.1-flash": "insufficient_data"
+   },
+   "best_route": "cb/deepseek-v4.1-flash",
+   "best_route_status": "healthy",
+   "best_route_confidence": "high",
+   "best_route_live_min_ask_in": 0.00015,
+   "best_route_live_min_ask_out": 0.0006,
+   "reliability_adjusted_rank": 1
+  },
+  {
+   "model_family": "Qwen3.8 Flash",
+   "vendor": "Alibaba/Qwen",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 7,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 4,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "ali/qwen3.8-flash",
+    "ocg/qwen3.8-flash"
+   ],
+   "static_cost_usd_per_mtok": 0.008056,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "ali/qwen3.8-flash": "healthy",
+    "ocg/qwen3.8-flash": "insufficient_data"
+   },
+   "best_route": "ali/qwen3.8-flash",
+   "best_route_status": "healthy",
+   "best_route_confidence": "high",
+   "best_route_live_min_ask_in": 0.00135,
+   "best_route_live_min_ask_out": 0.00423,
+   "reliability_adjusted_rank": 2
+  },
+  {
+   "model_family": "GLM 5.3",
+   "vendor": "Z.ai",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cbcn/glm-5.3",
+    "cb/glm-5.3",
+    "ali/glm-5.3",
+    "zai/glm-5.3",
+    "cp/cline-pass/glm-5.3",
+    "ocg/glm-5.3"
+   ],
+   "static_cost_usd_per_mtok": 0.26708,
+   "price_regime": "priced",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cb/glm-5.3": "healthy",
+    "cbcn/glm-5.3": "insufficient_data",
+    "zai/glm-5.3": "insufficient_data",
+    "ocg/glm-5.3": "insufficient_data",
+    "ali/glm-5.3": "insufficient_data",
+    "cp/cline-pass/glm-5.3": "insufficient_data"
+   },
+   "best_route": "cb/glm-5.3",
+   "best_route_status": "healthy",
+   "best_route_confidence": "high",
+   "best_route_live_min_ask_in": 0.0126,
+   "best_route_live_min_ask_out": 0.0396,
+   "reliability_adjusted_rank": 3
+  },
+  {
+   "model_family": "Kimi K2.7 Code",
+   "vendor": "Moonshot",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 20,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 8,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "ali/kimi-k2.7-code",
+    "cbcn/kimi-k2.7",
+    "cp/cline-pass/kimi-k2.7-code",
+    "cmc/moonshotai/Kimi-K2.7-Code",
+    "ocg/kimi-k2.7-code"
+   ],
+   "static_cost_usd_per_mtok": 0.155677,
+   "price_regime": "priced",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "ali/kimi-k2.7-code": "healthy",
+    "cbcn/kimi-k2.7": "insufficient_data",
+    "cp/cline-pass/kimi-k2.7-code": "insufficient_data",
+    "ocg/kimi-k2.7-code": "insufficient_data",
+    "cmc/moonshotai/Kimi-K2.7-Code": "insufficient_data"
+   },
+   "best_route": "ali/kimi-k2.7-code",
+   "best_route_status": "healthy",
+   "best_route_confidence": "high",
+   "best_route_live_min_ask_in": 0.00095,
+   "best_route_live_min_ask_out": 0.004,
+   "reliability_adjusted_rank": 4
+  },
+  {
+   "model_family": "GLM 5.3 Flash",
+   "vendor": "Z.ai",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 2,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 2,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cbcn/glm-5.3-flash",
+    "cp/zai/glm-5.3-flash",
+    "cmc/z-ai/glm-5.3-flash",
+    "zai/glm-5.3-flash",
+    "ocg/glm-5.3-flash"
+   ],
+   "static_cost_usd_per_mtok": 0.032924,
+   "price_regime": "near_free",
+   "performance_evidence_status": "qualified_private",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cbcn/glm-5.3-flash": "insufficient_data",
+    "cmc/z-ai/glm-5.3-flash": "insufficient_data",
+    "cp/zai/glm-5.3-flash": "insufficient_data",
+    "ocg/glm-5.3-flash": "insufficient_data",
+    "zai/glm-5.3-flash": "failing"
+   },
+   "best_route": "cbcn/glm-5.3-flash",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.0051,
+   "best_route_live_min_ask_out": 0.017,
+   "reliability_adjusted_rank": 5
+  },
+  {
+   "model_family": "Gemini 3.8 Flash",
+   "vendor": "Google",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 3,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth"
+     ]
+    }
+   ],
+   "routes": [
+    "ag/gemini-3.8-flash-high"
+   ],
+   "static_cost_usd_per_mtok": 0.066345,
+   "price_regime": "near_free",
+   "performance_evidence_status": "qualified_private",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "ag/gemini-3.8-flash-high": "insufficient_data"
+   },
+   "best_route": "ag/gemini-3.8-flash-high",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.00075,
+   "best_route_live_min_ask_out": 0.00375,
+   "reliability_adjusted_rank": 6
+  },
+  {
+   "model_family": "DeepSeek V4 Flash",
+   "vendor": "DeepSeek",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 4,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 3,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cbcn/deepseek-v4-flash",
+    "cmc/deepseek/deepseek-v4-flash",
+    "cp/cline-pass/deepseek-v4-flash",
+    "ocg/deepseek-v4-flash"
+   ],
+   "static_cost_usd_per_mtok": 0.046688,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cbcn/deepseek-v4-flash": "insufficient_data",
+    "cp/cline-pass/deepseek-v4-flash": "insufficient_data",
+    "ocg/deepseek-v4-flash": "insufficient_data",
+    "cmc/deepseek/deepseek-v4-flash": "insufficient_data"
+   },
+   "best_route": "cbcn/deepseek-v4-flash",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.00748,
+   "best_route_live_min_ask_out": 0.02244,
+   "reliability_adjusted_rank": 7
+  },
+  {
+   "model_family": "DeepSeek V4 Pro 0813",
+   "vendor": "DeepSeek",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 5,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth"
+     ]
+    }
+   ],
+   "routes": [
+    "ali/deepseek-v4-pro-0813"
+   ],
+   "static_cost_usd_per_mtok": 0.08298,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "ali/deepseek-v4-pro-0813": "insufficient_data"
+   },
+   "best_route": "ali/deepseek-v4-pro-0813",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.0165,
+   "best_route_live_min_ask_out": 0.0495,
+   "reliability_adjusted_rank": 8
+  },
+  {
+   "model_family": "Qwen3.8 Max 0902",
+   "vendor": "Alibaba/Qwen",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 6,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth",
+      "catalog_availability_below_minimum"
+     ]
+    }
+   ],
+   "routes": [
+    "ali/qwen3.8-max-0902"
+   ],
+   "static_cost_usd_per_mtok": 0.078043,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "ali/qwen3.8-max-0902": "insufficient_data"
+   },
+   "best_route": "ali/qwen3.8-max-0902",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.01,
+   "best_route_live_min_ask_out": 0.03,
+   "reliability_adjusted_rank": 9
+  },
+  {
+   "model_family": "Muse Spark 1.3 Contributor",
+   "vendor": "Meta",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 8,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth"
+     ]
+    }
+   ],
+   "routes": [
+    "cmc/meta/muse-spark-1.3-contributor"
+   ],
+   "static_cost_usd_per_mtok": 0.040076,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "cmc/meta/muse-spark-1.3-contributor": "insufficient_data"
+   },
+   "best_route": "cmc/meta/muse-spark-1.3-contributor",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.015,
+   "best_route_live_min_ask_out": 0.03,
+   "reliability_adjusted_rank": 10
+  },
+  {
+   "model_family": "GPT 5.6 Luna",
+   "vendor": "OpenAI",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 9,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "not_routing_eligible"
+     ]
+    }
+   ],
+   "routes": [
+    "cx/gpt-5.6-luna",
+    "cb/gpt-5.6-luna",
+    "ocg/gpt-5.6-luna"
+   ],
+   "static_cost_usd_per_mtok": 0.04015,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "cb/gpt-5.6-luna": "insufficient_data",
+    "ocg/gpt-5.6-luna": "insufficient_data",
+    "cx/gpt-5.6-luna": "insufficient_data"
+   },
+   "best_route": "cb/gpt-5.6-luna",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.0022,
+   "best_route_live_min_ask_out": 0.0132,
+   "reliability_adjusted_rank": 11
+  },
+  {
+   "model_family": "MiniMax M3",
+   "vendor": "MiniMax",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 10,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 5,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cbcn/minimax-m3",
+    "cb/minimax-m3",
+    "cp/cline-pass/minimax-m3",
+    "ocg/minimax-m3"
+   ],
+   "static_cost_usd_per_mtok": 0.052142,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cbcn/minimax-m3": "insufficient_data",
+    "cb/minimax-m3": "insufficient_data",
+    "ocg/minimax-m3": "insufficient_data",
+    "cp/cline-pass/minimax-m3": "insufficient_data"
+   },
+   "best_route": "cbcn/minimax-m3",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.0105,
+   "best_route_live_min_ask_out": 0.042,
+   "reliability_adjusted_rank": 12
+  },
+  {
+   "model_family": "DeepSeek V4 Flash 0731",
+   "vendor": "DeepSeek",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 11,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth"
+     ]
+    }
+   ],
+   "routes": [
+    "ali/deepseek-v4-flash-0731"
+   ],
+   "static_cost_usd_per_mtok": 0.091326,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "ali/deepseek-v4-flash-0731": "insufficient_data"
+   },
+   "best_route": "ali/deepseek-v4-flash-0731",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.02992,
+   "best_route_live_min_ask_out": 0.08976,
+   "reliability_adjusted_rank": 13
+  },
+  {
+   "model_family": "Gemini 3.7 Flash",
+   "vendor": "Google",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 12,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth",
+      "catalog_availability_below_minimum"
+     ]
+    }
+   ],
+   "routes": [
+    "ag/gemini-3.7-flash-high"
+   ],
+   "static_cost_usd_per_mtok": 0.077005,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "ag/gemini-3.7-flash-high": "insufficient_data"
+   },
+   "best_route": "ag/gemini-3.7-flash-high",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.00375,
+   "best_route_live_min_ask_out": 0.01875,
+   "reliability_adjusted_rank": 14
+  },
+  {
+   "model_family": "Gemini 3.6 Flash",
+   "vendor": "Google",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 13,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth",
+      "catalog_availability_below_minimum"
+     ]
+    }
+   ],
+   "routes": [
+    "ag/gemini-3.6-flash-high"
+   ],
+   "static_cost_usd_per_mtok": 0.080802,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "ag/gemini-3.6-flash-high": "insufficient_data"
+   },
+   "best_route": "ag/gemini-3.6-flash-high",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.00075,
+   "best_route_live_min_ask_out": 0.00375,
+   "reliability_adjusted_rank": 15
+  },
+  {
+   "model_family": "DeepSeek V4 Pro",
+   "vendor": "DeepSeek",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 14,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cbcn/deepseek-v4-pro",
+    "cmc/deepseek/deepseek-v4-pro",
+    "cp/cline-pass/deepseek-v4-pro"
+   ],
+   "static_cost_usd_per_mtok": 0.138399,
+   "price_regime": "priced",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cbcn/deepseek-v4-pro": "insufficient_data",
+    "cmc/deepseek/deepseek-v4-pro": "insufficient_data",
+    "cp/cline-pass/deepseek-v4-pro": "insufficient_data"
+   },
+   "best_route": "cbcn/deepseek-v4-pro",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.02244,
+   "best_route_live_min_ask_out": 0.06732,
+   "reliability_adjusted_rank": 16
+  },
+  {
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 15,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 6,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "ali/glm-5.2",
+    "cbcn/glm-5.2",
+    "cb/glm-5.2",
+    "cp/cline-pass/glm-5.2",
+    "cmc/zai-org/GLM-5.2"
+   ],
+   "static_cost_usd_per_mtok": 0.180507,
+   "price_regime": "priced",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "ali/glm-5.2": "insufficient_data",
+    "cb/glm-5.2": "insufficient_data",
+    "cbcn/glm-5.2": "insufficient_data",
+    "cp/cline-pass/glm-5.2": "insufficient_data",
+    "cmc/zai-org/GLM-5.2": "insufficient_data"
+   },
+   "best_route": "ali/glm-5.2",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.0042,
+   "best_route_live_min_ask_out": 0.0132,
+   "reliability_adjusted_rank": 17
+  },
+  {
+   "model_family": "Hy4 Preview",
+   "vendor": "Tencent",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 16,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "tier_below_minimum",
+      "capability_below_minimum",
+      "release_date_unknown"
+     ]
+    }
+   ],
+   "routes": [
+    "cb/hy4-preview",
+    "cbcn/hy4-preview"
+   ],
+   "static_cost_usd_per_mtok": 0.077408,
+   "price_regime": "near_free",
+   "performance_evidence_status": "qualified_private",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "cb/hy4-preview": "insufficient_data",
+    "cbcn/hy4-preview": "insufficient_data"
+   },
+   "best_route": "cb/hy4-preview",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.007506,
+   "best_route_live_min_ask_out": 0.022509,
+   "reliability_adjusted_rank": 18
+  },
+  {
+   "model_family": "Muse Spark 1.2 Contributor",
+   "vendor": "Meta",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 17,
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth"
+     ]
+    }
+   ],
+   "routes": [
+    "cmc/meta/muse-spark-1.2-contributor"
+   ],
+   "static_cost_usd_per_mtok": 0.028751,
+   "price_regime": "near_free",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": false,
+   "route_status": {
+    "cmc/meta/muse-spark-1.2-contributor": "insufficient_data"
+   },
+   "best_route": "cmc/meta/muse-spark-1.2-contributor",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.015,
+   "best_route_live_min_ask_out": 0.03,
+   "reliability_adjusted_rank": 19
+  },
+  {
+   "model_family": "Qwen 3.8 Max",
+   "vendor": "Alibaba/Qwen",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 18,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 7,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "ali/qwen3.8-max",
+    "cp/cline-pass/qwen3.8-max",
+    "ocg/qwen3.8-max"
+   ],
+   "static_cost_usd_per_mtok": 0.169559,
+   "price_regime": "priced",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "cp/cline-pass/qwen3.8-max": "insufficient_data",
+    "ocg/qwen3.8-max": "insufficient_data",
+    "ali/qwen3.8-max": "insufficient_data"
+   },
+   "best_route": "cp/cline-pass/qwen3.8-max",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.17,
+   "best_route_live_min_ask_out": 0.51,
+   "reliability_adjusted_rank": 20
+  },
+  {
+   "model_family": "MiMo V2.5",
+   "vendor": "Xiaomi",
+   "lists": [
+    {
+     "list": "daily_shortlist",
+     "rank": 9,
+     "recommendation_eligible": true,
+     "gate_reasons": []
+    }
+   ],
+   "routes": [
+    "cp/cline-pass/mimo-v2.5",
+    "ocg/mimo-v2.5"
+   ],
+   "static_cost_usd_per_mtok": 0.092838,
+   "price_regime": "unpriced",
+   "performance_evidence_status": "provisional_public",
+   "recommendation_eligible_static": true,
+   "route_status": {
+    "ocg/mimo-v2.5": "insufficient_data",
+    "cp/cline-pass/mimo-v2.5": "insufficient_data"
+   },
+   "best_route": "ocg/mimo-v2.5",
+   "best_route_status": "insufficient_data",
+   "best_route_confidence": "low",
+   "best_route_live_min_ask_in": 0.0616,
+   "best_route_live_min_ask_out": 0.1232,
+   "reliability_adjusted_rank": 21
+  }
+ ],
+ "routes": [
+  {
+   "route": "ag/gemini-3.6-flash-high",
+   "rail": "ag",
+   "model_id": "gemini-3.6-flash-high",
+   "model_label": "Gemini 3.6 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 13,
+     "model_family": "Gemini 3.6 Flash",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth",
+      "catalog_availability_below_minimum"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00075,
+    "live_min_ask_out": 0.00375,
+    "live_min_tier_avail_in": 49,
+    "live_cw_median_ask_in": 0.03,
+    "live_cw_median_ask_out": 0.15,
+    "official_in": 0.75,
+    "official_out": 3.75,
+    "live_listings_in": 688,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "5bea45ee97eb320a",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.04,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ag/gemini-3.7-flash-high",
+   "rail": "ag",
+   "model_id": "gemini-3.7-flash-high",
+   "model_label": "Gemini 3.7 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 12,
+     "model_family": "Gemini 3.7 Flash",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth",
+      "catalog_availability_below_minimum"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00375,
+    "live_min_ask_out": 0.01875,
+    "live_min_tier_avail_in": 9,
+    "live_cw_median_ask_in": 0.1095,
+    "live_cw_median_ask_out": 0.5475,
+    "official_in": 0.75,
+    "official_out": 3.75,
+    "live_listings_in": 577,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "f236ef11dd058efd",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.04,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ag/gemini-3.8-flash-high",
+   "rail": "ag",
+   "model_id": "gemini-3.8-flash-high",
+   "model_label": "Gemini 3.8 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 3,
+     "model_family": "Gemini 3.8 Flash",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00075,
+    "live_min_ask_out": 0.00375,
+    "live_min_tier_avail_in": 34,
+    "live_cw_median_ask_in": 0.0375,
+    "live_cw_median_ask_out": 0.1875,
+    "official_in": 0.75,
+    "official_out": 3.75,
+    "live_listings_in": 657,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "bb74d8c50ad3920d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.04,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/deepseek-v4-flash-0731",
+   "rail": "ali",
+   "model_id": "deepseek-v4-flash-0731",
+   "model_label": "DeepSeek V4 Flash 0731",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 11,
+     "model_family": "DeepSeek V4 Flash 0731",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.02992,
+    "live_min_ask_out": 0.08976,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.11,
+    "live_cw_median_ask_out": 0.33,
+    "official_in": 0.22,
+    "official_out": 0.66,
+    "live_listings_in": 1759,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "e32eef8748d4743a",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/deepseek-v4-pro-0813",
+   "rail": "ali",
+   "model_id": "deepseek-v4-pro-0813",
+   "model_label": "DeepSeek V4 Pro 0813",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 5,
+     "model_family": "DeepSeek V4 Pro 0813",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0165,
+    "live_min_ask_out": 0.0495,
+    "live_min_tier_avail_in": 2741,
+    "live_cw_median_ask_in": 0.01782,
+    "live_cw_median_ask_out": 0.05346,
+    "official_in": 0.66,
+    "official_out": 1.98,
+    "live_listings_in": 8004,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "dcbbc7206dd5e873",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/deepseek-v4.1-flash",
+   "rail": "ali",
+   "model_id": "deepseek-v4.1-flash",
+   "model_label": "DeepSeek V4.1 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.01605,
+    "live_min_ask_out": 0.0642,
+    "live_min_tier_avail_in": 4288,
+    "live_cw_median_ask_in": 0.0162,
+    "live_cw_median_ask_out": 0.0648,
+    "official_in": 0.15,
+    "official_out": 0.6,
+    "live_listings_in": 9392,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "03c93c3f9b9e9b2d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/glm-5.2",
+   "rail": "ali",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 15,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 6,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0042,
+    "live_min_ask_out": 0.0132,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.007,
+    "live_cw_median_ask_out": 0.022,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 9737,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "75190bac8116e53e",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/glm-5.3",
+   "rail": "ali",
+   "model_id": "glm-5.3",
+   "model_label": "GLM 5.3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "model_family": "GLM 5.3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.042,
+    "live_min_ask_out": 0.132,
+    "live_min_tier_avail_in": 36,
+    "live_cw_median_ask_in": 0.35,
+    "live_cw_median_ask_out": 1.1,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 6383,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ecca18b5a9b115a2",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/kimi-k2.7-code",
+   "rail": "ali",
+   "model_id": "kimi-k2.7-code",
+   "model_label": "Kimi K2.7 Code",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 20,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 8,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "healthy",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 124/124 service attempts"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00095,
+    "live_min_ask_out": 0.004,
+    "live_min_tier_avail_in": 11266,
+    "live_cw_median_ask_in": 0.00095,
+    "live_cw_median_ask_out": 0.004,
+    "official_in": 0.95,
+    "official_out": 4.0,
+    "live_listings_in": 13769,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": 0.00095,
+    "served_ask_out_median_24h": 0.004,
+    "served_tier_rank_in_median_24h": 1.0,
+    "share_served_at_min_tier_24h": 1.0,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 124,
+     "ok": 124,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 124,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 124,
+     "served_at_min_tier": 124,
+     "tokens_in": 6552989,
+     "tokens_out": 103300,
+     "tokens_cached": 5729536,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2874.5,
+     "ttft_ms_p95": 7471.8,
+     "duration_ms_p50": 8837.0,
+     "duration_ms_p95": 68369.0,
+     "served_ask_in_median": 0.00095,
+     "served_ask_out_median": 0.004,
+     "served_ask_in_min": 0.00095,
+     "served_ask_in_max": 0.00095,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.001987,
+     "last_request_at": "2026-09-24T23:48:17Z",
+     "last_ok_at": "2026-09-24T23:48:17Z",
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 124,
+     "ok": 124,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 124,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 124,
+     "served_at_min_tier": 124,
+     "tokens_in": 6552989,
+     "tokens_out": 103300,
+     "tokens_cached": 5729536,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2874.5,
+     "ttft_ms_p95": 7471.8,
+     "duration_ms_p50": 8837.0,
+     "duration_ms_p95": 68369.0,
+     "served_ask_in_median": 0.00095,
+     "served_ask_out_median": 0.004,
+     "served_ask_in_min": 0.00095,
+     "served_ask_in_max": 0.00095,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.001987,
+     "last_request_at": "2026-09-24T23:48:17Z",
+     "last_ok_at": "2026-09-24T23:48:17Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 124,
+     "ok": 124,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 124,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 124,
+     "served_at_min_tier": 124,
+     "tokens_in": 6552989,
+     "tokens_out": 103300,
+     "tokens_cached": 5729536,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2874.5,
+     "ttft_ms_p95": 7471.8,
+     "duration_ms_p50": 8837.0,
+     "duration_ms_p95": 68369.0,
+     "served_ask_in_median": 0.00095,
+     "served_ask_out_median": 0.004,
+     "served_ask_in_min": 0.00095,
+     "served_ask_in_max": 0.00095,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.001987,
+     "last_request_at": "2026-09-24T23:48:17Z",
+     "last_ok_at": "2026-09-24T23:48:17Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 124,
+    "decided_ok": 124,
+    "wilson_lower": 0.978643,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "26b5a6bfe770aa8d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/qwen3.8-flash",
+   "rail": "ali",
+   "model_id": "qwen3.8-flash",
+   "model_label": "Qwen3.8 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 7,
+     "model_family": "Qwen3.8 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 4,
+     "model_family": "Qwen3.8 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "healthy",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 723/723 service attempts"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00135,
+    "live_min_ask_out": 0.00423,
+    "live_min_tier_avail_in": 3872,
+    "live_cw_median_ask_in": 0.0015,
+    "live_cw_median_ask_out": 0.0047,
+    "official_in": 0.15,
+    "official_out": 0.47,
+    "live_listings_in": 13444,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": 0.00135,
+    "served_ask_out_median_24h": 0.00423,
+    "served_tier_rank_in_median_24h": 1.0,
+    "share_served_at_min_tier_24h": 1.0,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 283,
+     "ok": 283,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 283,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 189,
+     "served_at_min_tier": 189,
+     "tokens_in": 9817034,
+     "tokens_out": 380491,
+     "tokens_cached": 8670464,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2236.0,
+     "ttft_ms_p95": 3860.7,
+     "duration_ms_p50": 7398.0,
+     "duration_ms_p95": 76762.7,
+     "served_ask_in_median": 0.00135,
+     "served_ask_out_median": 0.00423,
+     "served_ask_in_min": 0.00135,
+     "served_ask_in_max": 0.00135,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.004763,
+     "last_request_at": "2026-09-24T23:48:19Z",
+     "last_ok_at": "2026-09-24T23:48:19Z",
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 723,
+     "ok": 723,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 723,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 189,
+     "served_at_min_tier": 189,
+     "tokens_in": 26838595,
+     "tokens_out": 887052,
+     "tokens_cached": 24161536,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2399.0,
+     "ttft_ms_p95": 4133.8,
+     "duration_ms_p50": 7625.0,
+     "duration_ms_p95": 74131.6,
+     "served_ask_in_median": 0.00135,
+     "served_ask_out_median": 0.00423,
+     "served_ask_in_min": 0.00135,
+     "served_ask_in_max": 0.00135,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.011744,
+     "last_request_at": "2026-09-24T23:48:19Z",
+     "last_ok_at": "2026-09-24T23:48:19Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 723,
+     "ok": 723,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 723,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 189,
+     "served_at_min_tier": 189,
+     "tokens_in": 26838595,
+     "tokens_out": 887052,
+     "tokens_cached": 24161536,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2399.0,
+     "ttft_ms_p95": 4133.8,
+     "duration_ms_p50": 7625.0,
+     "duration_ms_p95": 74131.6,
+     "served_ask_in_median": 0.00135,
+     "served_ask_out_median": 0.00423,
+     "served_ask_in_min": 0.00135,
+     "served_ask_in_max": 0.00135,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.011744,
+     "last_request_at": "2026-09-24T23:48:19Z",
+     "last_ok_at": "2026-09-24T23:48:19Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 723,
+    "decided_ok": 723,
+    "wilson_lower": 0.996271,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "079150ff3b05e7d2",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/qwen3.8-max",
+   "rail": "ali",
+   "model_id": "qwen3.8-max",
+   "model_label": "Qwen 3.8 Max",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 18,
+     "model_family": "Qwen 3.8 Max",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 7,
+     "model_family": "Qwen 3.8 Max",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=2 < 10 and service_attempts_1h=0 < 5",
+    "7d: 2/2 ok (context only)"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.018,
+    "live_min_ask_out": 0.054,
+    "live_min_tier_avail_in": 4,
+    "live_cw_median_ask_in": 1.0,
+    "live_cw_median_ask_out": 3.0,
+    "official_in": 2.0,
+    "official_out": 6.0,
+    "live_listings_in": 2807,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": 0.014,
+    "served_ask_out_median_24h": 0.042,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": null,
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 2,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": 1089,
+     "tokens_out": 282,
+     "tokens_cached": null,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 927.5,
+     "ttft_ms_p95": 1075.6,
+     "duration_ms_p50": 2928.0,
+     "duration_ms_p95": 3261.9,
+     "served_ask_in_median": 0.014,
+     "served_ask_out_median": 0.042,
+     "served_ask_in_min": 0.014,
+     "served_ask_in_max": 0.014,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 2.7e-05,
+     "last_request_at": "2026-09-24T21:39:06Z",
+     "last_ok_at": "2026-09-24T21:39:06Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 2,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": 1089,
+     "tokens_out": 282,
+     "tokens_cached": null,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 927.5,
+     "ttft_ms_p95": 1075.6,
+     "duration_ms_p50": 2928.0,
+     "duration_ms_p95": 3261.9,
+     "served_ask_in_median": 0.014,
+     "served_ask_out_median": 0.042,
+     "served_ask_in_min": 0.014,
+     "served_ask_in_max": 0.014,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 2.7e-05,
+     "last_request_at": "2026-09-24T21:39:06Z",
+     "last_ok_at": "2026-09-24T21:39:06Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "7d",
+    "decided_service_attempts": 2,
+    "decided_ok": 2,
+    "wilson_lower": 0.424987,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ddde7430e87b76ea",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ali/qwen3.8-max-0902",
+   "rail": "ali",
+   "model_id": "qwen3.8-max-0902",
+   "model_label": "Qwen3.8 Max 0902",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 6,
+     "model_family": "Qwen3.8 Max 0902",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth",
+      "catalog_availability_below_minimum"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.01,
+    "live_min_ask_out": 0.03,
+    "live_min_tier_avail_in": 15,
+    "live_cw_median_ask_in": 0.014,
+    "live_cw_median_ask_out": 0.042,
+    "official_in": 2.0,
+    "official_out": 6.0,
+    "live_listings_in": 13869,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "bc69b34e053b7ba4",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.97,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/deepseek-v4.1-flash",
+   "rail": "cb",
+   "model_id": "deepseek-v4.1-flash",
+   "model_label": "DeepSeek V4.1 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "healthy",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 1014/1014 service attempts"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00015,
+    "live_min_ask_out": 0.0006,
+    "live_min_tier_avail_in": 2,
+    "live_cw_median_ask_in": 0.006,
+    "live_cw_median_ask_out": 0.024,
+    "official_in": 0.15,
+    "official_out": 0.6,
+    "live_listings_in": 10596,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": 0.0015,
+    "served_ask_out_median_24h": 0.006,
+    "served_tier_rank_in_median_24h": 2.0,
+    "share_served_at_min_tier_24h": 0.390625,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 288,
+     "ok": 288,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 288,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 192,
+     "served_at_min_tier": 75,
+     "tokens_in": 14195596,
+     "tokens_out": 214206,
+     "tokens_cached": 10174080,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 1955.5,
+     "ttft_ms_p95": 3668.7,
+     "duration_ms_p50": 3148.5,
+     "duration_ms_p95": 14522.4,
+     "served_ask_in_median": 0.0015,
+     "served_ask_out_median": 0.006,
+     "served_ask_in_min": 0.00015,
+     "served_ask_in_max": 0.0015,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.390625,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.006962,
+     "last_request_at": "2026-09-24T23:48:27Z",
+     "last_ok_at": "2026-09-24T23:48:27Z",
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 1014,
+     "ok": 1014,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 1014,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 192,
+     "served_at_min_tier": 75,
+     "tokens_in": 30886743,
+     "tokens_out": 892689,
+     "tokens_cached": 24472832,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2547.0,
+     "ttft_ms_p95": 9103.0,
+     "duration_ms_p50": 3872.5,
+     "duration_ms_p95": 19818.4,
+     "served_ask_in_median": 0.0015,
+     "served_ask_out_median": 0.006,
+     "served_ask_in_min": 0.00015,
+     "served_ask_in_max": 0.0024,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.390625,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.016725,
+     "last_request_at": "2026-09-24T23:48:27Z",
+     "last_ok_at": "2026-09-24T23:48:27Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 1014,
+     "ok": 1014,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 1014,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 192,
+     "served_at_min_tier": 75,
+     "tokens_in": 30886743,
+     "tokens_out": 892689,
+     "tokens_cached": 24472832,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2547.0,
+     "ttft_ms_p95": 9103.0,
+     "duration_ms_p50": 3872.5,
+     "duration_ms_p95": 19818.4,
+     "served_ask_in_median": 0.0015,
+     "served_ask_out_median": 0.006,
+     "served_ask_in_min": 0.00015,
+     "served_ask_in_max": 0.0024,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.390625,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.016725,
+     "last_request_at": "2026-09-24T23:48:27Z",
+     "last_ok_at": "2026-09-24T23:48:27Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 1014,
+    "decided_ok": 1014,
+    "wilson_lower": 0.997338,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "eb9dfa5c85f8192e",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/glm-5.2",
+   "rail": "cb",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 15,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 6,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.014,
+    "live_min_ask_out": 0.044,
+    "live_min_tier_avail_in": 203,
+    "live_cw_median_ask_in": 0.0364,
+    "live_cw_median_ask_out": 0.1144,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 13390,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "50e57b3358efd923",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/glm-5.3",
+   "rail": "cb",
+   "model_id": "glm-5.3",
+   "model_label": "GLM 5.3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "model_family": "GLM 5.3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "healthy",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 157/157 service attempts"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0126,
+    "live_min_ask_out": 0.0396,
+    "live_min_tier_avail_in": 13,
+    "live_cw_median_ask_in": 0.028,
+    "live_cw_median_ask_out": 0.088,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 14041,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": 0.014,
+    "served_ask_out_median_24h": 0.044,
+    "served_tier_rank_in_median_24h": 2.0,
+    "share_served_at_min_tier_24h": 0.285714,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 35,
+     "ok": 35,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 35,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 35,
+     "served_at_min_tier": 10,
+     "tokens_in": 888226,
+     "tokens_out": 44202,
+     "tokens_cached": 811264,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 2217.0,
+     "ttft_ms_p95": 3425.1,
+     "duration_ms_p50": 3362.0,
+     "duration_ms_p95": 60995.6,
+     "served_ask_in_median": 0.014,
+     "served_ask_out_median": 0.044,
+     "served_ask_in_min": 0.014,
+     "served_ask_in_max": 0.014,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.285714,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.004182,
+     "last_request_at": "2026-09-24T23:41:17Z",
+     "last_ok_at": "2026-09-24T23:41:17Z",
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 157,
+     "ok": 157,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 157,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 35,
+     "served_at_min_tier": 10,
+     "tokens_in": 942165,
+     "tokens_out": 220708,
+     "tokens_cached": 837719,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 4502.0,
+     "ttft_ms_p95": 64000.8,
+     "duration_ms_p50": 5658.0,
+     "duration_ms_p95": 69276.0,
+     "served_ask_in_median": 0.014,
+     "served_ask_out_median": 0.044,
+     "served_ask_in_min": 0.014,
+     "served_ask_in_max": 0.014,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.285714,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.012555,
+     "last_request_at": "2026-09-24T23:41:17Z",
+     "last_ok_at": "2026-09-24T23:41:17Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 157,
+     "ok": 157,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 157,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 35,
+     "served_at_min_tier": 10,
+     "tokens_in": 942165,
+     "tokens_out": 220708,
+     "tokens_cached": 837719,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 4502.0,
+     "ttft_ms_p95": 64000.8,
+     "duration_ms_p50": 5658.0,
+     "duration_ms_p95": 69276.0,
+     "served_ask_in_median": 0.014,
+     "served_ask_out_median": 0.044,
+     "served_ask_in_min": 0.014,
+     "served_ask_in_max": 0.014,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.285714,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.012555,
+     "last_request_at": "2026-09-24T23:41:17Z",
+     "last_ok_at": "2026-09-24T23:41:17Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 157,
+    "decided_ok": 157,
+    "wilson_lower": 0.983056,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "f5828120397fd05d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/gpt-5.6-luna",
+   "rail": "cb",
+   "model_id": "gpt-5.6-luna",
+   "model_label": "GPT 5.6 Luna",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 9,
+     "model_family": "GPT 5.6 Luna",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "not_routing_eligible"
+     ],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0022,
+    "live_min_ask_out": 0.0132,
+    "live_min_tier_avail_in": 132,
+    "live_cw_median_ask_in": 0.004,
+    "live_cw_median_ask_out": 0.024,
+    "official_in": 0.2,
+    "official_out": 1.2,
+    "live_listings_in": 14176,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "47e25d6714219e45",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/gpt-6-astra",
+   "rail": "cb",
+   "model_id": "gpt-6-astra",
+   "model_label": "GPT 6 Astra",
+   "lists": [],
+   "recommendation_eligible_static": null,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "healthy",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 714/714 service attempts",
+    "24h: 15 client/account-attributable errors excluded"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.09,
+    "live_min_ask_out": 0.45,
+    "live_min_tier_avail_in": 13,
+    "live_cw_median_ask_in": 0.26,
+    "live_cw_median_ask_out": 1.3,
+    "official_in": 10.0,
+    "official_out": 50.0,
+    "live_listings_in": 14666,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": 0.1,
+    "served_ask_out_median_24h": 0.5,
+    "served_tier_rank_in_median_24h": 2.0,
+    "share_served_at_min_tier_24h": 0.4,
+    "share_served_under_policy_24h": 0.308123
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 204,
+     "ok": 201,
+     "errors": 3,
+     "client_errors": 3,
+     "service_attempts": 201,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 3,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 150,
+     "served_at_min_tier": 60,
+     "tokens_in": 10682633,
+     "tokens_out": 105080,
+     "tokens_cached": 8297598,
+     "success_rate": 0.985294,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 5535.0,
+     "ttft_ms_p95": 18210.0,
+     "duration_ms_p50": 7617.0,
+     "duration_ms_p95": 43908.0,
+     "served_ask_in_median": 0.11,
+     "served_ask_out_median": 0.55,
+     "served_ask_in_min": 0.08,
+     "served_ask_in_max": 0.11,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.4,
+     "share_served_under_policy": 0.084577,
+     "billed_cost_usdc": 0.394338,
+     "last_request_at": "2026-09-24T23:47:52Z",
+     "last_ok_at": "2026-09-24T23:47:52Z",
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 729,
+     "ok": 714,
+     "errors": 15,
+     "client_errors": 15,
+     "service_attempts": 714,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 15,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 150,
+     "served_at_min_tier": 60,
+     "tokens_in": 46388459,
+     "tokens_out": 438239,
+     "tokens_cached": 33284741,
+     "success_rate": 0.979424,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 7026.0,
+     "ttft_ms_p95": 25837.1,
+     "duration_ms_p50": 9574.5,
+     "duration_ms_p95": 53081.1,
+     "served_ask_in_median": 0.1,
+     "served_ask_out_median": 0.5,
+     "served_ask_in_min": 0.08,
+     "served_ask_in_max": 0.18,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.4,
+     "share_served_under_policy": 0.308123,
+     "billed_cost_usdc": 1.876206,
+     "last_request_at": "2026-09-24T23:47:52Z",
+     "last_ok_at": "2026-09-24T23:47:52Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 729,
+     "ok": 714,
+     "errors": 15,
+     "client_errors": 15,
+     "service_attempts": 714,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 15,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 150,
+     "served_at_min_tier": 60,
+     "tokens_in": 46388459,
+     "tokens_out": 438239,
+     "tokens_cached": 33284741,
+     "success_rate": 0.979424,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 7026.0,
+     "ttft_ms_p95": 25837.1,
+     "duration_ms_p50": 9574.5,
+     "duration_ms_p95": 53081.1,
+     "served_ask_in_median": 0.1,
+     "served_ask_out_median": 0.5,
+     "served_ask_in_min": 0.08,
+     "served_ask_in_max": 0.18,
+     "served_tier_rank_in_median": 2.0,
+     "share_served_at_min_tier": 0.4,
+     "share_served_under_policy": 0.308123,
+     "billed_cost_usdc": 1.876206,
+     "last_request_at": "2026-09-24T23:47:52Z",
+     "last_ok_at": "2026-09-24T23:47:52Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 714,
+    "decided_ok": 714,
+    "wilson_lower": 0.996224,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "d3c34ab74c58ba69",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/hy4-preview",
+   "rail": "cb",
+   "model_id": "hy4-preview",
+   "model_label": "Hy4 Preview",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 16,
+     "model_family": "Hy4 Preview",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "tier_below_minimum",
+      "capability_below_minimum",
+      "release_date_unknown"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.007506,
+    "live_min_ask_out": 0.022509,
+    "live_min_tier_avail_in": 13,
+    "live_cw_median_ask_in": 0.0417,
+    "live_cw_median_ask_out": 0.12505,
+    "official_in": 0.834,
+    "official_out": 2.501,
+    "live_listings_in": 9935,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "dbfea632921994bb",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cb/minimax-m3",
+   "rail": "cb",
+   "model_id": "minimax-m3",
+   "model_label": "MiniMax M3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 10,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 5,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0033,
+    "live_min_ask_out": 0.0132,
+    "live_min_tier_avail_in": 132,
+    "live_cw_median_ask_in": 0.015,
+    "live_cw_median_ask_out": 0.06,
+    "official_in": 0.3,
+    "official_out": 1.2,
+    "live_listings_in": 9971,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "414a996b5e0a6c35",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.9,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/deepseek-v4-flash",
+   "rail": "cbcn",
+   "model_id": "deepseek-v4-flash",
+   "model_label": "DeepSeek V4 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 4,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 3,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00748,
+    "live_min_ask_out": 0.02244,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.011,
+    "live_cw_median_ask_out": 0.033,
+    "official_in": 0.22,
+    "official_out": 0.66,
+    "live_listings_in": 5545,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "789a3ba746c3a53d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/deepseek-v4-pro",
+   "rail": "cbcn",
+   "model_id": "deepseek-v4-pro",
+   "model_label": "DeepSeek V4 Pro",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 14,
+     "model_family": "DeepSeek V4 Pro",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.02244,
+    "live_min_ask_out": 0.06732,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.033,
+    "live_cw_median_ask_out": 0.099,
+    "official_in": 0.66,
+    "official_out": 1.98,
+    "live_listings_in": 5300,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "679b65b5d9a36035",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/deepseek-v4.1-flash",
+   "rail": "cbcn",
+   "model_id": "deepseek-v4.1-flash",
+   "model_label": "DeepSeek V4.1 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0051,
+    "live_min_ask_out": 0.0204,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.0075,
+    "live_cw_median_ask_out": 0.03,
+    "official_in": 0.15,
+    "official_out": 0.6,
+    "live_listings_in": 5544,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "5502beaceb720c93",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/glm-5.2",
+   "rail": "cbcn",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 15,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 6,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0476,
+    "live_min_ask_out": 0.1496,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.07,
+    "live_cw_median_ask_out": 0.22,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 4824,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ef301e982f8f9a34",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/glm-5.3",
+   "rail": "cbcn",
+   "model_id": "glm-5.3",
+   "model_label": "GLM 5.3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "model_family": "GLM 5.3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0476,
+    "live_min_ask_out": 0.1496,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.07,
+    "live_cw_median_ask_out": 0.22,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 5294,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ab4ace08a0c13e46",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/glm-5.3-flash",
+   "rail": "cbcn",
+   "model_id": "glm-5.3-flash",
+   "model_label": "GLM 5.3 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0051,
+    "live_min_ask_out": 0.017,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.0075,
+    "live_cw_median_ask_out": 0.025,
+    "official_in": 0.15,
+    "official_out": 0.5,
+    "live_listings_in": 5545,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "e429b1d07d4b894f",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/hy4-preview",
+   "rail": "cbcn",
+   "model_id": "hy4-preview",
+   "model_label": "Hy4 Preview",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 16,
+     "model_family": "Hy4 Preview",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "tier_below_minimum",
+      "capability_below_minimum",
+      "release_date_unknown"
+     ],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.028356,
+    "live_min_ask_out": 0.085034,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.0417,
+    "live_cw_median_ask_out": 0.12505,
+    "official_in": 0.834,
+    "official_out": 2.501,
+    "live_listings_in": 5064,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "58a2146d0f9c9456",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/kimi-k2.7",
+   "rail": "cbcn",
+   "model_id": "kimi-k2.7",
+   "model_label": "Kimi K2.7 Code",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 20,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 8,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0323,
+    "live_min_ask_out": 0.136,
+    "live_min_tier_avail_in": 422,
+    "live_cw_median_ask_in": 0.0475,
+    "live_cw_median_ask_out": 0.2,
+    "official_in": 0.95,
+    "official_out": 4.0,
+    "live_listings_in": 4824,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "9bdaa6c7361498fb",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cbcn/minimax-m3",
+   "rail": "cbcn",
+   "model_id": "minimax-m3",
+   "model_label": "MiniMax M3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 10,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 5,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0105,
+    "live_min_ask_out": 0.042,
+    "live_min_tier_avail_in": 55,
+    "live_cw_median_ask_in": 0.015,
+    "live_cw_median_ask_out": 0.06,
+    "official_in": 0.3,
+    "official_out": 1.2,
+    "live_listings_in": 4384,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "3a0092e926c3453b",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.74,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/deepseek/deepseek-v4-flash",
+   "rail": "cmc",
+   "model_id": "deepseek/deepseek-v4-flash",
+   "model_label": "DeepSeek V4 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 4,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 3,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.033,
+    "live_min_ask_out": 0.099,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.044,
+    "live_cw_median_ask_out": 0.132,
+    "official_in": 0.22,
+    "official_out": 0.66,
+    "live_listings_in": 5,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "8e5592247a91828c",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/deepseek/deepseek-v4-pro",
+   "rail": "cmc",
+   "model_id": "deepseek/deepseek-v4-pro",
+   "model_label": "DeepSeek V4 Pro",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 14,
+     "model_family": "DeepSeek V4 Pro",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.099,
+    "live_min_ask_out": 0.297,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.19734,
+    "live_cw_median_ask_out": 0.59202,
+    "official_in": 0.66,
+    "official_out": 1.98,
+    "live_listings_in": 4,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "4f362c7c52eaefd0",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/meta/muse-spark-1.2-contributor",
+   "rail": "cmc",
+   "model_id": "meta/muse-spark-1.2-contributor",
+   "model_label": "Muse Spark 1.2 Contributor",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 17,
+     "model_family": "Muse Spark 1.2 Contributor",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "release_date_unknown",
+      "insufficient_provider_breadth"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.015,
+    "live_min_ask_out": 0.03,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.015,
+    "live_cw_median_ask_out": 0.03,
+    "official_in": 0.1,
+    "official_out": 0.2,
+    "live_listings_in": 2,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "4fd741c758c90d93",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/meta/muse-spark-1.3-contributor",
+   "rail": "cmc",
+   "model_id": "meta/muse-spark-1.3-contributor",
+   "model_label": "Muse Spark 1.3 Contributor",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 8,
+     "model_family": "Muse Spark 1.3 Contributor",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "insufficient_provider_breadth"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.015,
+    "live_min_ask_out": 0.03,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.015,
+    "live_cw_median_ask_out": 0.03,
+    "official_in": 0.1,
+    "official_out": 0.2,
+    "live_listings_in": 2,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "4fd741c758c90d93",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/moonshotai/Kimi-K2.7-Code",
+   "rail": "cmc",
+   "model_id": "moonshotai/Kimi-K2.7-Code",
+   "model_label": "Kimi K2.7 Code",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 20,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 8,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.1425,
+    "live_min_ask_out": 0.6,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.19,
+    "live_cw_median_ask_out": 0.8,
+    "official_in": 0.95,
+    "official_out": 4.0,
+    "live_listings_in": 4,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "d83046067d068c50",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/z-ai/glm-5.3-flash",
+   "rail": "cmc",
+   "model_id": "z-ai/glm-5.3-flash",
+   "model_label": "GLM 5.3 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.02235,
+    "live_min_ask_out": 0.0745,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.04125,
+    "live_cw_median_ask_out": 0.1375,
+    "official_in": 0.15,
+    "official_out": 0.5,
+    "live_listings_in": 5,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "f892bd4d437dfc65",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cmc/zai-org/GLM-5.2",
+   "rail": "cmc",
+   "model_id": "zai-org/GLM-5.2",
+   "model_label": null,
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 15,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 6,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=major_outage"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.2086,
+    "live_min_ask_out": 0.6556,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.21,
+    "live_cw_median_ask_out": 0.66,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 5,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "9f0a7b466a799695",
+    "platform_rail_state": "major_outage",
+    "platform_availability_24h_pct": 57.72,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/deepseek-v4-flash",
+   "rail": "cp",
+   "model_id": "cline-pass/deepseek-v4-flash",
+   "model_label": "DeepSeek V4 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 4,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 3,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0187,
+    "live_min_ask_out": 0.0561,
+    "live_min_tier_avail_in": 84,
+    "live_cw_median_ask_in": 0.01958,
+    "live_cw_median_ask_out": 0.05874,
+    "official_in": 0.22,
+    "official_out": 0.66,
+    "live_listings_in": 187,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "fac315ea81918141",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/deepseek-v4-pro",
+   "rail": "cp",
+   "model_id": "cline-pass/deepseek-v4-pro",
+   "model_label": "DeepSeek V4 Pro",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 14,
+     "model_family": "DeepSeek V4 Pro",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": null,
+    "live_min_ask_out": null,
+    "live_min_tier_avail_in": null,
+    "live_cw_median_ask_in": null,
+    "live_cw_median_ask_out": null,
+    "official_in": 0.66,
+    "official_out": 1.98,
+    "live_listings_in": 0,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": null,
+    "live_min_ask_out_under_policy": null,
+    "live_cw_median_ask_in_under_policy": null,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "dc7404b4244c540a",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/deepseek-v4.1-flash",
+   "rail": "cp",
+   "model_id": "cline-pass/deepseek-v4.1-flash",
+   "model_label": "DeepSeek V4.1 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0315,
+    "live_min_ask_out": 0.126,
+    "live_min_tier_avail_in": 10,
+    "live_cw_median_ask_in": 0.0315,
+    "live_cw_median_ask_out": 0.126,
+    "official_in": 0.15,
+    "official_out": 0.6,
+    "live_listings_in": 10,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "1783002627b8d22f",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/glm-5.2",
+   "rail": "cp",
+   "model_id": "cline-pass/glm-5.2",
+   "model_label": "GLM 5.2",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 15,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 6,
+     "model_family": "GLM 5.2",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.119,
+    "live_min_ask_out": 0.374,
+    "live_min_tier_avail_in": 84,
+    "live_cw_median_ask_in": 0.119,
+    "live_cw_median_ask_out": 0.374,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 110,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "e2c20af71f4e9b93",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/glm-5.3",
+   "rail": "cp",
+   "model_id": "cline-pass/glm-5.3",
+   "model_label": "GLM 5.3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "model_family": "GLM 5.3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": null,
+    "live_min_ask_out": null,
+    "live_min_tier_avail_in": null,
+    "live_cw_median_ask_in": null,
+    "live_cw_median_ask_out": null,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 0,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": null,
+    "live_min_ask_out_under_policy": null,
+    "live_cw_median_ask_in_under_policy": null,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ca735a75a1a13232",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/kimi-k2.7-code",
+   "rail": "cp",
+   "model_id": "cline-pass/kimi-k2.7-code",
+   "model_label": "Kimi K2.7 Code",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 20,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 8,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.08075,
+    "live_min_ask_out": 0.34,
+    "live_min_tier_avail_in": 84,
+    "live_cw_median_ask_in": 0.08075,
+    "live_cw_median_ask_out": 0.34,
+    "official_in": 0.95,
+    "official_out": 4.0,
+    "live_listings_in": 110,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "85402dcba12cef5c",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/mimo-v2.5",
+   "rail": "cp",
+   "model_id": "cline-pass/mimo-v2.5",
+   "model_label": "MiMo V2.5",
+   "lists": [
+    {
+     "list": "daily_shortlist",
+     "rank": 9,
+     "model_family": "MiMo V2.5",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": null,
+    "live_min_ask_out": null,
+    "live_min_tier_avail_in": null,
+    "live_cw_median_ask_in": null,
+    "live_cw_median_ask_out": null,
+    "official_in": 0.14,
+    "official_out": 0.28,
+    "live_listings_in": 0,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": null,
+    "live_min_ask_out_under_policy": null,
+    "live_cw_median_ask_in_under_policy": null,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "d82675ca7c115160",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/minimax-m3",
+   "rail": "cp",
+   "model_id": "cline-pass/minimax-m3",
+   "model_label": "MiniMax M3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 10,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 5,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": null,
+    "live_min_ask_out": null,
+    "live_min_tier_avail_in": null,
+    "live_cw_median_ask_in": null,
+    "live_cw_median_ask_out": null,
+    "official_in": 0.3,
+    "official_out": 1.2,
+    "live_listings_in": 0,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": null,
+    "live_min_ask_out_under_policy": null,
+    "live_cw_median_ask_in_under_policy": null,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ef26b74716271606",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/cline-pass/qwen3.8-max",
+   "rail": "cp",
+   "model_id": "cline-pass/qwen3.8-max",
+   "model_label": "Qwen3.8 Max",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 18,
+     "model_family": "Qwen 3.8 Max",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 7,
+     "model_family": "Qwen 3.8 Max",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.17,
+    "live_min_ask_out": 0.51,
+    "live_min_tier_avail_in": 24,
+    "live_cw_median_ask_in": 0.17,
+    "live_cw_median_ask_out": 0.51,
+    "official_in": 2.0,
+    "official_out": 6.0,
+    "live_listings_in": 38,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "78f9b0423bb8d4d9",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cp/zai/glm-5.3-flash",
+   "rail": "cp",
+   "model_id": "zai/glm-5.3-flash",
+   "model_label": "GLM 5.3 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0525,
+    "live_min_ask_out": 0.175,
+    "live_min_tier_avail_in": 3,
+    "live_cw_median_ask_in": 0.0525,
+    "live_cw_median_ask_out": 0.175,
+    "official_in": 0.15,
+    "official_out": 0.5,
+    "live_listings_in": 5,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "def84c792e1593e4",
+    "platform_rail_state": "low_traffic",
+    "platform_availability_24h_pct": 99.22,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cx/gpt-5.6-luna",
+   "rail": "cx",
+   "model_id": "gpt-5.6-luna",
+   "model_label": "GPT 5.6 Luna",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 9,
+     "model_family": "GPT 5.6 Luna",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "not_routing_eligible"
+     ],
+     "route_position": 1
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0018,
+    "live_min_ask_out": 0.0108,
+    "live_min_tier_avail_in": 4,
+    "live_cw_median_ask_in": 0.0206,
+    "live_cw_median_ask_out": 0.1236,
+    "official_in": 0.2,
+    "official_out": 1.2,
+    "live_listings_in": 163,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "55de559647caedcf",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.73,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cx/gpt-6-astra",
+   "rail": "cx",
+   "model_id": "gpt-6-astra",
+   "model_label": "GPT 6 Astra",
+   "lists": [],
+   "recommendation_eligible_static": null,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=2 < 10 and service_attempts_1h=2 < 5",
+    "7d: 2/2 ok (context only)"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.1,
+    "live_min_ask_out": 0.5,
+    "live_min_tier_avail_in": 2,
+    "live_cw_median_ask_in": 0.35,
+    "live_cw_median_ask_out": 1.75,
+    "official_in": 10.0,
+    "official_out": 50.0,
+    "live_listings_in": 144,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": 0.2,
+    "served_ask_out_median_24h": 1.0,
+    "served_tier_rank_in_median_24h": 3.0,
+    "share_served_at_min_tier_24h": 0.0,
+    "share_served_under_policy_24h": 0.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 2,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 2,
+     "served_at_min_tier": 0,
+     "tokens_in": 43472,
+     "tokens_out": 316,
+     "tokens_cached": null,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 17955.0,
+     "ttft_ms_p95": 30248.1,
+     "duration_ms_p50": 21788.5,
+     "duration_ms_p95": 37527.3,
+     "served_ask_in_median": 0.2,
+     "served_ask_out_median": 1.0,
+     "served_ask_in_min": 0.2,
+     "served_ask_in_max": 0.2,
+     "served_tier_rank_in_median": 3.0,
+     "share_served_at_min_tier": 0.0,
+     "share_served_under_policy": 0.0,
+     "billed_cost_usdc": 0.004663,
+     "last_request_at": "2026-09-24T23:07:26Z",
+     "last_ok_at": "2026-09-24T23:07:26Z",
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 2,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 2,
+     "served_at_min_tier": 0,
+     "tokens_in": 43472,
+     "tokens_out": 316,
+     "tokens_cached": null,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 17955.0,
+     "ttft_ms_p95": 30248.1,
+     "duration_ms_p50": 21788.5,
+     "duration_ms_p95": 37527.3,
+     "served_ask_in_median": 0.2,
+     "served_ask_out_median": 1.0,
+     "served_ask_in_min": 0.2,
+     "served_ask_in_max": 0.2,
+     "served_tier_rank_in_median": 3.0,
+     "share_served_at_min_tier": 0.0,
+     "share_served_under_policy": 0.0,
+     "billed_cost_usdc": 0.004663,
+     "last_request_at": "2026-09-24T23:07:26Z",
+     "last_ok_at": "2026-09-24T23:07:26Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 2,
+     "errors": 0,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 2,
+     "served_at_min_tier": 0,
+     "tokens_in": 43472,
+     "tokens_out": 316,
+     "tokens_cached": null,
+     "success_rate": 1.0,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 17955.0,
+     "ttft_ms_p95": 30248.1,
+     "duration_ms_p50": 21788.5,
+     "duration_ms_p95": 37527.3,
+     "served_ask_in_median": 0.2,
+     "served_ask_out_median": 1.0,
+     "served_ask_in_min": 0.2,
+     "served_ask_in_max": 0.2,
+     "served_tier_rank_in_median": 3.0,
+     "share_served_at_min_tier": 0.0,
+     "share_served_under_policy": 0.0,
+     "billed_cost_usdc": 0.004663,
+     "last_request_at": "2026-09-24T23:07:26Z",
+     "last_ok_at": "2026-09-24T23:07:26Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "7d",
+    "decided_service_attempts": 2,
+    "decided_ok": 2,
+    "wilson_lower": 0.424987,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "99083e79a5eb8d2b",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.73,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "cx/gpt-6-luna",
+   "rail": "cx",
+   "model_id": "gpt-6-luna",
+   "model_label": "GPT 6 Luna",
+   "lists": [],
+   "recommendation_eligible_static": null,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "healthy",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 113/113 service attempts",
+    "24h: 1 client/account-attributable errors excluded"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0018,
+    "live_min_ask_out": 0.009,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.0199,
+    "live_cw_median_ask_out": 0.0995,
+    "official_in": 0.1,
+    "official_out": 0.5,
+    "live_listings_in": 165,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": 0.003,
+    "served_ask_out_median_24h": 0.015,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": null,
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 114,
+     "ok": 113,
+     "errors": 1,
+     "client_errors": 1,
+     "service_attempts": 113,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 1,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": 3352166,
+     "tokens_out": 16960,
+     "tokens_cached": null,
+     "success_rate": 0.991228,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 7115.0,
+     "ttft_ms_p95": 46543.8,
+     "duration_ms_p50": 11472.0,
+     "duration_ms_p95": 55097.2,
+     "served_ask_in_median": 0.003,
+     "served_ask_out_median": 0.015,
+     "served_ask_in_min": 0.0018,
+     "served_ask_in_max": 0.003,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.007874,
+     "last_request_at": "2026-09-24T08:13:50Z",
+     "last_ok_at": "2026-09-24T08:13:50Z",
+     "last_service_error_at": null
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 114,
+     "ok": 113,
+     "errors": 1,
+     "client_errors": 1,
+     "service_attempts": 113,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 1,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": 3352166,
+     "tokens_out": 16960,
+     "tokens_cached": null,
+     "success_rate": 0.991228,
+     "service_success_rate": 1.0,
+     "ttft_ms_p50": 7115.0,
+     "ttft_ms_p95": 46543.8,
+     "duration_ms_p50": 11472.0,
+     "duration_ms_p95": 55097.2,
+     "served_ask_in_median": 0.003,
+     "served_ask_out_median": 0.015,
+     "served_ask_in_min": 0.0018,
+     "served_ask_in_max": 0.003,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.007874,
+     "last_request_at": "2026-09-24T08:13:50Z",
+     "last_ok_at": "2026-09-24T08:13:50Z",
+     "last_service_error_at": null
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 113,
+    "decided_ok": 113,
+    "wilson_lower": 0.976613,
+    "wilson_upper": 1.0,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "bdfa23951373ff6d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 99.73,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/deepseek-v4-flash",
+   "rail": "ocg",
+   "model_id": "deepseek-v4-flash",
+   "model_label": "DeepSeek V4 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 4,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 3,
+     "model_family": "DeepSeek V4 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.022,
+    "live_min_ask_out": 0.066,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.022,
+    "live_cw_median_ask_out": 0.066,
+    "official_in": 0.22,
+    "official_out": 0.66,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "c40ce22c6e866d4b",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/deepseek-v4.1-flash",
+   "rail": "ocg",
+   "model_id": "deepseek-v4.1-flash",
+   "model_label": "DeepSeek V4.1 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 1,
+     "model_family": "DeepSeek V4.1 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.015,
+    "live_min_ask_out": 0.06,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.015,
+    "live_cw_median_ask_out": 0.06,
+    "official_in": 0.15,
+    "official_out": 0.6,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "f39e47a9ebf2d13f",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/glm-5.3",
+   "rail": "ocg",
+   "model_id": "glm-5.3",
+   "model_label": "GLM 5.3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "model_family": "GLM 5.3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 6
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.14,
+    "live_min_ask_out": 0.44,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.14,
+    "live_cw_median_ask_out": 0.44,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "41f3af1f6d1ffa36",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/glm-5.3-flash",
+   "rail": "ocg",
+   "model_id": "glm-5.3-flash",
+   "model_label": "GLM 5.3 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.06015,
+    "live_min_ask_out": 0.2005,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.06015,
+    "live_cw_median_ask_out": 0.2005,
+    "official_in": 0.15,
+    "official_out": 0.5,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "4823544031b2097d",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/gpt-5.6-luna",
+   "rail": "ocg",
+   "model_id": "gpt-5.6-luna",
+   "model_label": "GPT 5.6 Luna",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 9,
+     "model_family": "GPT 5.6 Luna",
+     "recommendation_eligible": false,
+     "gate_reasons": [
+      "not_routing_eligible"
+     ],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": false,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.02,
+    "live_min_ask_out": 0.12,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.02,
+    "live_cw_median_ask_out": 0.12,
+    "official_in": 0.2,
+    "official_out": 1.2,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "4d6bddaa750c540c",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/kimi-k2.7-code",
+   "rail": "ocg",
+   "model_id": "kimi-k2.7-code",
+   "model_label": "Kimi K2.7 Code",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 20,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 8,
+     "model_family": "Kimi K2.7 Code",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 5
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.095,
+    "live_min_ask_out": 0.4,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.095,
+    "live_cw_median_ask_out": 0.4,
+    "official_in": 0.95,
+    "official_out": 4.0,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "293a1bd809cc1e2b",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/mimo-v2.5",
+   "rail": "ocg",
+   "model_id": "mimo-v2.5",
+   "model_label": "MiMo V2.5",
+   "lists": [
+    {
+     "list": "daily_shortlist",
+     "rank": 9,
+     "model_family": "MiMo V2.5",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0616,
+    "live_min_ask_out": 0.1232,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.0616,
+    "live_cw_median_ask_out": 0.1232,
+    "official_in": 0.14,
+    "official_out": 0.28,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "71b5277f1fa00290",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/minimax-m3",
+   "rail": "ocg",
+   "model_id": "minimax-m3",
+   "model_label": "MiniMax M3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 10,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 5,
+     "model_family": "MiniMax M3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.03,
+    "live_min_ask_out": 0.12,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.03,
+    "live_cw_median_ask_out": 0.12,
+    "official_in": 0.3,
+    "official_out": 1.2,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "7d65b095ae0ec033",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/qwen3.8-flash",
+   "rail": "ocg",
+   "model_id": "qwen3.8-flash",
+   "model_label": "Qwen3.8 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 7,
+     "model_family": "Qwen3.8 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 4,
+     "model_family": "Qwen3.8 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 2
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.015,
+    "live_min_ask_out": 0.047,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.015,
+    "live_cw_median_ask_out": 0.047,
+    "official_in": 0.15,
+    "official_out": 0.47,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "8c1d9b9eeaa439a9",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "ocg/qwen3.8-max",
+   "rail": "ocg",
+   "model_id": "qwen3.8-max",
+   "model_label": "Qwen3.8 Max",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 18,
+     "model_family": "Qwen 3.8 Max",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 7,
+     "model_family": "Qwen 3.8 Max",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 3
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.2,
+    "live_min_ask_out": 0.6,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.2,
+    "live_cw_median_ask_out": 0.6,
+    "official_in": 2.0,
+    "official_out": 6.0,
+    "live_listings_in": 1,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": false,
+    "live_min_ask_out_under_policy": false,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "27a092b8396bf7d1",
+    "platform_rail_state": "operational",
+    "platform_availability_24h_pct": 92.32,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "zai/glm-4.6v",
+   "rail": "zai",
+   "model_id": "glm-4.6v",
+   "model_label": "GLM-4.6V (vision)",
+   "lists": [],
+   "recommendation_eligible_static": null,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=2 < 10 and service_attempts_1h=2 < 5",
+    "7d: 1/2 ok (context only)",
+    "platform_rail_state=degraded"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0003,
+    "live_min_ask_out": 0.0009,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.15,
+    "live_cw_median_ask_out": 0.45,
+    "official_in": 0.3,
+    "official_out": 0.9,
+    "live_listings_in": 23,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": 0.0003,
+    "served_ask_out_median_24h": 0.0009,
+    "served_tier_rank_in_median_24h": 1.0,
+    "share_served_at_min_tier_24h": 1.0,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 1,
+     "errors": 1,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 1,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 1,
+     "served_at_min_tier": 1,
+     "tokens_in": 305,
+     "tokens_out": 421,
+     "tokens_cached": 4,
+     "success_rate": 0.5,
+     "service_success_rate": 0.5,
+     "ttft_ms_p50": 64678.0,
+     "ttft_ms_p95": 64678.0,
+     "duration_ms_p50": 64678.0,
+     "duration_ms_p95": 64678.0,
+     "served_ask_in_median": 0.0003,
+     "served_ask_out_median": 0.0009,
+     "served_ask_in_min": 0.0003,
+     "served_ask_in_max": 0.0003,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 1e-05,
+     "last_request_at": "2026-09-24T23:37:37Z",
+     "last_ok_at": "2026-09-24T23:37:37Z",
+     "last_service_error_at": "2026-09-24T23:37:03Z"
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 1,
+     "errors": 1,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 1,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 1,
+     "served_at_min_tier": 1,
+     "tokens_in": 305,
+     "tokens_out": 421,
+     "tokens_cached": 4,
+     "success_rate": 0.5,
+     "service_success_rate": 0.5,
+     "ttft_ms_p50": 64678.0,
+     "ttft_ms_p95": 64678.0,
+     "duration_ms_p50": 64678.0,
+     "duration_ms_p95": 64678.0,
+     "served_ask_in_median": 0.0003,
+     "served_ask_out_median": 0.0009,
+     "served_ask_in_min": 0.0003,
+     "served_ask_in_max": 0.0003,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 1e-05,
+     "last_request_at": "2026-09-24T23:37:37Z",
+     "last_ok_at": "2026-09-24T23:37:37Z",
+     "last_service_error_at": "2026-09-24T23:37:03Z"
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 2,
+     "ok": 1,
+     "errors": 1,
+     "client_errors": 0,
+     "service_attempts": 2,
+     "err_upstream_unavailable": 1,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 0,
+     "err_other": 0,
+     "served_tier_known": 1,
+     "served_at_min_tier": 1,
+     "tokens_in": 305,
+     "tokens_out": 421,
+     "tokens_cached": 4,
+     "success_rate": 0.5,
+     "service_success_rate": 0.5,
+     "ttft_ms_p50": 64678.0,
+     "ttft_ms_p95": 64678.0,
+     "duration_ms_p50": 64678.0,
+     "duration_ms_p95": 64678.0,
+     "served_ask_in_median": 0.0003,
+     "served_ask_out_median": 0.0009,
+     "served_ask_in_min": 0.0003,
+     "served_ask_in_max": 0.0003,
+     "served_tier_rank_in_median": 1.0,
+     "share_served_at_min_tier": 1.0,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 1e-05,
+     "last_request_at": "2026-09-24T23:37:37Z",
+     "last_ok_at": "2026-09-24T23:37:37Z",
+     "last_service_error_at": "2026-09-24T23:37:03Z"
+    }
+   },
+   "evidence": {
+    "decided_window": "7d",
+    "decided_service_attempts": 2,
+    "decided_ok": 1,
+    "wilson_lower": 0.120852,
+    "wilson_upper": 0.879148,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "687696b24aed282b",
+    "platform_rail_state": "degraded",
+    "platform_availability_24h_pct": 92.84,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "zai/glm-5.3",
+   "rail": "zai",
+   "model_id": "glm-5.3",
+   "model_label": "GLM 5.3",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 19,
+     "model_family": "GLM 5.3",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "insufficient_data",
+   "confidence": "low",
+   "status_reasons": [
+    "service_attempts_24h=0 < 10 and service_attempts_1h=0 < 5",
+    "no requests from this account on this route in 7d",
+    "platform_rail_state=degraded"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.0014,
+    "live_min_ask_out": 0.0044,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.1204,
+    "live_cw_median_ask_out": 0.3784,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "live_listings_in": 25,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": false,
+    "served_ask_in_median_24h": null,
+    "served_ask_out_median_24h": null,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": null
+   },
+   "reliability": {
+    "1h": null,
+    "24h": null,
+    "7d": null
+   },
+   "evidence": {
+    "decided_window": null,
+    "decided_service_attempts": 0,
+    "decided_ok": 0,
+    "wilson_lower": null,
+    "wilson_upper": null,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "c4a9ffbff65e4a72",
+    "platform_rail_state": "degraded",
+    "platform_availability_24h_pct": 92.84,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  },
+  {
+   "route": "zai/glm-5.3-flash",
+   "rail": "zai",
+   "model_id": "glm-5.3-flash",
+   "model_label": "GLM 5.3 Flash",
+   "lists": [
+    {
+     "list": "top20",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    },
+    {
+     "list": "daily_shortlist",
+     "rank": 2,
+     "model_family": "GLM 5.3 Flash",
+     "recommendation_eligible": true,
+     "gate_reasons": [],
+     "route_position": 4
+    }
+   ],
+   "recommendation_eligible_static": true,
+   "in_live_catalog": true,
+   "enabled": true,
+   "status": "failing",
+   "confidence": "high",
+   "status_reasons": [
+    "24h success 13/150 < 0.5",
+    "1h has 0 service attempts (not enough to show recovery)",
+    "24h: 2 client/account-attributable errors excluded"
+   ],
+   "price": {
+    "live_price_ts": "2026-09-24T23:45:24Z",
+    "live_min_ask_in": 0.00015,
+    "live_min_ask_out": 0.0005,
+    "live_min_tier_avail_in": 1,
+    "live_cw_median_ask_in": 0.0672,
+    "live_cw_median_ask_out": 0.224,
+    "official_in": 0.15,
+    "official_out": 0.5,
+    "live_listings_in": 25,
+    "policy_threshold_usd_per_mtok": 0.1,
+    "live_min_ask_in_under_policy": true,
+    "live_min_ask_out_under_policy": true,
+    "live_cw_median_ask_in_under_policy": true,
+    "served_ask_in_median_24h": 0.00015,
+    "served_ask_out_median_24h": 0.0005,
+    "served_tier_rank_in_median_24h": null,
+    "share_served_at_min_tier_24h": null,
+    "share_served_under_policy_24h": 1.0
+   },
+   "reliability": {
+    "1h": {
+     "window_start": "2026-09-24T22:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 1,
+     "ok": 0,
+     "errors": 1,
+     "client_errors": 1,
+     "service_attempts": 0,
+     "err_upstream_unavailable": 0,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 0,
+     "err_auth": 0,
+     "err_payment_required": 1,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": null,
+     "tokens_out": null,
+     "tokens_cached": null,
+     "success_rate": 0.0,
+     "service_success_rate": null,
+     "ttft_ms_p50": null,
+     "ttft_ms_p95": null,
+     "duration_ms_p50": null,
+     "duration_ms_p95": null,
+     "served_ask_in_median": null,
+     "served_ask_out_median": null,
+     "served_ask_in_min": null,
+     "served_ask_in_max": null,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": null,
+     "billed_cost_usdc": 0.0,
+     "last_request_at": "2026-09-24T23:36:27Z",
+     "last_ok_at": null,
+     "last_service_error_at": null
+    },
+    "24h": {
+     "window_start": "2026-09-23T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 152,
+     "ok": 13,
+     "errors": 139,
+     "client_errors": 2,
+     "service_attempts": 150,
+     "err_upstream_unavailable": 137,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 1,
+     "err_auth": 0,
+     "err_payment_required": 1,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": 173994,
+     "tokens_out": 6355,
+     "tokens_cached": 142784,
+     "success_rate": 0.085526,
+     "service_success_rate": 0.086667,
+     "ttft_ms_p50": 36993.0,
+     "ttft_ms_p95": 63171.8,
+     "duration_ms_p50": 38293.0,
+     "duration_ms_p95": 78195.4,
+     "served_ask_in_median": 0.00015,
+     "served_ask_out_median": 0.0005,
+     "served_ask_in_min": 0.00015,
+     "served_ask_in_max": 0.00015,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.00013,
+     "last_request_at": "2026-09-24T23:36:27Z",
+     "last_ok_at": "2026-09-24T21:49:17Z",
+     "last_service_error_at": "2026-09-24T22:09:35Z"
+    },
+    "7d": {
+     "window_start": "2026-09-17T23:48:40Z",
+     "window_end": "2026-09-24T23:48:40Z",
+     "requests": 152,
+     "ok": 13,
+     "errors": 139,
+     "client_errors": 2,
+     "service_attempts": 150,
+     "err_upstream_unavailable": 137,
+     "err_timeout": 0,
+     "err_rate_limited": 0,
+     "err_server_error": 0,
+     "err_client_request_error": 0,
+     "err_client_cancelled": 1,
+     "err_auth": 0,
+     "err_payment_required": 1,
+     "err_other": 0,
+     "served_tier_known": 0,
+     "served_at_min_tier": 0,
+     "tokens_in": 173994,
+     "tokens_out": 6355,
+     "tokens_cached": 142784,
+     "success_rate": 0.085526,
+     "service_success_rate": 0.086667,
+     "ttft_ms_p50": 36993.0,
+     "ttft_ms_p95": 63171.8,
+     "duration_ms_p50": 38293.0,
+     "duration_ms_p95": 78195.4,
+     "served_ask_in_median": 0.00015,
+     "served_ask_out_median": 0.0005,
+     "served_ask_in_min": 0.00015,
+     "served_ask_in_max": 0.00015,
+     "served_tier_rank_in_median": null,
+     "share_served_at_min_tier": null,
+     "share_served_under_policy": 1.0,
+     "billed_cost_usdc": 0.00013,
+     "last_request_at": "2026-09-24T23:36:27Z",
+     "last_ok_at": "2026-09-24T21:49:17Z",
+     "last_service_error_at": "2026-09-24T22:09:35Z"
+    }
+   },
+   "evidence": {
+    "decided_window": "24h",
+    "decided_service_attempts": 150,
+    "decided_ok": 13,
+    "wilson_lower": 0.055829,
+    "wilson_upper": 0.132153,
+    "request_log_coverage_end": "2026-09-24T23:48:40Z",
+    "live_book_hash": "ffe456a452d77825",
+    "platform_rail_state": "degraded",
+    "platform_availability_24h_pct": 92.84,
+    "source": "InferHub /api/usage/logs of this account (GET), /api/catalog, /api/status"
+   }
+  }
+ ]
+}
