@@ -1,9 +1,13 @@
-"""CLI: python -m ihub {fast|logs|backfill|model|export|publish} [options].
+"""CLI: python -m ihub {fast|logs|backfill|model|catalogue|compact|export|publish} [options].
 
   fast                    catalog order book + market + status + balance (+hourly config) -> model
-  logs                    request logs since watermark - overlap (default 30 min) -> model
+  logs                    request logs since watermark - overlap (default 30 min) -> model ->
+                          route catalogue (catalogue/route-catalogue.{json,csv}) -> compact
+                          finished UTC days of the Parquet parts
   backfill --since ISO    request logs back to a time (e.g. 2026-09-24T04:00:00Z = midnight ET)
   model                   rebuild the modeled tables only
+  catalogue               regenerate the reliability-adjusted route catalogue only (IRE #46 M4)
+  compact                 merge the Parquet parts of finished UTC days (one file per table/day)
   export [--day D]        write the curated daily snapshot CSV + manifest (ET day, default today)
   publish [--day D]       export, then commit + push to the data branch (see export.py)
 Runs are serialised with a non-blocking flock (state/ihub.lock); a busy lock skips the run.
@@ -23,9 +27,35 @@ import time
 from . import collect, transform
 
 
+def _catalogue(rec: dict) -> int:
+    from . import catalogue, export
+
+    try:
+        rec["catalogue"] = catalogue.run(collect.IH, export._git_sha())
+    except Exception as e:  # the previous catalogue stays in place
+        rec["catalogue_error"] = f"{type(e).__name__}: {e}"
+        return 1
+    return 0
+
+
+def _compact(rec: dict) -> int:
+    from . import lake
+
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()
+    try:
+        rec["compact"] = lake.compact_finished(lake.connect(), collect.PQ, before_day=today)
+    except Exception as e:  # parts stay as they are; retried next run
+        rec["compact_error"] = f"{type(e).__name__}: {e}"
+        return 1
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="ihub")
-    ap.add_argument("cmd", choices=["fast", "logs", "backfill", "model", "export", "publish"])
+    ap.add_argument(
+        "cmd",
+        choices=["fast", "logs", "backfill", "model", "catalogue", "compact", "export", "publish"],
+    )
     ap.add_argument("--since")
     ap.add_argument("--day")
     ap.add_argument("--no-model", action="store_true")
@@ -47,6 +77,10 @@ def main(argv: list[str] | None = None) -> int:
         from . import export
 
         rec.update(export.run(day=a.day, publish=(a.cmd == "publish")))
+    elif a.cmd == "catalogue":
+        rc = _catalogue(rec)
+    elif a.cmd == "compact":
+        rc = _compact(rec)
     else:
         ctx = collect.Ctx()
         rec["run_id"] = ctx.run_id
@@ -73,6 +107,10 @@ def main(argv: list[str] | None = None) -> int:
                 rc = 1
         if ctx.errors and not any(v.get("new") for v in ctx.stats.values() if isinstance(v, dict)):
             rc = rc or 2
+        if a.cmd == "logs":
+            # every 15 min: agents read the catalogue; compaction is a no-op until a UTC day ends
+            rc = _catalogue(rec) or rc
+            rc = _compact(rec) or rc
     rec["seconds"] = round(time.time() - t0, 2)
     rec["peak_rss_mb"] = round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024, 1)
     rec["finished_at"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")

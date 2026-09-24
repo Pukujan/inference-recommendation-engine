@@ -33,6 +33,8 @@ MARTS = [
     "fact_request_billing",
     "inferhub_request_match",
     "inferhub_match_summary",
+    "fact_route_reliability",
+    "fact_route_error_breakdown",
 ]
 NEEDS = {
     "inferhub_dim_route": ["routes"],
@@ -46,6 +48,9 @@ NEEDS = {
     "fact_request_billing": ["billing", "tiers", "routes"],
     "inferhub_request_match": ["billing", "tiers", "routes", "@fmr"],
     "inferhub_match_summary": ["billing", "tiers", "routes", "@fmr"],
+    # rolling 1h/24h/7d reliability per route (IRE #46 M4); read by catalogue.py
+    "fact_route_reliability": ["billing", "tiers", "routes", "status"],
+    "fact_route_error_breakdown": ["billing", "tiers", "routes"],
 }
 
 

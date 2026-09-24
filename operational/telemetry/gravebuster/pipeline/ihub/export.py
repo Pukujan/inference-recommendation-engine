@@ -6,8 +6,13 @@ For an ET calendar day D (default: today) writes data/inferhub/exports/D/:
   providers.csv            rails, same columns as the 2026-09-22 providers.csv
   route-daily-summary.csv  per route over the whole ET day: min/max of the min ask, capacity-weighted
                            median, snapshots seen, share of snapshots under the policy threshold
+  route-catalogue.json/.csv  reliability-adjusted route catalogue (IRE #46 M4, schema
+                           schemas/route-catalogue.v1.schema.json), regenerated at export time;
+                           only for the current ET day (a past day has no catalogue of its own)
+  route-reliability.csv    fact_route_reliability (route x 1h/24h/7d rollups) at export time, same
+                           current-day rule
   manifest.json            snapshot time, raw source files (relative path + body sha256 + zst sha256),
-                           sha256 of every CSV, collector git sha, schema
+                           sha256 of every file, collector git sha, schema
 ``publish`` additionally commits these files to the data branch (default
 ``data/inferhub-price-snapshots``, an orphan branch with no CI and no branch protection, so daily
 commits do not create PRs on protected main) under inferhub/price-snapshots/<YYYY>/<D>/ and
@@ -127,6 +132,40 @@ def _summary(day: str) -> tuple[list[str], list[list[Any]]]:
     return header, rows
 
 
+def _catalogue_files() -> tuple[dict[str, Any] | None, dict[str, bytes]]:
+    """Fresh route catalogue + reliability rollup for the export (never fails the export)."""
+    from . import catalogue, lake
+
+    out: dict[str, bytes] = {}
+    try:
+        res = catalogue.run(IH, _git_sha())
+        for n in ("route-catalogue.json", "route-catalogue.csv"):
+            with open(os.path.join(res["dir"], n), "rb") as fh:
+                out[n] = fh.read()
+        rel = os.path.join(IH, "modeled", "current", "fact_route_reliability.parquet")
+        if os.path.exists(rel):
+            con = lake.connect()
+            con.execute("SET TimeZone='UTC'")
+            q = con.execute(f"SELECT * FROM read_parquet('{rel}') ORDER BY route, window_hours")
+            cols = [d[0] for d in q.description]
+            rows = [[transform._fmt(v) for v in r] for r in q.fetchall()]
+            out["route-reliability.csv"] = _csv(cols, rows)
+        with open(os.path.join(os.path.dirname(__file__), catalogue.SCHEMA_FILE), "rb") as fh:
+            schema = fh.read()
+        info = {
+            "schema": catalogue.SCHEMA_ID,
+            "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/"
+            + catalogue.SCHEMA_FILE,
+            "schema_sha256": transform.sha256_hex(schema),
+            "generated_at": res["generated_at"],
+            "status_counts": res["status_counts"],
+            "routes": res["routes"],
+        }
+        return info, out
+    except Exception as e:  # price snapshot still publishes
+        return {"error": f"{type(e).__name__}: {e}"}, out
+
+
 def export(day: str | None = None) -> dict[str, Any]:
     day = day or dt.datetime.now(ET).date().isoformat()
     start, end = _et_bounds(day)
@@ -148,6 +187,10 @@ def export(day: str | None = None) -> dict[str, Any]:
     }
     sh, srows = _summary(day)
     files["route-daily-summary.csv"] = _csv(sh, srows)
+    cat_info = None
+    if day == dt.datetime.now(ET).date().isoformat():
+        cat_info, extra = _catalogue_files()
+        files.update(extra)
     out = os.path.join(EXPORTS, day)
     os.makedirs(out, exist_ok=True)
     for name, data in files.items():
@@ -171,9 +214,11 @@ def export(day: str | None = None) -> dict[str, Any]:
         "raw_host": "gravebuster:/srv/agent-telemetry/data/inferhub/raw",
         "sources": {"catalog": src(cat_rec), "models": src(mod_rec)},
         "files": {
-            n: {"sha256": transform.sha256_hex(d), "bytes": len(d), "rows": d.count(b"\n") - 1}
+            n: {"sha256": transform.sha256_hex(d), "bytes": len(d)}
+            | ({"rows": d.count(b"\n") - 1} if n.endswith(".csv") else {})
             for n, d in files.items()
         },
+        "catalogue": cat_info,
         "collector_git_sha": _git_sha(),
     }
     with open(os.path.join(out, "manifest.json"), "w", encoding="utf-8") as fh:
@@ -204,6 +249,10 @@ GET-only collector on the telemetry host (IRE issue #46). Not merged into `main`
   snapshots, % of snapshots under the $0.10/1M policy threshold).
 - `manifest.json`: sha256 of each CSV and of the raw API responses they came from (raw stays on the
   telemetry host under data/inferhub/raw, append-only, zstd).
+- `route-catalogue.json` / `.csv`, `route-reliability.csv` (from 2026-09-24): reliability-adjusted
+  route catalogue (static Top 20 / daily shortlist joined with live price and rolling 1h/24h/7d
+  request-log reliability; statuses are evidence-backed hypotheses) as of the publish time.
+  Latest copy: `inferhub/route-catalogue/latest/`; JSON Schema: `inferhub/schemas/`.
 - `index.csv`: one line per day.
 
 Prices are listed asks, not guarantees. Code, schemas and docs live on `main` under
@@ -225,12 +274,31 @@ def publish_snapshot(res: dict[str, Any]) -> dict[str, Any]:
         _git("checkout", "-q", "--orphan", BRANCH)
     dest = os.path.join(PUBLISH_DIR, SUBDIR, day[:4], day)
     os.makedirs(dest, exist_ok=True)
-    for name in ("pricing.csv", "providers.csv", "route-daily-summary.csv", "manifest.json"):
+    names = [*res["manifest"]["files"], "manifest.json"]
+    for name in names:
         with (
             open(os.path.join(res["dir"], name), "rb") as src,
             open(os.path.join(dest, name), "wb") as d,
         ):
             d.write(src.read())
+    if "route-catalogue.json" in names:
+        # stable paths for agents: latest published catalogue + its schema
+        from . import catalogue
+
+        latest = os.path.join(PUBLISH_DIR, "inferhub", "route-catalogue", "latest")
+        schemas = os.path.join(PUBLISH_DIR, "inferhub", "schemas")
+        os.makedirs(latest, exist_ok=True)
+        os.makedirs(schemas, exist_ok=True)
+        for name in ("route-catalogue.json", "route-catalogue.csv", "route-reliability.csv"):
+            if name in names:
+                with open(os.path.join(res["dir"], name), "rb") as src:
+                    data = src.read()
+                with open(os.path.join(latest, name), "wb") as d:
+                    d.write(data)
+        with open(os.path.join(os.path.dirname(__file__), catalogue.SCHEMA_FILE), "rb") as src:
+            data = src.read()
+        with open(os.path.join(schemas, os.path.basename(catalogue.SCHEMA_FILE)), "wb") as d:
+            d.write(data)
     with open(os.path.join(PUBLISH_DIR, "README.md"), "w", encoding="utf-8") as fh:
         fh.write(README)
     idx = os.path.join(PUBLISH_DIR, SUBDIR, "index.csv")
@@ -269,7 +337,7 @@ def publish_snapshot(res: dict[str, Any]) -> dict[str, Any]:
         "commit",
         "-q",
         "-m",
-        f"data: InferHub price snapshot {day} (ET)\n\n"
+        f"data: InferHub price snapshot + route catalogue {day} (ET)\n\n"
         f"snapshot {m['snapshot_utc']}, pricing.csv sha256 {m['files']['pricing.csv']['sha256']}\n"
         "Part of #46",
     )
