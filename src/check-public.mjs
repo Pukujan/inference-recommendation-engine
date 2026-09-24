@@ -20,6 +20,7 @@ const operationalLedgerPaths = [
   /^docs\/ISSUE-LEDGER-/i,
   /^schemas\/issue-ledger\//i,
   /^operational\//i,
+  /^tasks\/IRE-0010-agent-run-evidence-pipeline\.md$/i,
   /^AGENTS\.md$/i,
 ];
 const namedIntegration = ['infer', 'hub'].join('');
@@ -33,6 +34,8 @@ const explicitlyDocumentedPaths = new Set([
   'tasks/ire-0008-kilo-staff-background-helpers.md',
   'checkpoints/current.md',
 ]);
+// Operational agent-run evidence source (issue #41) configures the named BYOK integration by design.
+const explicitlyDocumentedPrefixes = [`operational/${['tele', 'metry'].join('')}/`];
 const binaryExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2']);
 const failures = [];
 function walk(directory) {
@@ -44,7 +47,9 @@ function walk(directory) {
       const relative = path.relative(root, absolute).split(path.sep).join('/');
       // Keep the product-name guard global; ledger docs use broad technical terms.
       const operationalLedger = operationalLedgerPaths.some((pattern) => pattern.test(relative));
-      const explicitIntegrationReference = explicitlyDocumentedPaths.has(relative.toLowerCase());
+      const explicitIntegrationReference =
+        explicitlyDocumentedPaths.has(relative.toLowerCase()) ||
+        explicitlyDocumentedPrefixes.some((prefix) => relative.toLowerCase().startsWith(prefix));
       if (binaryExtensions.has(path.extname(entry.name).toLowerCase())) continue;
       const text = fs.readFileSync(absolute, 'utf8');
       for (let index = 0; index < forbidden.length; index += 1) {

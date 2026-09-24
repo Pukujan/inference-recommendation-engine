@@ -3,8 +3,8 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0007
-updated_at: 2026-09-24T18:34:00Z
+active_task: IRE-0010
+updated_at: 2026-09-24T22:20:00Z
 ---
 
 ## State
@@ -26,8 +26,8 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 
 ## Current checkpoint
 
-IRE-0009 merged in [PR #37](https://github.com/Pukujan/inference-recommendation-engine/pull/37) at `27fe344951e9c597ea5e501864e18a3c65e97eff` on 2026-09-24T18:33:16Z. Required CI check `test` passed. The importer is `operational/scripts/codex_receipt_import.py`. It filters to `cb/gpt-6-astra` and does not read Kilo transcripts. The blinded benchmark remains open under [issue #29](https://github.com/Pukujan/inference-recommendation-engine/issues/29).
+IRE-0010 checkpoint 1 puts the agent-run evidence source (OTel collector, batch pipeline, systemd units, host helpers, Astra launcher helpers) under `operational/` for [issue #41](https://github.com/Pukujan/inference-recommendation-engine/issues/41). The self-hosted collector host deploys it from `main` with the checked-in `deploy.sh` (see `tasks/IRE-0010-agent-run-evidence-pipeline.md`). IRE-0009 remains merged in PR #37; the blinded benchmark remains open under issue #29.
 
 ## Next
 
-Close issue #36 after this closeout merges, then return to the issue #29 benchmark fixture.
+Merge IRE-0010 checkpoint 1 and deploy it on the collector host. Then checkpoint 2 (provider-error capture on the launcher root span) and checkpoint 3 (P4 incident detectors). Issue #29 benchmark work continues afterwards.

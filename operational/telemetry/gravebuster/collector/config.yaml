@@ -1,0 +1,257 @@
+# otelcol-contrib config for agent-telemetry (gravebuster). Secrets come from env, never literals.
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 768
+    spike_limit_mib: 192
+  batch:
+    timeout: 2s
+    send_batch_size: 512
+
+  # Identity scrub (2026-09-24, Alex): Codex logs/spans carry user.email / user.account_id, and proxied requests can
+  # carry Tailscale identity headers (http.request.header.tailscale-user-login / -user-name / -user-profile-pic).
+  # user.email and user.account_id -> "sha256:<hex>" (unsalted, keeps per-user correlation; non-string values or
+  # anything that fails to hash are deleted); every attribute key containing tailscale-user / tailscale_user is deleted.
+  # Runs on resource, scope, span, span-event, log and datapoint attributes, before every exporter in all pipelines.
+  transform/identity:
+    error_mode: ignore
+    trace_statements:
+      - context: resource
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: scope
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: span
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: spanevent
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+    log_statements:
+      - context: resource
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: scope
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: log
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+    metric_statements:
+      - context: resource
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: scope
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+      - context: datapoint
+        statements:
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsString(attributes["user.email"])'
+          - 'set(attributes["user.email"], Concat(["sha256:", SHA256(attributes["user.email"])], "")) where IsString(attributes["user.email"]) and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.email") where attributes["user.email"] != nil and not IsMatch(attributes["user.email"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsString(attributes["user.account_id"])'
+          - 'set(attributes["user.account_id"], Concat(["sha256:", SHA256(attributes["user.account_id"])], "")) where IsString(attributes["user.account_id"]) and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_key(attributes, "user.account_id") where attributes["user.account_id"] != nil and not IsMatch(attributes["user.account_id"], "^sha256:[0-9a-f]{64}$")'
+          - 'delete_matching_keys(attributes, "(?i).*tailscale[._-]?user.*")'
+
+  # 1) Delete sensitive attribute KEYS (auth headers, api keys, secrets, passwords, cookies, bare/auth tokens).
+  #    Token-count keys such as input_tokens / gen_ai.usage.output_tokens / claude_code.token.usage are kept on purpose.
+  # 2) Mask secret-looking VALUES in attributes, span names, event attributes and log bodies.
+  transform/redact:
+    error_mode: ignore
+    trace_statements:
+      - context: resource
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+          - replace_all_patterns(attributes, "value", "(?i)(bearer|basic)\\s+[A-Za-z0-9._~+/=\\-]{8,}", "$$1 ***REDACTED***")
+      - context: span
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+          - replace_all_patterns(attributes, "value", "(?i)(bearer|basic)\\s+[A-Za-z0-9._~+/=\\-]{8,}", "$$1 ***REDACTED***")
+          - replace_pattern(name, "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+      - context: spanevent
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+          - replace_all_patterns(attributes, "value", "(?i)(bearer|basic)\\s+[A-Za-z0-9._~+/=\\-]{8,}", "$$1 ***REDACTED***")
+    log_statements:
+      - context: resource
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+      - context: log
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+          - replace_all_patterns(attributes, "value", "(?i)(bearer|basic)\\s+[A-Za-z0-9._~+/=\\-]{8,}", "$$1 ***REDACTED***")
+          - replace_pattern(body, "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***") where IsString(body)
+          - replace_pattern(body, "(?i)(bearer|basic)\\s+[A-Za-z0-9._~+/=\\-]{8,}", "$$1 ***REDACTED***") where IsString(body)
+    metric_statements:
+      - context: resource
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+      - context: datapoint
+        statements:
+          - delete_matching_keys(attributes, "(?i).*(authorization|x-api-key|api[._-]?key|secret|password|passwd|cookie|credential).*")
+          - delete_matching_keys(attributes, "(?i)^(.*[._-])?[a-z]*token([._-]?value)?$")
+          - replace_all_patterns(attributes, "value", "(sk-lf-|pk-lf-|sk-|ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_\\-]{6,}", "***REDACTED***")
+
+  # Belt-and-braces: contrib redaction processor masks any remaining secret-looking values in span/log/metric attributes.
+  redaction:
+    allow_all_keys: true
+    blocked_values:
+      - "sk-lf-[A-Za-z0-9_-]{6,}"
+      - "pk-lf-[A-Za-z0-9_-]{6,}"
+      - "sk-[A-Za-z0-9_-]{16,}"
+      - "gh[oprsu]_[A-Za-z0-9]{20,}"
+      - "github_pat_[A-Za-z0-9_]{20,}"
+      - "(?i)bearer\\s+[A-Za-z0-9._~+/=-]{8,}"
+    summary: silent
+
+  # UI sinks only (Langfuse/Phoenix): drop Codex's high-volume orphan housekeeping spans, which otherwise
+  # become thousands of 1-span traces per run. They are still kept in SQLite (traces/ledger pipeline).
+  filter/ui-noise:
+    error_mode: ignore
+    traces:
+      span:
+        - 'IsRootSpan() and resource.attributes["service.name"] == "codex_exec" and (name == "persist_rollout_items" or name == "realtime_conversation.running_state")'
+
+  # InferHub scope (2026-09-24, Alex): keep ONLY telemetry whose resource has llm.provider=inferhub
+  # (set by the Astra launcher wrapper). Everything else (OpenCode serve, Claude Code, ad-hoc tests, any tool
+  # that picks up the PC's pre-existing OTEL_EXPORTER_OTLP_ENDPOINT) is dropped before every sink.
+  filter/inferhub-only:
+    error_mode: ignore
+    traces:
+      span:
+        - 'resource.attributes["llm.provider"] == nil or resource.attributes["llm.provider"] != "inferhub"'
+    logs:
+      log_record:
+        - 'resource.attributes["llm.provider"] == nil or resource.attributes["llm.provider"] != "inferhub"'
+    metrics:
+      metric:
+        - 'resource.attributes["llm.provider"] == nil or resource.attributes["llm.provider"] != "inferhub"'
+
+exporters:
+  otlp_http/langfuse:
+    endpoint: http://langfuse-web:3000/api/public/otel   # exporter appends /v1/traces
+    headers:
+      Authorization: "Basic ${env:LANGFUSE_OTEL_BASIC_AUTH}"
+    compression: gzip
+    retry_on_failure: {enabled: true, max_elapsed_time: 300s}
+  otlp_http/phoenix:
+    endpoint: http://phoenix:6006                        # -> /v1/traces
+    retry_on_failure: {enabled: true, max_elapsed_time: 300s}
+  file/traces:
+    path: /data/otel/traces.jsonl
+    format: json
+    flush_interval: 1s
+    rotation: {max_megabytes: 100, max_days: 30, max_backups: 20, localtime: false}
+  file/logs:
+    path: /data/otel/logs.jsonl
+    format: json
+    flush_interval: 1s
+    rotation: {max_megabytes: 100, max_days: 30, max_backups: 20, localtime: false}
+  file/metrics:
+    path: /data/otel/metrics.jsonl
+    format: json
+    flush_interval: 1s
+    rotation: {max_megabytes: 100, max_days: 30, max_backups: 20, localtime: false}
+
+service:
+  extensions: [health_check]
+  telemetry:
+    logs:
+      level: info
+  pipelines:
+    traces/ledger:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/inferhub-only, transform/identity, transform/redact, redaction, batch]
+      exporters: [file/traces]
+    traces/ui:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/inferhub-only, transform/identity, transform/redact, redaction, filter/ui-noise, batch]
+      exporters: [otlp_http/langfuse, otlp_http/phoenix]
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/inferhub-only, transform/identity, transform/redact, redaction, batch]
+      exporters: [file/logs]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, filter/inferhub-only, transform/identity, transform/redact, redaction, batch]
+      exporters: [file/metrics]

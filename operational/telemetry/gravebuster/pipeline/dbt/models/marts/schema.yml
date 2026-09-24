@@ -1,0 +1,40 @@
+version: 2
+models:
+  - name: fact_runs
+    columns:
+      - name: run_id
+        tests: [unique, not_null]
+      - name: snapshot_id
+        tests: [not_null]
+  - name: fact_hops
+    columns:
+      - name: hop_id
+        tests: [unique, not_null]
+  - name: fact_model_requests
+    columns:
+      - name: request_id
+        tests: [unique, not_null]
+  - name: fact_tool_calls
+    columns:
+      - name: tool_call_id
+        tests: [unique, not_null]
+  - name: fact_idle_gaps
+    columns:
+      - name: gap_id
+        tests: [unique, not_null]
+  - name: dim_route
+    columns:
+      - name: route_key
+        tests: [unique]
+  - name: dim_model
+    columns:
+      - name: model_key
+        tests: [unique]
+  - name: dim_harness
+    columns:
+      - name: harness_key
+        tests: [unique]
+  - name: dim_task
+    columns:
+      - name: task_key
+        tests: [unique]

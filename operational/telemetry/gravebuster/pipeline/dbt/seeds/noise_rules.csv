@@ -1,0 +1,11 @@
+rule_id,signal,service_name,field,value,is_noise,counts_for_liveness,reason
+N001,traces,codex_exec,name,persist_rollout_items,true,false,"Codex rollout persistence; orphan root span (one trace each), ~8k per run"
+N002,traces,codex_exec,name,realtime_conversation.running_state,true,false,"Codex realtime state poll; orphan root span, ~7.7k per run; fires while idle so it must not count as liveness"
+N003,traces,codex_exec,name,append_items,true,false,"Codex rollout buffer append (child of persist_rollout_items), ~16k per run"
+N004,traces,codex_exec,name,receiving,true,true,"per-SSE-chunk receive span; low analytic value but proves the stream is alive"
+N005,traces,codex_exec,name,handle_responses,true,true,"per-SSE-chunk handler span; low analytic value but proves the stream is alive"
+N006,logs,codex_exec,event_kind,response.output_text.delta,true,true,"token stream delta event"
+N007,logs,codex_exec,event_kind,response.reasoning_summary_text.delta,true,true,"reasoning summary stream delta event"
+N008,logs,codex_exec,event_kind,response.custom_tool_call_input.delta,true,true,"tool-call input stream delta event"
+N009,logs,codex_exec,body,flushing OTEL metrics,true,false,"exporter housekeeping log"
+N010,traces,opencode,name,http.server GET,true,false,"OpenCode local UI polling (pre-InferHub-scope data)"

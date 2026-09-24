@@ -1,0 +1,25 @@
+name: atpipe
+version: "0.1.0"
+config-version: 2
+profile: atpipe
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+clean-targets: []
+vars:
+  clean_root: /srv/agent-telemetry/data/lake/clean
+  snapshot_id: "unset"
+  inputs_hash: "unset"
+  idle_gap_min_s: 30
+models:
+  atpipe:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: external
+      +format: parquet
+      +options: {compression: zstd}
+seeds:
+  atpipe:
+    noise_rules:
+      +column_types: {is_noise: boolean, counts_for_liveness: boolean}

@@ -1,0 +1,13 @@
+atpipe:
+  target: prod
+  outputs:
+    prod:
+      type: duckdb
+      path: "{{ env_var('DBT_DUCK_PATH') }}"
+      threads: 1
+      external_root: "{{ env_var('AT_OUT_DIR', '/tmp') }}"
+      settings:
+        memory_limit: "{{ env_var('AT_DUCK_MEMORY', '1500MB') }}"
+        threads: "{{ env_var('AT_DUCK_THREADS', '2') }}"
+        temp_directory: "{{ env_var('AT_TMP', '/tmp') }}"
+        preserve_insertion_order: false
