@@ -3,6 +3,12 @@
 GitHub issue: [#24](https://github.com/Pukujan/inference-recommendation-engine/issues/24),
 a sub-issue of [#8](https://github.com/Pukujan/inference-recommendation-engine/issues/8).
 
+## Status
+
+The runner and policy merged in PR [#25](https://github.com/Pukujan/inference-recommendation-engine/pull/25)
+as `2eab9ee9cd43effff3c47455a08c8ab4f43a3605`; both required CI checks passed.
+This follow-up records verified closeout before issue #24 is closed.
+
 ## Goal
 
 Make the supported long-running Codex runner writable and non-interactive by
@@ -59,9 +65,13 @@ read-only mode or ask repeatedly for routine tool permission.
   accepted the explicit `exec` options, and `pnpm check:public` passed. These
   checks did not call a model. Full repository gates and checkpoint delivery
   remain.
+- 2026-09-24: All publisher gates passed: static checks, 26 Node tests, public
+  surface scan, 41 operational tests, and package dry run. PR #25 passed both
+  required CI checks and merged as `2eab9ee9cd43effff3c47455a08c8ab4f43a3605`.
+  The finalizer synchronized canonical `main` and removed only this checkpoint
+  branch. No model was called and no credential or receipt source was changed.
 
 ## Next action
 
-Run repository gates and publish through the checkpoint helper. After merge,
-create the next issue for streaming/liveness and task-resume behavior under
-issue #8.
+Publish this verified closeout record and close issue #24. Then create the next
+issue for streaming/liveness and task-resume behavior under issue #8.
