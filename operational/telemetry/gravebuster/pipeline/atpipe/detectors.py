@@ -635,11 +635,12 @@ def d_launcher_error_or_early_exit(ctx, p):
                     stamp=st,
                 )
             )
+    root_err = {ctx.root_of(e.get("run_id")) for e in ctx.root_errors if e.get("run_id")}
     for rid, r in ctx.runs.items():
         if rid in seen or not ctx.ok(rid) or r.get("parent_run_id"):
             continue
-        if r.get("provider_error_code") is not None:
-            continue
+        if r.get("provider_error_code") is not None or rid in root_err:
+            continue  # explained by a provider error
         failed = (
             (r.get("exit_code") not in (None, 0))
             or r.get("killed")
