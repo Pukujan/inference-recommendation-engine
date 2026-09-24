@@ -522,6 +522,41 @@ class HarnessNeutralTests(unittest.TestCase):
             rows["provider_param_rejection"][0]["run_id"], "kilo:1"
         )  # attributed to the root
 
+    def test_kilo_mart_rows_as_written_by_the_kilo_ingester(self) -> None:
+        # kilo_fact_* rows: roles kilo_session/kilo_subagent, evidence ids instead of span ids.
+        self.assertIn("kilo_", detectors.HARNESS_MART_PREFIXES)
+        self.assertEqual(
+            set(detectors.FACT_TABLES),
+            {"runs", "model_requests", "idle_gaps", "hops", "tool_calls"},
+        )
+        inputs = {
+            "runs": [
+                run("kilo:s1", role="kilo_session", harness="kilo", task_id="proj"),
+                run(
+                    "kilo:s2",
+                    role="kilo_subagent",
+                    harness="kilo",
+                    parent_run_id="kilo:s1",
+                    root_run_id="kilo:s1",
+                    killed=True,
+                    outcome="killed",
+                ),
+            ],
+            "idle_gaps": [
+                {
+                    "run_id": "kilo:s2",
+                    "gap_id": "kg",
+                    "gap_s": 2.0,
+                    "ended_by": "run_end",
+                    "before_evidence_id": "s2#m7.p3",
+                }
+            ],
+        }
+        rows = by_type(detect(inputs))["unjustified_kill"]
+        self.assertEqual(rows[0]["run_id"], "kilo:s2")
+        self.assertEqual(rows[0]["run_role"], "kilo_subagent")
+        self.assertIn("evidence:s2#m7.p3", rows[0]["evidence_refs"])
+
     def test_verification_traces_are_excluded(self) -> None:
         inputs = {
             "runs": [

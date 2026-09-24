@@ -17,7 +17,11 @@ part of [#40](https://github.com/Pukujan/inference-recommendation-engine/issues/
   with 27 incidents. Three new launcher runs (22:31 UTC) were caught through the checkpoint 2 root-span
   attributes.
 - Checkpoint 4 (detector fix): a fast launcher failure explained by a root-span provider error was
-  also counted as `launcher_error_or_early_exit`; it now counts once. In review.
+  also counted as `launcher_error_or_early_exit`; it now counts once. Merged in PR #48 at
+  `ae2d6b9d55424779d830197ccb85e259cadba40c`; deployed with PR #47 (`DEPLOYED sha=7c14eed…`); pipeline run
+  `20260924T225352Z-007fdf` built snapshot `5565f2dad579c10b` with 24 incidents in 8 types.
+- Checkpoint 5 (Kilo marts in detector inputs): the `kilo_fact_*` marts from PR #47 are unioned into
+  the detector inputs, so every signature also runs over Kilo sessions and sub-agents. In review.
 
 ## Goal
 
