@@ -3,6 +3,12 @@
 GitHub issue: [#21](https://github.com/Pukujan/inference-recommendation-engine/issues/21),
 a sub-issue of [#8](https://github.com/Pukujan/inference-recommendation-engine/issues/8).
 
+## Status
+
+The guide and scanner exception merged in PR [#22](https://github.com/Pukujan/inference-recommendation-engine/pull/22)
+as `9b16c2b7964023adb3259a8a1d61da86bb3d89a1`. Required GitHub CI passed.
+This follow-up records final verification before closing issue #21.
+
 ## Goal
 
 Record how to configure OpenAI-compatible and Anthropic-compatible clients to
@@ -50,9 +56,14 @@ use InferHub, including the different base URL forms and safe API key handling.
   scanner source. Narrowed the exception to the setup guide, this task file,
   and `checkpoints/CURRENT.md`, while keeping the sensitive-term scan active
   for each of them.
+- 2026-09-24: All publisher gates passed: static checks, 26 Node tests, public
+  surface scan, 41 operational tests, and package dry run. PR #22 passed both
+  required CI checks and merged as `9b16c2b7964023adb3259a8a1d61da86bb3d89a1`.
+  The finalizer synchronized canonical `main` to the merge commit and removed
+  only this checkpoint branch. No model inference or API-key use occurred.
 
 ## Next action
 
-Run required local gates and publish this checkpoint through the repository's
-checkpoint helper. After merge, return to issue #8's planned streaming/liveness
-and task-resume guidance.
+Publish this verified closeout record, then close issue #21. Next, create a
+child issue and task file for issue #8's planned streaming/liveness and
+task-resume guidance.
