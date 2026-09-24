@@ -47,6 +47,18 @@ export function autoMergeArgs(prNumber, headSha) {
   return ['pr', 'merge', String(prNumber), '--auto', '--squash', '--match-head-commit', headSha];
 }
 
+export function localGateCommands() {
+  return [
+    ['uv', ['sync', '--locked']],
+    ['pnpm', ['install', '--frozen-lockfile']],
+    ['pnpm', ['check:static']],
+    ['pnpm', ['test']],
+    ['pnpm', ['check:public']],
+    ['pnpm', ['test:operational']],
+    ['pnpm', ['pack', '--dry-run']],
+  ];
+}
+
 function validatePath(input) {
   const normalized = input.replaceAll('\\', '/');
   if (
@@ -166,14 +178,7 @@ async function main() {
     }
   }
 
-  for (const [command, args] of [
-    ['uv', ['sync', '--locked']],
-    ['pnpm', ['install', '--frozen-lockfile']],
-    ['pnpm', ['test']],
-    ['pnpm', ['check:public']],
-    ['pnpm', ['test:operational']],
-    ['pnpm', ['pack', '--dry-run']],
-  ]) invoke(command, args);
+  for (const [command, args] of localGateCommands()) invoke(command, args);
 
   invoke('git', ['add', '--', ...options.paths]);
   const staged = git('diff', '--cached', '--name-only').split(/\r?\n/).filter(Boolean);
