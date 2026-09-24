@@ -96,10 +96,10 @@ def append(
                 stats["new"] += len(batch)
             out = os.path.join(root, tbl, f"day={day}", f"part-{run_id}.parquet")
             os.makedirs(os.path.dirname(out), exist_ok=True)
-            at = pa.Table.from_pylist(batch)  # noqa: F841  (referenced by DuckDB below)
+            arrow_batch = pa.Table.from_pylist(batch)  # noqa: F841  (referenced by DuckDB below)
             tmp = out + ".tmp"
             con.execute(
-                f"COPY (SELECT * FROM at) TO '{tmp}' (FORMAT parquet, COMPRESSION zstd, "
+                f"COPY (SELECT * FROM arrow_batch) TO '{tmp}' (FORMAT parquet, COMPRESSION zstd, "
                 "COMPRESSION_LEVEL 9)"
             )
             os.replace(tmp, out)
