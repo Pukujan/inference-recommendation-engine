@@ -22,6 +22,14 @@ def connect() -> Any:
     con.execute(f"SET memory_limit='{MEMORY}'")
     con.execute("SET threads=1")
     con.execute("SET preserve_insertion_order=false")
+    tmp = os.environ.get("IHUB_DUCK_TMP") or os.path.join(
+        os.environ.get("IHUB_DATA")
+        or os.path.join(os.environ.get("AT_ROOT", "/srv/agent-telemetry"), "data", "inferhub"),
+        "tmp",
+    )
+    os.makedirs(tmp, exist_ok=True)
+    con.execute(f"SET temp_directory='{tmp}'")  # spill instead of OOM under MemoryMax
+    con.execute("SET max_temp_directory_size='2GB'")
     return con
 
 
@@ -107,18 +115,56 @@ def append(
 
 
 def compact(con: Any, root: str, table: str, day: str) -> int:
-    """Merge a finished day's parts into one file (optional housekeeping; content unchanged)."""
+    """Merge a day's parts into one ``compact.parquet`` (housekeeping; content unchanged).
+
+    Streams in file order (no sort/hash of whole rows, so memory stays flat and row locality, i.e.
+    compression, is kept). Rows are unique per identity within a day because ``append`` dedups
+    (``*_revisions`` may hold several revisions of one key, so there identity is
+    ``(_key, content_hash)``). If a ``compact.parquet`` already exists (late parts, or a previous
+    merge died after writing it but before removing the parts) its rows are kept and other parts
+    contribute only identities it does not contain, so a re-run never duplicates rows.
+    Returns the number of files merged (0 = nothing to do)."""
     files = _parts(root, table, day)
     if len(files) <= 1:
         return 0
+    ident = "_key || '|' || coalesce(content_hash, '')" if table.endswith("_revisions") else "_key"
     out = os.path.join(root, table, f"day={day}", "compact.parquet")
     tmp = out + ".tmp"
+    others = [f for f in files if f != out]
+    src = f"read_parquet({sql_list(others)}, union_by_name=true)"
+    if out in files:
+        base = f"read_parquet({sql_list([out])}, union_by_name=true)"
+        q = (
+            f"SELECT * FROM {base} UNION ALL BY NAME SELECT * FROM {src} "
+            f"WHERE {ident} NOT IN (SELECT {ident} FROM {base})"
+        )
+    else:
+        q = f"SELECT * FROM {src}"
     con.execute(
-        f"COPY (SELECT DISTINCT ON (_key) * FROM read_parquet({sql_list(files)}, "
-        f"union_by_name=true)) TO '{tmp}' (FORMAT parquet, COMPRESSION zstd, COMPRESSION_LEVEL 9)"
+        f"COPY ({q}) TO '{tmp}' (FORMAT parquet, COMPRESSION zstd, COMPRESSION_LEVEL 9, "
+        "ROW_GROUP_SIZE 100000)"
     )
     os.replace(tmp, out)
-    for f in files:
-        if f != out:
-            os.remove(f)
+    for f in others:
+        os.remove(f)
     return len(files)
+
+
+def compact_finished(con: Any, root: str, before_day: str) -> dict[str, Any]:
+    """Compact every ``<table>/day=D`` with more than one part and D < ``before_day`` (UTC day of
+    the run, so only finished days). Late rows for an old day (request-log overlap) land as a new
+    part and are merged on the next call. Caller must hold the ihub lock (all writers take it)."""
+    merged: dict[str, int] = {}
+    bytes_before = bytes_after = 0
+    for d in sorted(glob.glob(os.path.join(root, "*", "day=*"))):
+        table, day = os.path.basename(os.path.dirname(d)), os.path.basename(d)[4:]
+        if day >= before_day:
+            continue
+        files = _parts(root, table, day)
+        if len(files) <= 1:
+            continue
+        bytes_before += sum(os.path.getsize(f) for f in files)
+        n = compact(con, root, table, day)
+        bytes_after += os.path.getsize(os.path.join(d, "compact.parquet"))
+        merged[f"{table}/{day}"] = n
+    return {"merged": merged, "bytes_before": bytes_before, "bytes_after": bytes_after}

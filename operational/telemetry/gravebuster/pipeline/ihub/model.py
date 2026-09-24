@@ -13,7 +13,7 @@ import time
 from typing import Any
 
 from . import lake
-from .collect import IH, PQ, ROOT
+from .collect import IH, PQ, ROOT, STATE
 
 SQL_DIR = os.path.join(os.path.dirname(__file__), "sql")
 MODELED = os.path.join(IH, "modeled")
@@ -33,6 +33,8 @@ MARTS = [
     "fact_request_billing",
     "inferhub_request_match",
     "inferhub_match_summary",
+    "fact_route_reliability",
+    "fact_route_error_breakdown",
 ]
 NEEDS = {
     "inferhub_dim_route": ["routes"],
@@ -46,12 +48,33 @@ NEEDS = {
     "fact_request_billing": ["billing", "tiers", "routes"],
     "inferhub_request_match": ["billing", "tiers", "routes", "@fmr"],
     "inferhub_match_summary": ["billing", "tiers", "routes", "@fmr"],
+    # rolling 1h/24h/7d reliability per route (IRE #46 M4); read by catalogue.py
+    "fact_route_reliability": ["billing", "tiers", "routes", "status"],
+    "fact_route_error_breakdown": ["billing", "tiers", "routes"],
 }
+
+
+def _logs_fetched_at() -> str:
+    """SQL literal: time of the last request-log fetch that returned pages (state/logs_state.json),
+    so reliability windows end at log coverage even when that fetch brought no new rows."""
+    try:
+        with open(os.path.join(STATE, "logs_state.json"), encoding="utf-8") as fh:
+            last = json.load(fh).get("last_run") or {}
+    except (OSError, ValueError):
+        return "NULL::TIMESTAMP"
+    at = str(last.get("at") or "")
+    if not last.get("pages") or not at[:4].isdigit() or "'" in at:
+        return "NULL::TIMESTAMP"
+    return f"'{at}'::TIMESTAMPTZ::TIMESTAMP"
 
 
 def _sql(name: str) -> str:
     with open(os.path.join(SQL_DIR, name + ".sql"), encoding="utf-8") as fh:
-        return fh.read().replace("{POLICY_PER_MTOK}", POLICY_PER_MTOK)
+        return (
+            fh.read()
+            .replace("{POLICY_PER_MTOK}", POLICY_PER_MTOK)
+            .replace("{LOGS_FETCHED_AT}", _logs_fetched_at())
+        )
 
 
 def _has(table: str) -> bool:

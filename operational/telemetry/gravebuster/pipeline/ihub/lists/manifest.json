@@ -1,0 +1,30 @@
+{
+ "schema": "ihub-static-lists/v1",
+ "description": "Verbatim, byte-identical input copies of IRE's static recommendation lists (not edited here; the generated route catalogue sits alongside them and never rewrites them). Source of truth: the owner's local InferHub research workspace (not version-controlled). Referenced by docs/INFERHUB-API-SETUP.md 'Top 20 or Top 20+ lists'.",
+ "profile": "daily-cheap-reliable-recent",
+ "generated_utc": "2026-09-22T17:10:44.385Z",
+ "lists": [
+  {
+   "list": "top20",
+   "file": "research_model_top20_recommendations.csv",
+   "source_path": "D:/claude/inferhub/research_model_top20_recommendations.csv",
+   "sha256": "8e2b1b323cf9438b1274f321c309729d60f133ef14915895265ca76758570e7c",
+   "rank_column": "recommendation_rank",
+   "eligible_column": "recommendation_eligible",
+   "meaning": "Top 20 recommendation view by empirical score; gated rows stay visible, recommendation_eligible marks rows allowed into the operational shortlist."
+  },
+  {
+   "list": "daily_shortlist",
+   "file": "research_model_daily_shortlist.csv",
+   "source_path": "D:/claude/inferhub/research_model_daily_shortlist.csv",
+   "sha256": "51cd8f45bc4acacc09f531f07a35d9e5a5f529d7d645965c92d062ab18362e5b",
+   "rank_column": "rank",
+   "eligible_column": null,
+   "meaning": "Operational shortlist selected from all eligible candidates (includes eligible models beyond the Top 20 view, e.g. MiMo V2.5). Treated as the 'Top 20+' list; that mapping is an interpretation (unverified)."
+  }
+ ],
+ "related_source_hashes": {
+  "TOP-20-RECOMMENDATIONS.md": "06278141b5d5435a2fa9df5e74e6ea08561d799a7295bcbec98efb8f680de787",
+  "data/daily-shortlist.json": "830f6d0789bed32313e92aab49ebcf1e789b5ad485ddeb7ec48f7dd41f586e93"
+ }
+}

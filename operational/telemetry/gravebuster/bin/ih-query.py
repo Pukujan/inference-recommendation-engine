@@ -12,6 +12,16 @@
   ih-query.py status                      latest status per rail
   ih-query.py runs [N]                    last N collector runs (meta/runs.jsonl)
   ih-query.py tables                      modeled tables with row counts
+  ih-query.py catalogue [--route R ...] [--status S] [--list top20|daily_shortlist] [--models]
+                        [--csv] [--full]
+                                          reliability-adjusted route catalogue (IRE #46 M4) as JSON
+                                          (default: compact route records; --full = every field,
+                                          --models = model-level view, --csv = the CSV sibling).
+                                          Schema: pipeline/ihub/schemas/route-catalogue.v1.schema.json.
+                                          Statuses are evidence-backed hypotheses, not facts.
+  ih-query.py reliability [route-substr ...] [--window 1h|24h|7d] [--errors]
+                                          fact_route_reliability rows as JSON (--errors: the
+                                          status/http_status breakdown instead)
   ih-query.py sql "<query>"               anything else (tables are views by file name)
 Memory capped at 256MB, 1 thread. Prices are USD per 1M tokens.
 """
@@ -27,6 +37,7 @@ import duckdb
 ROOT = os.environ.get("AT_ROOT", "/srv/agent-telemetry")
 IH = os.environ.get("IHUB_DATA", os.path.join(ROOT, "data", "inferhub"))
 MOD = os.path.join(IH, "modeled", "current")
+CAT = os.path.join(IH, "catalogue")
 
 
 def con():
@@ -60,11 +71,118 @@ def arg(name, default=None):
     return default
 
 
+def args(name):
+    out = []
+    while name in sys.argv:
+        i = sys.argv.index(name)
+        out.append(sys.argv[i + 1])
+        del sys.argv[i : i + 2]
+    return out
+
+
+def flag(name):
+    if name in sys.argv:
+        sys.argv.remove(name)
+        return True
+    return False
+
+
+def _jdefault(v):
+    if isinstance(v, dt.datetime):  # modeled timestamps are naive UTC
+        return (
+            (v if v.tzinfo else v.replace(tzinfo=dt.timezone.utc))
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+    return str(v)
+
+
+def dump(obj):
+    json.dump(obj, sys.stdout, indent=1, default=_jdefault)
+    sys.stdout.write("\n")
+
+
+COMPACT_ROUTE = ("route", "status", "confidence", "status_reasons", "recommendation_eligible_static",
+                 "in_live_catalog", "enabled")  # fmt: skip
+
+
+def compact_route(r):
+    out = {k: r[k] for k in COMPACT_ROUTE}
+    out["lists"] = [f"{m['list']}:{m['rank']}" for m in r["lists"]]
+    p, e = r["price"], r["evidence"]
+    out["live_min_ask_in"], out["live_min_ask_out"] = p["live_min_ask_in"], p["live_min_ask_out"]
+    out["live_min_tier_avail_in"] = p["live_min_tier_avail_in"]
+    out["served_ask_in_median_24h"] = p["served_ask_in_median_24h"]
+    out["live_min_ask_in_under_policy"] = p["live_min_ask_in_under_policy"]
+    for w in ("1h", "24h", "7d"):
+        x = r["reliability"][w]
+        out[w] = None if x is None else {
+            k: x[k] for k in ("requests", "ok", "client_errors", "service_attempts",
+                              "service_success_rate", "err_upstream_unavailable", "ttft_ms_p50",
+                              "ttft_ms_p95", "duration_ms_p50", "duration_ms_p95")
+        }  # fmt: skip
+    out["evidence"] = {k: e[k] for k in ("decided_window", "decided_service_attempts", "decided_ok",
+                                         "wilson_lower", "wilson_upper", "live_book_hash",
+                                         "platform_rail_state")}  # fmt: skip
+    return out
+
+
+def catalogue_cmd():
+    routes_f = [s.lower() for s in args("--route")]
+    status_f = set(args("--status"))
+    list_f = set(args("--list"))
+    want_csv, full, models = flag("--csv"), flag("--full"), flag("--models")
+    path = os.path.join(CAT, "route-catalogue.json")
+    if want_csv:
+        with open(os.path.join(CAT, "route-catalogue.csv"), encoding="utf-8") as fh:
+            sys.stdout.write(fh.read())
+        return
+    with open(path, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    head = {k: doc[k] for k in ("schema", "schema_file", "hypothesis_notice", "generated_at",
+                                "code_commit", "status_counts")}  # fmt: skip
+    head["request_log_coverage_end"] = doc["evidence"]["request_log_coverage_end"]
+    head["catalog_raw_sha256"] = (doc["evidence"].get("latest_catalog_fetch") or {}).get("sha256")
+    head["inputs_sha256"] = doc["evidence"]["inputs_sha256"]
+    head["age_s"] = round(
+        dt.datetime.now(dt.timezone.utc).timestamp()
+        - dt.datetime.fromisoformat(doc["generated_at"].replace("Z", "+00:00")).timestamp()
+    )
+    if models:
+        ms = doc["models"]
+        if list_f:
+            ms = [m for m in ms if any(x["list"] in list_f for x in m["lists"])]
+        if status_f:
+            ms = [m for m in ms if m["best_route_status"] in status_f]
+        dump(head | {"models": ms})
+        return
+    rs = doc["routes"]
+    if routes_f:
+        rs = [r for r in rs if any(s in r["route"].lower() for s in routes_f)]
+    if status_f:
+        rs = [r for r in rs if r["status"] in status_f]
+    if list_f:
+        rs = [r for r in rs if any(m["list"] in list_f for m in r["lists"])]
+    if full:
+        dump(head | {"evidence": doc["evidence"], "method": doc["method"], "routes": rs})
+    else:
+        dump(head | {"routes": [compact_route(r) for r in rs]})
+
+
+def rows(c, q, params=None):
+    rel = c.execute(q, params or [])
+    cols = [d[0] for d in rel.description]
+    return [dict(zip(cols, r, strict=True)) for r in rel.fetchall()]
+
+
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
         print(__doc__)
         return
     cmd = sys.argv[1]
+    if cmd == "catalogue":
+        catalogue_cmd()
+        return
     if cmd == "runs":
         n = int(sys.argv[2]) if len(sys.argv) > 2 else 10
         with open(os.path.join(IH, "meta", "runs.jsonl"), encoding="utf-8") as fh:
@@ -187,6 +305,18 @@ def main():
                    QUALIFY row_number() OVER (PARTITION BY rail ORDER BY ts DESC) = 1
                    ORDER BY rail""",
         )
+    elif cmd == "reliability":
+        win = args("--window")
+        errors = flag("--errors")
+        subs = sys.argv[2:] or [""]
+        table = "fact_route_error_breakdown" if errors else "fact_route_reliability"
+        where = "(" + " OR ".join("route ILIKE ?" for _ in subs) + ")"
+        params = [f"%{s}%" for s in subs]
+        if win:
+            where += ' AND "window" IN (' + ",".join("?" for _ in win) + ")"
+            params += win
+        order = "route, window_hours, requests DESC" if errors else "route, window_hours"
+        dump(rows(c, f"SELECT * FROM {table} WHERE {where} ORDER BY {order}", params))
     elif cmd == "sql":
         show(c, sys.argv[2])
     else:

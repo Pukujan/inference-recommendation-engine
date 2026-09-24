@@ -54,6 +54,8 @@ deploy script never touches it.
 | `fact_balance` | fetch: balance, today's spend (ET), ok requests |
 | `fact_request_billing` | request_logs id: ts, day_et, route, rail, status/http, tokens in/out/cached/cache-write, billed cost, served ask in/out, served tier rank + avail, min ask at ts, ttft/duration/routing ms, extras_json |
 | `inferhub_dim_route` | route: latest attributes, first/last seen |
+| `fact_route_reliability` | route x window (1h/24h/7d, ending at the last log fetch): requests, ok, client vs service errors, error-type counts, success rates, ttft/duration p50/p95, served ask + tier, live price, platform rail state |
+| `fact_route_error_breakdown` | route x window x (status, http_status, error_type): counts |
 | `inferhub_request_match`, `inferhub_match_summary` | lake `fact_model_requests` (primary, same route) joined to billing: `exact_tokens` = same route, tokens in and out equal, within 300 s, one-to-one closest; `time_error` = failed request without tokens -> failed billing row within 30 s |
 
 The tables are built with plain DuckDB SQL (`sql/*.sql`), not the shared dbt project, so a 5-minute
@@ -69,7 +71,14 @@ venv/bin/python -m ihub backfill --since 2026-09-24T04:00:00Z     # request logs
 venv/bin/python -m ihub export [--day 2026-09-24]                 # CSV + manifest only
 venv/bin/python -m ihub publish [--day 2026-09-24]                # export + push to the data branch
 bin/ih-query.py prices astra | book cb/gpt-6-astra | drift | balance | spend | match | status | runs
+bin/ih-query.py catalogue [--route R] [--status S] [--models] [--full|--csv]   # agent JSON (M4)
+bin/ih-query.py reliability [route ...] [--window 24h] [--errors]              # rollups as JSON
+venv/bin/python -m ihub catalogue | compact
 ```
+Route catalogue (IRE #46 M4): `catalogue.py` joins the static lists in `lists/` (verbatim copies,
+sha256-checked, never edited) with live price and `fact_route_reliability` into
+`catalogue/route-catalogue.{json,csv}` every logs run; schema `schemas/route-catalogue.v1.schema.json`.
+The logs run then compacts finished UTC days (`lake.compact_finished`).
 First install (units are installed by `deploy.sh`, but new timers must be enabled once):
 `sudo systemctl enable --now inferhub-collect-fast.timer inferhub-collect-logs.timer inferhub-snapshot-publish.timer`.
 
@@ -86,5 +95,5 @@ and of the raw catalog/models bodies on the host. Push auth is the host's existi
 - The telemetry join needs matching token counts; requests that failed before a usage block are
   matched by time only, and telemetry without tokens that succeeded stays `unmatched`.
 - Marts are rebuilt in full each run with new rows (seconds today); switch to incremental builds
-  or compact parts (`lake.compact`) once history grows.
+  once history grows. Finished days are compacted to one file per table/day by the logs run.
 - `/usage/logs` offers only `range=24h|7d|30d|90d|all`; a gap longer than 90 days cannot be backfilled.
