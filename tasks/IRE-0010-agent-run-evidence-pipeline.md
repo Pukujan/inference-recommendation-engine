@@ -11,7 +11,13 @@ part of [#40](https://github.com/Pukujan/inference-recommendation-engine/issues/
 - Checkpoint 2 (provider-error capture, #40 M0.6 context): merged in PR #44 at
   `b891a7da89286a78baaec56c3037f2bcb9f48e88`; required check `test` passed. The PC launcher helper copy is
   installed and matches the repository.
-- Checkpoint 3 (P4 incident detectors + versioned signature catalog + experiment manifests): in review.
+- Checkpoint 3 (P4 incident detectors + versioned signature catalog + experiment manifests): merged in
+  PR #45 at `62a409cc6cba2cc6f69d505d19360ce887ebb07e`; required check `test` passed. Deployed from `main`
+  (`DEPLOYED sha=62a409c…`); pipeline run `20260924T223531Z-048a96` built snapshot `11ae8bcc7e3785fe`
+  with 27 incidents. Three new launcher runs (22:31 UTC) were caught through the checkpoint 2 root-span
+  attributes.
+- Checkpoint 4 (detector fix): a fast launcher failure explained by a root-span provider error was
+  also counted as `launcher_error_or_early_exit`; it now counts once. In review.
 
 ## Goal
 
