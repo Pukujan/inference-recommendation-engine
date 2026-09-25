@@ -6,10 +6,23 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Prompt,
 
-    [string]$WorkingDirectory = (Get-Location).Path
+    [string]$WorkingDirectory = (Get-Location).Path,
+
+    # Optional path to a private/operational launcher that wraps this harness (receipts, provider
+    # config, export). When set, that script is invoked with the same Model/Prompt/WorkingDirectory
+    # and this script exits with its status. Keeps provider-specific wiring out of the public root.
+    [string]$WrapperScript = ''
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ($WrapperScript) {
+    if (-not (Test-Path -LiteralPath $WrapperScript)) {
+        throw "Wrapper script not found: $WrapperScript"
+    }
+    & $WrapperScript -Model $Model -Prompt $Prompt -WorkingDirectory $WorkingDirectory
+    exit $LASTEXITCODE
+}
 
 $codexCommand = Get-Command codex -CommandType Application -ErrorAction Stop
 $gitCommand = Get-Command git -CommandType Application -ErrorAction Stop
@@ -20,11 +33,12 @@ if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repositoryRoot)) {
 }
 $repositoryRoot = (Resolve-Path -LiteralPath $repositoryRoot.Trim() -ErrorAction Stop).Path
 
+# Staff / cheap-builder default: full privileges, no approval prompts (matches owner launchers).
+# Codex CLI 0.156.x sandbox enum: read-only | workspace-write | danger-full-access.
 $codexArguments = @(
     'exec',
-    '--sandbox', 'workspace-write',
+    '--sandbox', 'danger-full-access',
     '--config', 'approval_policy=never',
-    '--config', 'sandbox_workspace_write.network_access=true',
     '--json',
     '--cd', $repositoryRoot,
     '--model', $Model,

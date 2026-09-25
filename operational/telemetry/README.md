@@ -15,6 +15,7 @@ the ranking core, and no data, credentials, or receipts are stored in the reposi
 | `gravebuster/deploy.sh` | deploys a checkout to `/srv/agent-telemetry`, preserving data and secrets | telemetry host |
 | `pc/astra-telemetry.ps1`, `pc/astra_otel.py` | per-run root span emitter for the Astra launchers (stdlib only, no daemon) | developer PC |
 | `pc/launch-astra.ps1`, `pc/resume-astra.ps1`, `pc/astra-retry11133.ps1` | Astra launchers (read the provider key from a local env file at run time; no secrets in the files) | developer PC |
+| `pc/run-codex-harness.ps1` (dotsources `astra-telemetry.ps1` + `astra_otel.py`) | InferHub-key Codex harness with the Astra OTel wrapper (`llm.provider=inferhub`); repo-root `run_codex_harness.ps1` stays public/untagged and only sets danger-full-access | developer PC |
 
 The PC scripts are copies of the deployed files; machine paths and the collector's tailnet address are
 the author's defaults. Update the PC copy and this directory together.
