@@ -1,0 +1,168 @@
+{
+  "schema": "ckff-route-candidates/v1",
+  "schema_file": "schemas/ckff-route-candidates.v1.schema.json",
+  "hypothesis_notice": "CKFF routes and chicken-token prices are epistemic candidates with an explicit USD approximation annotation. Refresh live /api/pricing before spend-sensitive ranking. Not InferHub catalogue rows.",
+  "provider": {
+    "provider_id": "ckff",
+    "primary_base_url": "https://ckffai.com/v1",
+    "backup_base_url": "https://aws.ckffai.com/v1",
+    "wire_api": "responses",
+    "inference_path": "/responses",
+    "supported_endpoint_types": [
+      "openai"
+    ]
+  },
+  "price_unit": "chicken_token",
+  "usd_conversion": {
+    "rule": "Alex durable 2026-09-25: chicken tokens \u2248 100\u00d7 cheaper than USD for InferHub $/MTok comparisons",
+    "approx_usd_per_chicken": 0.01,
+    "formula": "approx_usd = chicken / 100",
+    "do_not": [
+      "treat_ckff_quota_integers_as_usd",
+      "write_chicken_into_ihub_route_catalogue_usd_fields",
+      "trust_provider_ui_dollar_label_as_usd_for_ire_ranking"
+    ]
+  },
+  "captured_at": "2026-09-25",
+  "source": {
+    "kind": "study-os-handoff",
+    "note": "Study-os Astra CKFF ops handoff to IRE",
+    "github_issue": 60,
+    "local_ops_note": "D:\\\\claude\\\\_workspace\\\\study-os-astra\\\\CKFF-ASTRA-OPS-FOR-IRE.md"
+  },
+  "credentials": {
+    "inference_env": "ckff_astra",
+    "telemetry_env": "ckff_access_token",
+    "inferhub_backup_env": "INFERHUB_API_KEY",
+    "optional_base_url_envs": [
+      "CKFF_ASTRA_BASE_URL",
+      "CKFF_CODEX_BACKUP_BASE_URL"
+    ]
+  },
+  "failover": {
+    "pattern": "launcher-level; Codex has no in-process backup model",
+    "cross_provider": "new exec + CHECKPOINT continue; never resume thread across providers",
+    "hops": [
+      {
+        "order": 1,
+        "provider_id": "ckff",
+        "base_url": "https://ckffai.com/v1",
+        "model_id": "gpt-6-astra",
+        "key_env": "ckff_astra",
+        "notes": "primary"
+      },
+      {
+        "order": 2,
+        "provider_id": "ckff",
+        "base_url": "https://aws.ckffai.com/v1",
+        "model_id": "gpt-6-astra",
+        "key_env": "ckff_astra",
+        "notes": "AWS backup host; ~180s-class idle observed"
+      },
+      {
+        "order": 3,
+        "provider_id": "inferhub",
+        "base_url": "https://api.inferhub.dev/v1",
+        "model_id": "cb/gpt-6-astra",
+        "key_env": "INFERHUB_API_KEY",
+        "notes": "USD InferHub route; price policy in docs/INFERHUB-API-SETUP.md"
+      }
+    ]
+  },
+  "account_status_snapshot": {
+    "quota_display_type": "CUSTOM",
+    "quota_per_unit": 500000,
+    "display_in_currency": true,
+    "custom_currency_symbol": "$",
+    "usd_exchange_rate": 1,
+    "ire_override": "chicken_token_rule_overrides_ui_dollar_label"
+  },
+  "models": [
+    {
+      "model_id": "gpt-6-astra",
+      "status": "pricing_snapshot",
+      "price_unit": "chicken_token",
+      "role": "coding_owner_planner",
+      "pricing": {
+        "model_ratio": 37.5,
+        "completion_ratio": 2,
+        "billing_mode": "tiered_expr",
+        "billing_expr": "len <= 272000 ? tier(\"base\", p*10 + c*50 + cr*1 + cc*12.5) : tier(\"tier2\", p*20 + c*75 + cr*2 + cc*25)",
+        "enable_groups_note": "includes codex-gpt-6-. group",
+        "supported_endpoint_types": [
+          "openai"
+        ]
+      },
+      "usd_approx_note": "Convert chicken quantities with approx_usd = chicken / 100 before comparing to InferHub USD/MTok"
+    },
+    {
+      "model_id": "gpt-6-luna",
+      "status": "needs_live_refresh",
+      "price_unit": "chicken_token",
+      "role": "sibling_ckff_candidate",
+      "pricing": {
+        "note": "Catalogued as CKFF sibling; re-fetch /api/pricing before spend-sensitive use"
+      },
+      "usd_approx_note": "Convert chicken quantities with approx_usd = chicken / 100 before comparing to InferHub USD/MTok"
+    }
+  ],
+  "routes": [
+    {
+      "route": "ckff/gpt-6-astra",
+      "provider_id": "ckff",
+      "model_id": "gpt-6-astra",
+      "base_url": "https://ckffai.com/v1",
+      "price_unit": "chicken_token",
+      "recommendation_status": "candidate",
+      "wire_api": "responses",
+      "key_env": "ckff_astra",
+      "usd_approx": {
+        "formula": "approx_usd = chicken / 100",
+        "approx_usd_per_chicken": 0.01
+      },
+      "notes": "Primary CKFF Astra route"
+    },
+    {
+      "route": "ckff-aws/gpt-6-astra",
+      "provider_id": "ckff",
+      "model_id": "gpt-6-astra",
+      "base_url": "https://aws.ckffai.com/v1",
+      "price_unit": "chicken_token",
+      "recommendation_status": "candidate",
+      "wire_api": "responses",
+      "key_env": "ckff_astra",
+      "usd_approx": {
+        "formula": "approx_usd = chicken / 100",
+        "approx_usd_per_chicken": 0.01
+      },
+      "notes": "CKFF AWS backup host; same key/model"
+    },
+    {
+      "route": "ckff/gpt-6-luna",
+      "provider_id": "ckff",
+      "model_id": "gpt-6-luna",
+      "base_url": "https://ckffai.com/v1",
+      "price_unit": "chicken_token",
+      "recommendation_status": "needs_live_refresh",
+      "wire_api": "responses",
+      "key_env": "ckff_astra",
+      "usd_approx": {
+        "formula": "approx_usd = chicken / 100",
+        "approx_usd_per_chicken": 0.01
+      },
+      "notes": "Sibling model; refresh pricing before recommending"
+    },
+    {
+      "route": "inferhub/cb/gpt-6-astra",
+      "provider_id": "inferhub",
+      "model_id": "cb/gpt-6-astra",
+      "base_url": "https://api.inferhub.dev/v1",
+      "price_unit": "usd",
+      "recommendation_status": "failover_only",
+      "wire_api": "responses",
+      "key_env": "INFERHUB_API_KEY",
+      "usd_approx": null,
+      "notes": "Failover hop 3 only; not a CKFF chicken-token route"
+    }
+  ]
+}
