@@ -306,7 +306,7 @@ CKFF is a separate BYOK provider candidate (not InferHub). Astra failover may
 use CKFF primary/AWS backup before InferHub `cb/gpt-6-astra`. Prices use
 **chicken tokens** with an explicit ÷100 USD approximation for ranking; do not
 mix units into InferHub catalogue USD fields. See `docs/CKFF-PROVIDER.md` and
-`data/providers/ckff/route-candidates.v1.json` (issue #60).
+`providers/ckff/route-candidates.v1.json` (issue #60).
 
 ## References
 

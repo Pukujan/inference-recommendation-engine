@@ -32,7 +32,7 @@
   },
   "credentials": {
     "inference_env": "ckff_astra",
-    "telemetry_env": "ckff_access_token",
+    "account_metrics_env": "ckff_access_token",
     "inferhub_backup_env": "INFERHUB_API_KEY",
     "optional_base_url_envs": [
       "CKFF_ASTRA_BASE_URL",

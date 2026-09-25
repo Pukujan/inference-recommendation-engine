@@ -3,7 +3,7 @@
 Status: candidate ingest for IRE [#60](https://github.com/Pukujan/inference-recommendation-engine/issues/60).
 Source: Study-os operational handoff 2026-09-25. No secret values in this file.
 
-Machine-readable sibling: `data/providers/ckff/route-candidates.v1.json`
+Machine-readable sibling: `providers/ckff/route-candidates.v1.json`
 Schema: `schemas/ckff-route-candidates.v1.schema.json`
 
 ## Provider identity
@@ -26,11 +26,11 @@ Never commit values. Never print values into GitHub, receipts, or logs.
 | Purpose | Env var | Local store (Windows) |
 | --- | --- | --- |
 | Astra inference (Codex / Responses) | `ckff_astra` | `C:\Users\pujan\OneDrive\Desktop\configs\.env` (also mirrored into Study-os `.env`, gitignored) |
-| Account telemetry read | `ckff_access_token` | same desktop configs `.env` |
+| Account metrics read | `ckff_access_token` | same desktop configs `.env` |
 | InferHub Astra backup | `INFERHUB_API_KEY` | `D:\claude\inferhub\.env` |
 | Optional base overrides | `CKFF_ASTRA_BASE_URL`, `CKFF_CODEX_BACKUP_BASE_URL` | Study-os `.env` |
 
-`ckff_access_token` is **not** an inference key. It works on account telemetry (`/api/user/self`, `/api/log/self`, `/api/pricing`, `/api/status`) and returns 401 on `/v1/models`. Inference uses `ckff_astra` on the `/v1/responses` wire.
+`ckff_access_token` is **not** an inference key. It works on account metrics (`/api/user/self`, `/api/log/self`, `/api/pricing`, `/api/status`) and returns 401 on `/v1/models`. Inference uses `ckff_astra` on the `/v1/responses` wire.
 
 Local operational note (outside this repo): `D:\claude\_workspace\study-os-astra\CKFF-ASTRA-OPS-FOR-IRE.md` and Study-os `docs/ops/CKFF-ASTRA-OPS-FOR-IRE.md`. Related LiteLLM note: `D:\claude\litellm\docs\CKFF-ACCOUNT-TELEMETRY.md`.
 
@@ -71,7 +71,7 @@ From `/api/pricing` for `gpt-6-astra`:
 
 ## Catalogued models
 
-See `data/providers/ckff/route-candidates.v1.json`.
+See `providers/ckff/route-candidates.v1.json`.
 
 | model_id | role | notes |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ Observed failure mode that motivated this: CKFF Astra streams dying mid-stream (
 ## Relation to InferHub artefacts
 
 - InferHub reliability catalogue (`ihub-route-catalogue/v1`) stays USD and InferHub-only.
-- CKFF candidates live under `data/providers/ckff/` with their own schema until a multi-provider catalogue exists.
+- CKFF candidates live under `providers/ckff/` with their own schema until a multi-provider catalogue exists.
 - Do not write chicken prices into InferHub `route-catalogue.json` price fields.
 
 ## Out of scope (issue #60)

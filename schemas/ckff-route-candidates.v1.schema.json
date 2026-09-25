@@ -126,7 +126,7 @@
         "inference_env": {
           "type": "string"
         },
-        "telemetry_env": {
+        "account_metrics_env": {
           "type": "string"
         },
         "inferhub_backup_env": {
