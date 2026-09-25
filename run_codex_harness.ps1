@@ -37,8 +37,9 @@ $repositoryRoot = (Resolve-Path -LiteralPath $repositoryRoot.Trim() -ErrorAction
 # Codex CLI 0.156.x sandbox enum: read-only | workspace-write | danger-full-access.
 $codexArguments = @(
     'exec',
+    '--dangerously-bypass-approvals-and-sandbox',
     '--sandbox', 'danger-full-access',
-    '--config', 'approval_policy=never',
+    '--config', 'approval_policy="never"',
     '--json',
     '--cd', $repositoryRoot,
     '--model', $Model,

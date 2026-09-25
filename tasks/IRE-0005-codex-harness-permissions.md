@@ -75,3 +75,12 @@ read-only mode or ask repeatedly for routine tool permission.
 
 The verified closeout record and issue #24 closure are complete. See IRE-0006
 and issue #27 for the follow-up BYOK CLI, streaming, and task-resume runbook.
+
+## Follow-up (2026-09-24 evening ET)
+
+Owner authorized upgrading the runner from workspace-write to
+`--dangerously-bypass-approvals-and-sandbox --sandbox danger-full-access`
+with `approval_policy=never` so cheap Codex/IRE staff runs stop raising
+repeated sandbox approval prompts. Tracked as Part of #40. Prior IRE-0005
+decision against machine-wide access for repository-scoped tasks is
+superseded for this authorized staff path.
