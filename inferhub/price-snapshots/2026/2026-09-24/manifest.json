@@ -1,75 +1,75 @@
 {
  "catalogue": {
-  "generated_at": "2026-09-25T00:11:10Z",
-  "routes": 62,
+  "generated_at": "2026-09-25T03:51:28Z",
+  "routes": 63,
   "schema": "ihub-route-catalogue/v1.1",
   "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
   "schema_sha256": "5cfd69ebf37e1388d858ed4286d23e1b69e04918b4bdc14efd7f49cc641bb11e",
   "status_counts": {
    "degraded": 0,
-   "failing": 1,
-   "healthy": 7,
-   "insufficient_data": 54
+   "failing": 2,
+   "healthy": 8,
+   "insufficient_data": 53
   }
  },
  "collector_git_sha": "930463c714b6f0c78095a8fa4ed3332d9ce21a67",
  "day_et": "2026-09-24",
  "files": {
   "pricing.csv": {
-   "bytes": 122840,
+   "bytes": 125054,
    "rows": 264,
-   "sha256": "56a158c67c99025ba818563aef215de9a78a4579d83a890534f59107fd5cdf5d"
+   "sha256": "5c7e4ec6630238e31250194d7dc0886851ca658f276b170fa1e1f1b6d8189cfd"
   },
   "providers.csv": {
    "bytes": 775,
    "rows": 11,
-   "sha256": "156fe2873cdd44556a57a1c9756d889617e5096cfb577e1fd483e630a465103a"
+   "sha256": "f8f5eeb5008da3623b2a12af6de5eda82b1edc0928bb6d308d93ba8d56f7247f"
   },
   "route-catalogue.csv": {
-   "bytes": 36066,
-   "rows": 62,
-   "sha256": "407fbfe616754d1f66d68721dc09667bc48e56c185c17f5d1f797f8806afadf0"
+   "bytes": 36365,
+   "rows": 63,
+   "sha256": "5ce90421d962a6e0899a2505bcf74d9e9c45222ddd47fc6664bbcc31bf08b3dd"
   },
   "route-catalogue.json": {
-   "bytes": 189640,
-   "sha256": "c6dcb12949975f495d835792387075b865bfd31300d25a578bc12595dbd67d1a"
+   "bytes": 187455,
+   "sha256": "eaa3d7da8ebeb21ade553a64cd860605ac0e142983dd20c491cc242f961f93b9"
   },
   "route-daily-summary.csv": {
-   "bytes": 15016,
+   "bytes": 15261,
    "rows": 125,
-   "sha256": "64b97d3e9ea097f3b4007b2f860a807aa9dd01f73c3fdff9dba0bbadecd14b48"
+   "sha256": "c4083b9dd0ba4064493035aa82ae3a4b3828bef44b455a8cc7767b9cd329794d"
   },
   "route-reliability.csv": {
-   "bytes": 20079,
-   "rows": 31,
-   "sha256": "c09cde27f37bf79890f1a4c0b35e9e7c47e7bbbffe1875e7c24c5c9542f93187"
+   "bytes": 17716,
+   "rows": 27,
+   "sha256": "89acac7206d0944a74fcbc73395276f9e87697dd83edfcfc0eca23dcf35ff55a"
   }
  },
- "generated_utc": "2026-09-25T00:11:10+00:00",
+ "generated_utc": "2026-09-25T03:51:28+00:00",
  "note": "Asks are listed prices, not guaranteed; InferHub may route to a higher tier when cheaper sellers are at their concurrency limit. Served prices are in request logs.",
  "raw_host": "gravebuster:/srv/agent-telemetry/data/inferhub/raw",
  "schema": "ihub-daily-snapshot/v1",
- "snapshot_utc": "2026-09-25T00:10:15.945Z",
+ "snapshot_utc": "2026-09-25T03:50:18.177Z",
  "sources": {
   "catalog": {
-   "bytes": 80654,
+   "bytes": 81559,
    "endpoint": "catalog",
-   "fetched_at": "2026-09-25T00:10:15.945Z",
-   "path": "catalog/2026-09-25/001015945Z-53964f7d.json.zst",
-   "sha256": "53964f7d5afcebc8bd168c6c117b218b175b93e28e2f69724a5efb458abae99e",
+   "fetched_at": "2026-09-25T03:50:18.177Z",
+   "path": "catalog/2026-09-25/035018177Z-be3d824f.json.zst",
+   "sha256": "be3d824fbc885f675435009f23b8c12f4b1a56e1f103aec2391f66b1b4bc0840",
    "url": "https://inferhub.dev/api/catalog",
-   "zst_bytes": 13092,
-   "zst_sha256": "032733b80ac4c6001e0c9e8fb8bb357806c18292d1b4689ae301046d8f073727"
+   "zst_bytes": 13245,
+   "zst_sha256": "67faa8c5b1191ab04bb1d1b10e88e325a48ca137194bfa43ea065b76613a2329"
   },
   "models": {
-   "bytes": 70799,
+   "bytes": 66030,
    "endpoint": "models",
-   "fetched_at": "2026-09-25T00:00:31.404Z",
-   "path": "models/2026-09-25/000031404Z-13ee4a27.json.zst",
-   "sha256": "13ee4a27bc273a68a41804241fb71c9b17a462aad96d6ff2ede9e1d4163d0dab",
+   "fetched_at": "2026-09-25T03:50:26.721Z",
+   "path": "models/2026-09-25/035026721Z-ff3430b0.json.zst",
+   "sha256": "ff3430b0cfca98a6c7d9aa35374a96be90f6103e35a365e041e70b5aecfb2e39",
    "url": "https://api.inferhub.dev/v1/models",
-   "zst_bytes": 8527,
-   "zst_sha256": "2183beb7603a7c4601df16bdc13dc3196dca6775fe2be07dee0842412cd7e3de"
+   "zst_bytes": 8145,
+   "zst_sha256": "af71ec5966419ee5d399a823c2b62670eef866ff43c6546d8068980b707905f8"
   }
  },
  "units": "USD per 1M tokens; avail_count = seller accounts listed at that price tier"
