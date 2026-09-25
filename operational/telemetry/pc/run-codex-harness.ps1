@@ -107,14 +107,14 @@ $codexArguments = @(
     '--cd', $repositoryRoot,
     '--model', $Model,
     '--output-last-message', $finalPath,
-    $Prompt
+    '-'
 )
 
 $codexExitCode = 1
 try {
     $previousErrorAction = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    & codex @codexArguments 2>> $stderrPath | Tee-Object -FilePath $eventsPath
+    $Prompt | & codex @codexArguments 2>> $stderrPath | Tee-Object -FilePath $eventsPath
     if ($null -ne $LASTEXITCODE) { $codexExitCode = [int]$LASTEXITCODE }
     $ErrorActionPreference = $previousErrorAction
 } catch {
