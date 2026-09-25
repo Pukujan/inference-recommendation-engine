@@ -55,7 +55,8 @@ deploy script never touches it.
 | `fact_request_billing` | request_logs id: ts, day_et, route, rail, status/http, tokens in/out/cached/cache-write, billed cost, served ask in/out, served tier rank + avail, min ask at ts, ttft/duration/routing ms, extras_json |
 | `inferhub_dim_route` | route: latest attributes, first/last seen |
 | `fact_route_reliability` | route x window (1h/24h/7d, ending at the last log fetch): requests, ok, client vs service errors, error-type counts, success rates, ttft/duration p50/p95, served ask + tier, live price, platform rail state |
-| `fact_route_error_breakdown` | route x window x (status, http_status, error_type): counts |
+| `fact_request_outcome` | request: error_code (telemetry, if any), error_type, error_class (upstream/client/account/unknown), class_basis; rules in `errclass.py` (11133 and uncoded cb/cbcn 400s = upstream, #40 M0.6) |
+| `fact_route_error_breakdown` | route x window x (status, http_status, error_code, error_type, error_class, class_basis): counts |
 | `inferhub_request_match`, `inferhub_match_summary` | lake `fact_model_requests` (primary, same route) joined to billing: `exact_tokens` = same route, tokens in and out equal, within 300 s, one-to-one closest; `time_error` = failed request without tokens -> failed billing row within 30 s |
 
 The tables are built with plain DuckDB SQL (`sql/*.sql`), not the shared dbt project, so a 5-minute

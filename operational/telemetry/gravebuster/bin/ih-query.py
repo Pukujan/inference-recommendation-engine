@@ -117,10 +117,13 @@ def compact_route(r):
     for w in ("1h", "24h", "7d"):
         x = r["reliability"][w]
         out[w] = None if x is None else {
-            k: x[k] for k in ("requests", "ok", "client_errors", "service_attempts",
-                              "service_success_rate", "err_upstream_unavailable", "ttft_ms_p50",
-                              "ttft_ms_p95", "duration_ms_p50", "duration_ms_p95")
+            k: x.get(k) for k in ("requests", "ok", "client_errors", "service_attempts",
+                                  "service_success_rate", "upstream_errors", "err_upstream_reject",
+                                  "err_upstream_reject_presumed", "err_upstream_unavailable",
+                                  "ttft_ms_p50", "ttft_ms_p95", "duration_ms_p50",
+                                  "duration_ms_p95")
         }  # fmt: skip
+    out["error_breakdown_24h"] = r.get("error_breakdown_24h", [])
     out["evidence"] = {k: e[k] for k in ("decided_window", "decided_service_attempts", "decided_ok",
                                          "wilson_lower", "wilson_upper", "live_book_hash",
                                          "platform_rail_state")}  # fmt: skip

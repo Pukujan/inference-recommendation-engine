@@ -1,8 +1,8 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "https://github.com/Pukujan/inference-recommendation-engine/blob/main/operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
- "title": "ihub-route-catalogue/v1",
- "description": "Reliability-adjusted InferHub route catalogue for agents (IRE #46 M4). Generated every 15 min on the telemetry host (catalogue/route-catalogue.json) and published daily to the data branch. Every status is an evidence-backed hypothesis, not a fact. The CSV sibling (route-catalogue.csv) flattens routes[] one row per route.",
+ "title": "ihub-route-catalogue/v1 (v1.1)",
+ "description": "Reliability-adjusted InferHub route catalogue for agents (IRE #46 M4). Generated every 15 min on the telemetry host (catalogue/route-catalogue.json) and published daily to the data branch. Every status is an evidence-backed hypothesis, not a fact. The CSV sibling (route-catalogue.csv) flattens routes[] one row per route. v1.1 (additive, optional fields): error classes per window and routes[].error_breakdown_24h; 11133 / uncoded cb 400s count as upstream failures (#40 M0.6). v1 artifacts still validate.",
  "type": "object",
  "additionalProperties": false,
  "required": [
@@ -19,7 +19,10 @@
  ],
  "properties": {
   "schema": {
-   "const": "ihub-route-catalogue/v1"
+   "enum": [
+    "ihub-route-catalogue/v1",
+    "ihub-route-catalogue/v1.1"
+   ]
   },
   "schema_file": {
    "type": "string"
@@ -620,943 +623,13 @@
       ],
       "properties": {
        "1h": {
-        "type": [
-         "object",
-         "null"
-        ],
-        "additionalProperties": false,
-        "required": [
-         "window_start",
-         "window_end",
-         "requests",
-         "ok",
-         "errors",
-         "client_errors",
-         "service_attempts",
-         "err_upstream_unavailable",
-         "err_timeout",
-         "err_rate_limited",
-         "err_server_error",
-         "err_client_request_error",
-         "err_client_cancelled",
-         "err_auth",
-         "err_payment_required",
-         "err_other",
-         "served_tier_known",
-         "served_at_min_tier",
-         "tokens_in",
-         "tokens_out",
-         "tokens_cached",
-         "success_rate",
-         "service_success_rate",
-         "ttft_ms_p50",
-         "ttft_ms_p95",
-         "duration_ms_p50",
-         "duration_ms_p95",
-         "served_ask_in_median",
-         "served_ask_out_median",
-         "served_ask_in_min",
-         "served_ask_in_max",
-         "served_tier_rank_in_median",
-         "share_served_at_min_tier",
-         "share_served_under_policy",
-         "billed_cost_usdc",
-         "last_request_at",
-         "last_ok_at",
-         "last_service_error_at"
-        ],
-        "properties": {
-         "window_start": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "window_end": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "requests": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "All request-log rows (attempts) of this account on the route inside the window."
-         },
-         "ok": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "errors": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "client_errors": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "service_attempts": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
-         },
-         "err_upstream_unavailable": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "HTTP 502/503 failures."
-         },
-         "err_timeout": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "HTTP 408/504 failures."
-         },
-         "err_rate_limited": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_server_error": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_client_request_error": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_client_cancelled": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_auth": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_payment_required": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_other": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "served_tier_known": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "served_at_min_tier": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_in": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_out": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_cached": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "success_rate": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "ok / requests."
-         },
-         "service_success_rate": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "ok / service_attempts (basis of status)."
-         },
-         "ttft_ms_p50": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Time to first token, successful rows, ms."
-         },
-         "ttft_ms_p95": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "duration_ms_p50": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "duration_ms_p95": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_median": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
-         },
-         "served_ask_out_median": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_min": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_max": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_tier_rank_in_median": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
-         },
-         "share_served_at_min_tier": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "share_served_under_policy": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Share of priced successful rows with served input ask below the policy threshold."
-         },
-         "billed_cost_usdc": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Sum of cost_consumer_usdc from the request logs."
-         },
-         "last_request_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "last_ok_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "last_service_error_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         }
-        },
-        "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+        "$ref": "#/$defs/window"
        },
        "24h": {
-        "type": [
-         "object",
-         "null"
-        ],
-        "additionalProperties": false,
-        "required": [
-         "window_start",
-         "window_end",
-         "requests",
-         "ok",
-         "errors",
-         "client_errors",
-         "service_attempts",
-         "err_upstream_unavailable",
-         "err_timeout",
-         "err_rate_limited",
-         "err_server_error",
-         "err_client_request_error",
-         "err_client_cancelled",
-         "err_auth",
-         "err_payment_required",
-         "err_other",
-         "served_tier_known",
-         "served_at_min_tier",
-         "tokens_in",
-         "tokens_out",
-         "tokens_cached",
-         "success_rate",
-         "service_success_rate",
-         "ttft_ms_p50",
-         "ttft_ms_p95",
-         "duration_ms_p50",
-         "duration_ms_p95",
-         "served_ask_in_median",
-         "served_ask_out_median",
-         "served_ask_in_min",
-         "served_ask_in_max",
-         "served_tier_rank_in_median",
-         "share_served_at_min_tier",
-         "share_served_under_policy",
-         "billed_cost_usdc",
-         "last_request_at",
-         "last_ok_at",
-         "last_service_error_at"
-        ],
-        "properties": {
-         "window_start": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "window_end": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "requests": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "All request-log rows (attempts) of this account on the route inside the window."
-         },
-         "ok": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "errors": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "client_errors": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "service_attempts": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
-         },
-         "err_upstream_unavailable": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "HTTP 502/503 failures."
-         },
-         "err_timeout": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "HTTP 408/504 failures."
-         },
-         "err_rate_limited": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_server_error": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_client_request_error": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_client_cancelled": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_auth": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_payment_required": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_other": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "served_tier_known": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "served_at_min_tier": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_in": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_out": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_cached": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "success_rate": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "ok / requests."
-         },
-         "service_success_rate": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "ok / service_attempts (basis of status)."
-         },
-         "ttft_ms_p50": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Time to first token, successful rows, ms."
-         },
-         "ttft_ms_p95": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "duration_ms_p50": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "duration_ms_p95": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_median": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
-         },
-         "served_ask_out_median": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_min": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_max": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_tier_rank_in_median": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
-         },
-         "share_served_at_min_tier": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "share_served_under_policy": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Share of priced successful rows with served input ask below the policy threshold."
-         },
-         "billed_cost_usdc": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Sum of cost_consumer_usdc from the request logs."
-         },
-         "last_request_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "last_ok_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "last_service_error_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         }
-        },
-        "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+        "$ref": "#/$defs/window"
        },
        "7d": {
-        "type": [
-         "object",
-         "null"
-        ],
-        "additionalProperties": false,
-        "required": [
-         "window_start",
-         "window_end",
-         "requests",
-         "ok",
-         "errors",
-         "client_errors",
-         "service_attempts",
-         "err_upstream_unavailable",
-         "err_timeout",
-         "err_rate_limited",
-         "err_server_error",
-         "err_client_request_error",
-         "err_client_cancelled",
-         "err_auth",
-         "err_payment_required",
-         "err_other",
-         "served_tier_known",
-         "served_at_min_tier",
-         "tokens_in",
-         "tokens_out",
-         "tokens_cached",
-         "success_rate",
-         "service_success_rate",
-         "ttft_ms_p50",
-         "ttft_ms_p95",
-         "duration_ms_p50",
-         "duration_ms_p95",
-         "served_ask_in_median",
-         "served_ask_out_median",
-         "served_ask_in_min",
-         "served_ask_in_max",
-         "served_tier_rank_in_median",
-         "share_served_at_min_tier",
-         "share_served_under_policy",
-         "billed_cost_usdc",
-         "last_request_at",
-         "last_ok_at",
-         "last_service_error_at"
-        ],
-        "properties": {
-         "window_start": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "window_end": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "requests": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "All request-log rows (attempts) of this account on the route inside the window."
-         },
-         "ok": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "errors": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "client_errors": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "service_attempts": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
-         },
-         "err_upstream_unavailable": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "HTTP 502/503 failures."
-         },
-         "err_timeout": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0,
-          "description": "HTTP 408/504 failures."
-         },
-         "err_rate_limited": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_server_error": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_client_request_error": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_client_cancelled": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_auth": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_payment_required": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "err_other": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "served_tier_known": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "served_at_min_tier": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_in": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_out": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "tokens_cached": {
-          "type": [
-           "integer",
-           "null"
-          ],
-          "minimum": 0
-         },
-         "success_rate": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "ok / requests."
-         },
-         "service_success_rate": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "ok / service_attempts (basis of status)."
-         },
-         "ttft_ms_p50": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Time to first token, successful rows, ms."
-         },
-         "ttft_ms_p95": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "duration_ms_p50": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "duration_ms_p95": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_median": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
-         },
-         "served_ask_out_median": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_min": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_ask_in_max": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "served_tier_rank_in_median": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
-         },
-         "share_served_at_min_tier": {
-          "type": [
-           "number",
-           "null"
-          ]
-         },
-         "share_served_under_policy": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Share of priced successful rows with served input ask below the policy threshold."
-         },
-         "billed_cost_usdc": {
-          "type": [
-           "number",
-           "null"
-          ],
-          "description": "Sum of cost_consumer_usdc from the request logs."
-         },
-         "last_request_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "last_ok_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         },
-         "last_service_error_at": {
-          "type": [
-           "string",
-           "null"
-          ],
-          "description": "ISO 8601 UTC timestamp (Z)"
-         }
-        },
-        "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+        "$ref": "#/$defs/window"
        }
       }
      },
@@ -1635,6 +708,84 @@
        },
        "source": {
         "type": "string"
+       }
+      }
+     },
+     "error_breakdown_24h": {
+      "type": "array",
+      "description": "v1.1: 24h error mix (fact_route_error_breakdown, ok rows omitted).",
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "required": [
+        "http_status",
+        "status",
+        "error_code",
+        "error_type",
+        "error_class",
+        "class_basis",
+        "requests",
+        "last_at"
+       ],
+       "properties": {
+        "http_status": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "status": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "error_code": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "Provider error code from telemetry (InferHub logs carry none); null = uncoded."
+        },
+        "error_type": {
+         "type": "string"
+        },
+        "error_class": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "enum": [
+          "upstream",
+          "client",
+          "account",
+          "unknown",
+          null
+         ]
+        },
+        "class_basis": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "enum": [
+          "error_code:telemetry_request_match",
+          "error_code:telemetry_incident_60s",
+          "rail_rule:cb_400_presumed_11133",
+          "http_status",
+          null
+         ]
+        },
+        "requests": {
+         "type": "integer",
+         "minimum": 0
+        },
+        "last_at": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
        }
       }
      }
@@ -1722,7 +873,378 @@
    "request_log_coverage_end",
    "generated_at",
    "code_commit",
-   "catalog_raw_sha256"
+   "catalog_raw_sha256",
+   "upstream_errors_1h",
+   "account_errors_1h",
+   "unknown_errors_1h",
+   "err_upstream_reject_1h",
+   "err_upstream_reject_presumed_1h",
+   "upstream_errors_24h",
+   "account_errors_24h",
+   "unknown_errors_24h",
+   "err_upstream_reject_24h",
+   "err_upstream_reject_presumed_24h",
+   "upstream_errors_7d",
+   "account_errors_7d",
+   "unknown_errors_7d",
+   "err_upstream_reject_7d",
+   "err_upstream_reject_presumed_7d"
   ]
+ },
+ "$defs": {
+  "window": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "additionalProperties": false,
+   "required": [
+    "window_start",
+    "window_end",
+    "requests",
+    "ok",
+    "errors",
+    "client_errors",
+    "service_attempts",
+    "err_upstream_unavailable",
+    "err_timeout",
+    "err_rate_limited",
+    "err_server_error",
+    "err_client_request_error",
+    "err_client_cancelled",
+    "err_auth",
+    "err_payment_required",
+    "err_other",
+    "served_tier_known",
+    "served_at_min_tier",
+    "tokens_in",
+    "tokens_out",
+    "tokens_cached",
+    "success_rate",
+    "service_success_rate",
+    "ttft_ms_p50",
+    "ttft_ms_p95",
+    "duration_ms_p50",
+    "duration_ms_p95",
+    "served_ask_in_median",
+    "served_ask_out_median",
+    "served_ask_in_min",
+    "served_ask_in_max",
+    "served_tier_rank_in_median",
+    "share_served_at_min_tier",
+    "share_served_under_policy",
+    "billed_cost_usdc",
+    "last_request_at",
+    "last_ok_at",
+    "last_service_error_at"
+   ],
+   "properties": {
+    "window_start": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "ISO 8601 UTC timestamp (Z)"
+    },
+    "window_end": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "ISO 8601 UTC timestamp (Z)"
+    },
+    "requests": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "All request-log rows (attempts) of this account on the route inside the window."
+    },
+    "ok": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "errors": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "client_errors": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "Errors of error_class client or account (excluded from service_attempts). Since v1.1 an 11133/cb 400 is not a client error."
+    },
+    "service_attempts": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "requests minus client/account-attributable errors (400-class except 408/429, 499, 401/403, 402)."
+    },
+    "err_upstream_unavailable": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "HTTP 502/503 failures."
+    },
+    "err_timeout": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "HTTP 408/504 failures."
+    },
+    "err_rate_limited": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "err_server_error": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "err_client_request_error": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "err_client_cancelled": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "err_auth": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "err_payment_required": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "err_other": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "served_tier_known": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "served_at_min_tier": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "tokens_in": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "tokens_out": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "tokens_cached": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0
+    },
+    "success_rate": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "ok / requests."
+    },
+    "service_success_rate": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "ok / service_attempts (basis of status)."
+    },
+    "ttft_ms_p50": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "Time to first token, successful rows, ms."
+    },
+    "ttft_ms_p95": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "duration_ms_p50": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "duration_ms_p95": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "served_ask_in_median": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "Median served input price (USD/1M) over successful rows; InferHub exposes no seller id, the served price is the seller proxy."
+    },
+    "served_ask_out_median": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "served_ask_in_min": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "served_ask_in_max": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "served_tier_rank_in_median": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "Median order-book tier rank (1 = cheapest listed tier at request time) of the served input price."
+    },
+    "share_served_at_min_tier": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "share_served_under_policy": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "Share of priced successful rows with served input ask below the policy threshold."
+    },
+    "billed_cost_usdc": {
+     "type": [
+      "number",
+      "null"
+     ],
+     "description": "Sum of cost_consumer_usdc from the request logs."
+    },
+    "last_request_at": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "ISO 8601 UTC timestamp (Z)"
+    },
+    "last_ok_at": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "ISO 8601 UTC timestamp (Z)"
+    },
+    "last_service_error_at": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "ISO 8601 UTC timestamp (Z)"
+    },
+    "upstream_errors": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "Errors of error_class upstream (counted against the route)."
+    },
+    "account_errors": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "Errors of error_class account (401/403/402; excluded from service_attempts)."
+    },
+    "unknown_errors": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "Errors of error_class unknown (counted in service_attempts)."
+    },
+    "err_upstream_reject": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "HTTP 400 upstream/seller rejects: error code 11133 from telemetry, or an uncoded 400 on a cb/cbcn rail (presumed 11133, #40 M0.6)."
+    },
+    "err_upstream_reject_presumed": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "description": "Subset of err_upstream_reject classified by the cb/cbcn 400 rule without a telemetry error code."
+    }
+   },
+   "description": "Rolling rollup ending at request_log_coverage_end; null when the route had no request in the window."
+  }
  }
 }

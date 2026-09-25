@@ -12,7 +12,7 @@ import shutil
 import time
 from typing import Any
 
-from . import lake
+from . import errclass, lake
 from .collect import IH, PQ, ROOT, STATE
 
 SQL_DIR = os.path.join(os.path.dirname(__file__), "sql")
@@ -33,6 +33,7 @@ MARTS = [
     "fact_request_billing",
     "inferhub_request_match",
     "inferhub_match_summary",
+    "fact_request_outcome",
     "fact_route_reliability",
     "fact_route_error_breakdown",
 ]
@@ -48,6 +49,8 @@ NEEDS = {
     "fact_request_billing": ["billing", "tiers", "routes"],
     "inferhub_request_match": ["billing", "tiers", "routes", "@fmr"],
     "inferhub_match_summary": ["billing", "tiers", "routes", "@fmr"],
+    # error class per request (errclass.py; telemetry codes via match/incidents when present)
+    "fact_request_outcome": ["billing", "tiers", "routes"],
     # rolling 1h/24h/7d reliability per route (IRE #46 M4); read by catalogue.py
     "fact_route_reliability": ["billing", "tiers", "routes", "status"],
     "fact_route_error_breakdown": ["billing", "tiers", "routes"],
@@ -74,6 +77,9 @@ def _sql(name: str) -> str:
             fh.read()
             .replace("{POLICY_PER_MTOK}", POLICY_PER_MTOK)
             .replace("{LOGS_FETCHED_AT}", _logs_fetched_at())
+            .replace("{ERROR_TYPE_CASE}", errclass.sql_error_type())
+            .replace("{ERROR_CLASS_CASE}", errclass.sql_error_class())
+            .replace("{CLASS_BASIS_CASE}", errclass.sql_class_basis())
         )
 
 
@@ -105,6 +111,14 @@ def build(run_id: str) -> dict[str, Any]:
     have_fmr = os.path.exists(fmr)
     if have_fmr:
         con.execute(f"CREATE VIEW fmr AS SELECT * FROM read_parquet('{fmr}')")
+    fi = os.path.join(LAKE_MODELED, "current", "fact_incidents.parquet")
+    if os.path.exists(fi):
+        con.execute(f"CREATE VIEW fi AS SELECT * FROM read_parquet('{fi}')")
+    else:  # fact_request_outcome only uses incidents as optional error-code evidence
+        con.execute(
+            "CREATE VIEW fi AS SELECT NULL::VARCHAR AS route_id, NULL::TIMESTAMP AS occurred_at_utc,"
+            " NULL::VARCHAR AS summary, NULL::VARCHAR AS metrics_json LIMIT 0"
+        )
     tmp = os.path.join(MODELED, f".tmp-{run_id}")
     os.makedirs(tmp, exist_ok=True)
     counts: dict[str, int] = {}
@@ -114,6 +128,11 @@ def build(run_id: str) -> dict[str, Any]:
         if any((n == "@fmr" and not have_fmr) or (n != "@fmr" and not _has(n)) for n in needs):
             skipped.append(mart)
             continue
+        if mart == "fact_request_outcome" and "inferhub_request_match" in skipped:
+            con.execute(  # no telemetry join this run: no error codes from matches
+                "CREATE OR REPLACE TABLE inferhub_request_match AS SELECT NULL::VARCHAR AS "
+                "billing_id, NULL::BIGINT AS provider_error_code LIMIT 0"
+            )
         con.execute(f"CREATE OR REPLACE TABLE {mart} AS {_sql(mart)}")
         counts[mart] = con.execute(f"SELECT count(*) FROM {mart}").fetchone()[0]
         con.execute(f"COPY {mart} TO '{tmp}/{mart}.parquet' (FORMAT parquet, COMPRESSION zstd)")
