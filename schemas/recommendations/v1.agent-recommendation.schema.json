@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inference-recommendation-engine.local/schemas/recommendations/v1.agent-recommendation.schema.json",
+  "title": "IRE agent-facing recommendation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_file",
+    "id",
+    "title",
+    "status",
+    "confidence",
+    "hypothesis_notice",
+    "audience",
+    "applies_when",
+    "requirements",
+    "contract",
+    "citations",
+    "provenance",
+    "unverified",
+    "updated_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ire-agent-recommendation/v1"
+    },
+    "schema_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "hypothesis",
+        "recommended"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "confidence_notes": {
+      "type": "string"
+    },
+    "hypothesis_notice": {
+      "type": "string",
+      "minLength": 1
+    },
+    "audience": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "builder",
+          "planner",
+          "judge",
+          "verifier",
+          "agent"
+        ]
+      }
+    },
+    "applies_when": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deterministic_hard_gate",
+        "optional_jev_judge"
+      ],
+      "properties": {
+        "deterministic_hard_gate": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required",
+            "role"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "role": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        },
+        "optional_jev_judge": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required",
+            "role",
+            "use_for"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "role": {
+              "type": "string",
+              "minLength": 1
+            },
+            "use_for": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "api_kind",
+        "endpoint",
+        "pinned_model",
+        "not_chat",
+        "provider",
+        "inputs",
+        "outputs",
+        "question_primitives",
+        "confidence_is_not_correctness",
+        "abstain_is_not_pass",
+        "judge_family_ne_builder",
+        "staff_never_see_holdout"
+      ],
+      "properties": {
+        "api_kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "endpoint": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pinned_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "not_chat": {
+          "type": "boolean"
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "question_primitives": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "confidence_is_not_correctness": {
+          "type": "boolean"
+        },
+        "abstain_is_not_pass": {
+          "type": "boolean"
+        },
+        "judge_family_ne_builder": {
+          "type": "boolean"
+        },
+        "staff_never_see_holdout": {
+          "type": "boolean"
+        }
+      }
+    },
+    "citations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guide_path",
+        "guide_sha256",
+        "ledger_event_id",
+        "skill_name"
+      ],
+      "properties": {
+        "guide_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "guide_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "related_guide_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ledger_event_id": {
+          "type": "string",
+          "pattern": "^ILE-[A-Za-z0-9._:-]+$"
+        },
+        "ledger_followup_event_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ledger_correlation_id": {
+          "type": "string"
+        },
+        "skill_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "eval_lab_docs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "github_issues": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_agent",
+        "durable_write_cited",
+        "openrouter_smoke_cost_usd"
+      ],
+      "properties": {
+        "source_agent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "durable_write_cited": {
+          "type": "string",
+          "minLength": 1
+        },
+        "openrouter_smoke_cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "openrouter_balance_note": {
+          "type": "string"
+        },
+        "recorded_by": {
+          "type": "string"
+        }
+      }
+    },
+    "unverified": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
