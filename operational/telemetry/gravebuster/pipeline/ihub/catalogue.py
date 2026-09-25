@@ -24,7 +24,19 @@ import math
 import os
 from typing import Any
 
-SCHEMA_ID = "ihub-route-catalogue/v1"
+try:  # package import on the host; file import (tests) falls back to a sibling load
+    from . import errclass
+except ImportError:  # pragma: no cover
+    import importlib.util as _ilu
+
+    _spec = _ilu.spec_from_file_location(
+        "ihub_errclass", os.path.join(os.path.dirname(os.path.abspath(__file__)), "errclass.py")
+    )
+    assert _spec and _spec.loader
+    errclass = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(errclass)
+
+SCHEMA_ID = "ihub-route-catalogue/v1.1"  # v1.1: error classes (additive to v1)
 SCHEMA_FILE = "schemas/route-catalogue.v1.schema.json"
 HERE = os.path.dirname(os.path.abspath(__file__))
 LISTS_DIR = os.path.join(HERE, "lists")
@@ -149,7 +161,15 @@ def classify(
         if bad_platform:
             reasons.append(f"platform_rail_state={platform_state} (own requests succeed)")
     k, n = {"1h": (k1, n1), "24h": (k24, n24)}[win]
-    cl = int((windows.get(win) or {}).get("client_errors") or 0)
+    wd = windows.get(win) or {}
+    rej = int(wd.get("err_upstream_reject") or 0)
+    if rej:
+        pres = int(wd.get("err_upstream_reject_presumed") or 0)
+        reasons.append(
+            f"{win}: {rej} upstream 400 rejects counted as failures (11133, #40 M0.6; "
+            f"{rej - pres} with a telemetry error code, {pres} presumed by the cb/cbcn 400 rule)"
+        )
+    cl = int(wd.get("client_errors") or 0)
     if cl:
         reasons.append(f"{win}: {cl} client/account-attributable errors excluded")
     lo, hi = wilson(k, n)
@@ -243,7 +263,8 @@ _WIN_FIELDS_INT = (
     "requests", "ok", "errors", "client_errors", "service_attempts",
     "err_upstream_unavailable", "err_timeout", "err_rate_limited", "err_server_error",
     "err_client_request_error", "err_client_cancelled", "err_auth", "err_payment_required",
-    "err_other", "served_tier_known", "served_at_min_tier", "tokens_in", "tokens_out",
+    "err_other", "upstream_errors", "account_errors", "unknown_errors", "err_upstream_reject",
+    "err_upstream_reject_presumed", "served_tier_known", "served_at_min_tier", "tokens_in", "tokens_out",
     "tokens_cached",
 )  # fmt: skip
 _WIN_FIELDS_NUM = (
@@ -288,6 +309,7 @@ def build(
     status_by_rail: dict[str, dict[str, Any]],
     lists: dict[str, Any],
     meta: dict[str, Any],
+    breakdown: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Assemble the catalogue document (pure; inputs are plain dict rows).
 
@@ -298,6 +320,21 @@ def build(
     for r in reliability:
         rel.setdefault(r["route"], {})[r["window"]] = r
     price = {p["route"]: p for p in prices}
+    errs: dict[str, list[dict[str, Any]]] = {}
+    for e in breakdown or []:
+        if e.get("window") == "24h" and e.get("error_type") != "ok":
+            errs.setdefault(e["route"], []).append(
+                {
+                    "http_status": _int(e.get("http_status")),
+                    "status": e.get("status"),
+                    "error_code": None if e.get("error_code") is None else str(e["error_code"]),
+                    "error_type": e.get("error_type"),
+                    "error_class": e.get("error_class"),
+                    "class_basis": e.get("class_basis"),
+                    "requests": int(e.get("requests") or 0),
+                    "last_at": _iso(e.get("last_at")),
+                }
+            )
     dim = {d["route"]: d for d in dim_routes}
     membership: dict[str, list[dict[str, Any]]] = {}
     for lst in lists["lists"]:
@@ -373,6 +410,7 @@ def build(
                 "reliability": {
                     w: (_window(windows[w]) if w in windows else None) for w in WINDOWS
                 },
+                "error_breakdown_24h": sorted(errs.get(rid, []), key=lambda e: -e["requests"]),
                 "evidence": {
                     "decided_window": c["decided_window"],
                     "decided_service_attempts": c["decided_service_attempts"],
@@ -423,8 +461,18 @@ def build(
             "windows": list(WINDOWS),
             "window_end": "request-log coverage end (last log fetch), not generated_at",
             "status_values": list(STATUS_ORDER),
-            "service_attempts": "requests minus client/account-attributable errors "
-            "(client_request_error, client_cancelled, auth, payment_required)",
+            "service_attempts": "requests minus errors of error_class client or account",
+            "error_classification": {
+                "rules": "ihub/errclass.py (rendered into sql/fact_request_outcome.sql)",
+                "error_classes": ["upstream", "client", "account", "unknown"],
+                "excluded_from_service_attempts": ["client", "account"],
+                "upstream_reject_codes": list(errclass.UPSTREAM_REJECT_CODES),
+                "reject_400_rails": list(errclass.REJECT_400_RAILS),
+                "note": "InferHub request logs carry no error code. A telemetry error code "
+                "(request match, or an incident on the same route within 60 s) wins; otherwise an "
+                "HTTP 400 on a cb/cbcn rail is presumed 11133 (intermittent upstream/seller reject, "
+                "#40 M0.6) and counts as a failure; other 4xx stay client errors.",
+            },
             "thresholds": METHOD,
             "platform_bad_states": sorted(PLATFORM_BAD),
             "best_route_order": "status (healthy, insufficient_data, degraded, failing), then "
@@ -516,6 +564,10 @@ CSV_COLUMNS = [
         "ttft_ms_p50", "ttft_ms_p95", "duration_ms_p50", "duration_ms_p95")],
     "platform_rail_state", "live_book_hash", "live_price_ts", "request_log_coverage_end",
     "generated_at", "code_commit", "catalog_raw_sha256",
+    # v1.1 (additive): error classes
+    *[f"{f}_{w}" for w in WINDOWS for f in (
+        "upstream_errors", "account_errors", "unknown_errors", "err_upstream_reject",
+        "err_upstream_reject_presumed")],
 ]  # fmt: skip
 
 
@@ -540,6 +592,11 @@ def csv_rows(doc: dict[str, Any]) -> list[list[Any]]:
                       "service_success_rate", "err_upstream_unavailable", "err_timeout",
                       "err_rate_limited", "err_server_error", "ttft_ms_p50", "ttft_ms_p95",
                       "duration_ms_p50", "duration_ms_p95"):  # fmt: skip
+                flat[f"{f}_{w}"] = win.get(f)
+        for w in WINDOWS:
+            win = r["reliability"][w] or {}
+            for f in ("upstream_errors", "account_errors", "unknown_errors",
+                      "err_upstream_reject", "err_upstream_reject_presumed"):  # fmt: skip
                 flat[f"{f}_{w}"] = win.get(f)
         flat["generated_at"] = doc["generated_at"]
         flat["code_commit"] = doc["code_commit"]
@@ -599,7 +656,13 @@ def generate(modeled_dir: str, raw_manifest: str, code_commit: str | None) -> di
     from . import lake
 
     mod = os.path.realpath(modeled_dir)
-    need = ("fact_route_reliability", "fact_route_price", "inferhub_dim_route", "fact_route_status")
+    need = (
+        "fact_route_reliability",
+        "fact_route_price",
+        "inferhub_dim_route",
+        "fact_route_status",
+        "fact_route_error_breakdown",
+    )
     files = {t: os.path.join(mod, t + ".parquet") for t in need}
     missing = [t for t, f in files.items() if not os.path.exists(f)]
     if "fact_route_price" in missing or "inferhub_dim_route" in missing:
@@ -654,7 +717,12 @@ def generate(modeled_dir: str, raw_manifest: str, code_commit: str | None) -> di
         "latest_catalog_fetch": _latest_catalog_fetch(raw_manifest),
         "inputs_sha256": h.hexdigest(),
     }
-    return build(rel, prices, dims, status, load_lists(), meta)
+    brk = (
+        _rows(con, f"SELECT * FROM read_parquet('{files['fact_route_error_breakdown']}')")
+        if "fact_route_error_breakdown" not in missing
+        else []
+    )
+    return build(rel, prices, dims, status, load_lists(), meta, brk)
 
 
 def run(ih_root: str, code_commit: str | None) -> dict[str, Any]:

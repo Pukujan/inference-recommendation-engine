@@ -140,7 +140,17 @@ def sample_doc() -> dict:
         win("cb/deepseek-v4.1-flash", "7d", 900, 900),
         win("zai/glm-5.3-flash", "24h", 151, 13, 1, platform_rail_state="major_outage"),
         win("zai/glm-5.3-flash", "7d", 151, 13, 1),
-        win("cb/gpt-6-astra", "24h", 683, 668, 15),
+        # 15 HTTP 400s on cb = upstream rejects (11133), counted as failures since v1.1
+        win(
+            "cb/gpt-6-astra",
+            "24h",
+            683,
+            668,
+            0,
+            err_upstream_reject=15,
+            err_upstream_reject_presumed=12,
+            upstream_errors=15,
+        ),
     ]
     prices = [
         {"route": "cb/deepseek-v4.1-flash", "rail": "cb", "ts": END, "min_ask_in": 0.00015,
@@ -185,7 +195,10 @@ class BuildTests(unittest.TestCase):
         r = {x["route"]: x for x in doc["routes"]}
         self.assertEqual(r["cb/deepseek-v4.1-flash"]["status"], "healthy")
         self.assertEqual(r["zai/glm-5.3-flash"]["status"], "failing")
-        self.assertEqual(r["cb/gpt-6-astra"]["status"], "healthy")  # 15 client 400s excluded
+        astra = r["cb/gpt-6-astra"]
+        self.assertEqual(astra["status"], "healthy")  # 668/683 still clears the thresholds
+        self.assertEqual(astra["evidence"]["decided_service_attempts"], 683)
+        self.assertTrue(any("upstream 400 rejects" in x for x in astra["status_reasons"]))
         self.assertIsNone(r["cb/gpt-6-astra"]["recommendation_eligible_static"])  # not listed
         self.assertFalse(r["ag/gemini-3.8-flash-high"]["in_live_catalog"])
         self.assertEqual(r["zai/glm-5.3-flash"]["evidence"]["platform_rail_state"], "major_outage")

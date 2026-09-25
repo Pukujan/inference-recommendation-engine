@@ -2,34 +2,20 @@
 -- log coverage end (window_end = last successful log fetch from state/logs_state.json, else max
 -- fetched_at of the billing rows), so a window is never cut short by the 15-min log cadence.
 -- One row per route x window with >= 1 request.
--- error_type: ok | upstream_unavailable (502/503) | timeout (408/504) | rate_limited (429) |
---   server_error (other 5xx) | client_request_error (other 4xx) | client_cancelled (499) |
---   auth (401/403) | payment_required (402) | failed_http_200 | unknown.
--- service_* excludes client/account-attributable errors (client_request_error, client_cancelled,
--- auth, payment_required) like IRE's metrics exclude client-caused attempts; raw rates keep them.
+-- error_type / error_class come from fact_request_outcome (rules in ihub/errclass.py): 11133 and
+-- uncoded 400s on cb/cbcn are upstream_reject (class upstream, #40 M0.6); client_errors counts
+-- class client + account (excluded from service_* like IRE's metrics exclude client-caused
+-- attempts); raw rates keep everything.
 WITH w(win, hours) AS (VALUES ('1h', 1), ('24h', 24), ('7d', 168)),
 cov AS (SELECT greatest(max(fetched_at), coalesce({LOGS_FETCHED_AT}, max(fetched_at))) AS window_end
          FROM fact_request_billing),
 b AS (
-  SELECT *,
-    CASE
-      WHEN NOT is_error THEN 'ok'
-      WHEN http_status IN (502, 503) THEN 'upstream_unavailable'
-      WHEN http_status IN (408, 504) THEN 'timeout'
-      WHEN http_status = 429 THEN 'rate_limited'
-      WHEN http_status BETWEEN 500 AND 599 THEN 'server_error'
-      WHEN http_status = 499 THEN 'client_cancelled'
-      WHEN http_status IN (401, 403) THEN 'auth'
-      WHEN http_status = 402 THEN 'payment_required'
-      WHEN http_status BETWEEN 400 AND 499 THEN 'client_request_error'
-      WHEN http_status BETWEEN 200 AND 299 THEN 'failed_http_200'
-      ELSE 'unknown' END AS error_type
-  FROM fact_request_billing
+  SELECT f.*, o.error_code, o.error_type, o.error_class, o.class_basis
+  FROM fact_request_billing f JOIN fact_request_outcome o USING (request_id)
 ),
 bw AS (
   SELECT w.win, w.hours, cov.window_end, cov.window_end - to_hours(w.hours) AS window_start, b.*,
-         b.error_type IN ('client_request_error', 'client_cancelled', 'auth', 'payment_required')
-           AS client_attributable
+         coalesce(b.error_class IN ('client', 'account'), false) AS client_attributable
   FROM b CROSS JOIN cov JOIN w ON b.ts > cov.window_end - to_hours(w.hours) AND b.ts <= cov.window_end
 ),
 agg AS (
@@ -40,6 +26,12 @@ agg AS (
     count(*) FILTER (WHERE is_error) AS errors,
     count(*) FILTER (WHERE client_attributable) AS client_errors,
     count(*) FILTER (WHERE NOT client_attributable) AS service_attempts,
+    count(*) FILTER (WHERE error_class = 'upstream') AS upstream_errors,
+    count(*) FILTER (WHERE error_class = 'account') AS account_errors,
+    count(*) FILTER (WHERE error_class = 'unknown') AS unknown_errors,
+    count(*) FILTER (WHERE error_type = 'upstream_reject') AS err_upstream_reject,
+    count(*) FILTER (WHERE error_type = 'upstream_reject' AND class_basis = 'rail_rule:cb_400_presumed_11133')
+      AS err_upstream_reject_presumed,
     count(*) FILTER (WHERE error_type = 'upstream_unavailable') AS err_upstream_unavailable,
     count(*) FILTER (WHERE error_type = 'timeout') AS err_timeout,
     count(*) FILTER (WHERE error_type = 'rate_limited') AS err_rate_limited,
