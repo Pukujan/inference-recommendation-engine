@@ -75,7 +75,7 @@ $env:INFERHUB_API_KEY = $envMap['INFERHUB_API_KEY']
 $env:INFERHUB_API_URL = $envMap['INFERHUB_API_URL']
 
 if (-not $ReceiptRoot) {
-    $ReceiptRoot = Join-Path $PSScriptRoot '..\..\..\..\.ire\codex-harness-receipts'
+    $ReceiptRoot = Join-Path $PSScriptRoot '..\..\..\.ire\codex-harness-receipts'
     $ReceiptRoot = [System.IO.Path]::GetFullPath($ReceiptRoot)
 }
 $stamp = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')
@@ -108,16 +108,22 @@ $codexArguments = @(
     $Prompt
 )
 
-$codexExitCode = $null
+$codexExitCode = 1
 try {
     $previousErrorAction = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     & $codexCommand.Source @codexArguments 2>> $stderrPath | Tee-Object -FilePath $eventsPath
-    $codexExitCode = $LASTEXITCODE
+    if ($null -ne $LASTEXITCODE) { $codexExitCode = [int]$LASTEXITCODE }
     $ErrorActionPreference = $previousErrorAction
+} catch {
+    try { Add-Content -LiteralPath $stderrPath -Value ("harness-catch: " + $_.Exception.Message) } catch {}
+    if ($null -ne $LASTEXITCODE) { $codexExitCode = [int]$LASTEXITCODE }
 } finally {
     Stop-AstraTelemetry -State $otel -ExitCode $codexExitCode -StderrPath $stderrPath -EventsPath $eventsPath
     Remove-Item Env:INFERHUB_API_KEY -ErrorAction SilentlyContinue
+}
+if ((Test-Path -LiteralPath $stderrPath) -and ((Get-Item -LiteralPath $stderrPath).Length -gt 0) -and ($codexExitCode -ne 0)) {
+    Write-Output ("stderr_tail=" + ((Get-Content -LiteralPath $stderrPath -Tail 20) -join ' | '))
 }
 
 $summary = @(
@@ -134,7 +140,4 @@ $summary = @(
 Write-Output "receipt_dir=$receiptDir"
 Write-Output "trace_id=$($otel.trace_id)"
 
-if ($null -eq $codexExitCode) {
-    throw 'Codex did not return a process exit code.'
-}
 exit $codexExitCode
