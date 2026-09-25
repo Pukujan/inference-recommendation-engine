@@ -22,6 +22,9 @@ const operationalLedgerPaths = [
   /^operational\//i,
   /^tasks\/IRE-0010-agent-run-evidence-pipeline\.md$/i,
   /^AGENTS\.md$/i,
+  /^docs\/CKFF-PROVIDER\.md$/i,
+  /^schemas\/ckff-route-candidates/i,
+  /^providers\/ckff\//i,
 ];
 const namedIntegration = ['infer', 'hub'].join('');
 const explicitlyDocumentedPaths = new Set([
@@ -33,6 +36,9 @@ const explicitlyDocumentedPaths = new Set([
   `tasks/ire-0007-${namedIntegration}-agent-behavior-benchmark.md`,
   'tasks/ire-0008-kilo-staff-background-helpers.md',
   'checkpoints/current.md',
+  'docs/ckff-provider.md',
+  'schemas/ckff-route-candidates.v1.schema.json',
+  'providers/ckff/route-candidates.v1.json',
 ]);
 // Operational agent-run evidence source (issue #41) configures the named BYOK integration by design.
 const explicitlyDocumentedPrefixes = [`operational/${['tele', 'metry'].join('')}/`];

@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Pukujan/inference-recommendation-engine/blob/main/schemas/ckff-route-candidates.v1.schema.json",
+  "title": "ckff-route-candidates/v1",
+  "description": "Machine-readable CKFF provider candidate routes for IRE agents. Prices use chicken_token units; usd_approx uses Alex's durable \u00f7100 annotation when ranking against InferHub USD. Hypotheses, not facts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_file",
+    "hypothesis_notice",
+    "provider",
+    "price_unit",
+    "usd_conversion",
+    "captured_at",
+    "source",
+    "failover",
+    "models",
+    "routes"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ckff-route-candidates/v1"
+    },
+    "schema_file": {
+      "type": "string"
+    },
+    "hypothesis_notice": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_id",
+        "primary_base_url",
+        "backup_base_url",
+        "wire_api",
+        "inference_path"
+      ],
+      "properties": {
+        "provider_id": {
+          "const": "ckff"
+        },
+        "primary_base_url": {
+          "type": "string"
+        },
+        "backup_base_url": {
+          "type": "string"
+        },
+        "wire_api": {
+          "const": "responses"
+        },
+        "inference_path": {
+          "type": "string"
+        },
+        "supported_endpoint_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "price_unit": {
+      "const": "chicken_token"
+    },
+    "usd_conversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule",
+        "approx_usd_per_chicken",
+        "formula",
+        "do_not"
+      ],
+      "properties": {
+        "rule": {
+          "type": "string"
+        },
+        "approx_usd_per_chicken": {
+          "type": "number"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "do_not": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "captured_at": {
+      "type": "string",
+      "description": "ISO 8601 UTC date or timestamp of the pricing snapshot"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "note"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "github_issue": {
+          "type": "integer"
+        },
+        "local_ops_note": {
+          "type": "string"
+        }
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "description": "Env var NAMES only; never values",
+      "additionalProperties": false,
+      "properties": {
+        "inference_env": {
+          "type": "string"
+        },
+        "account_metrics_env": {
+          "type": "string"
+        },
+        "inferhub_backup_env": {
+          "type": "string"
+        },
+        "optional_base_url_envs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "failover": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pattern",
+        "cross_provider",
+        "hops"
+      ],
+      "properties": {
+        "pattern": {
+          "type": "string"
+        },
+        "cross_provider": {
+          "type": "string"
+        },
+        "hops": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "order",
+              "provider_id",
+              "base_url",
+              "model_id",
+              "key_env"
+            ],
+            "properties": {
+              "order": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "provider_id": {
+                "type": "string"
+              },
+              "base_url": {
+                "type": "string"
+              },
+              "model_id": {
+                "type": "string"
+              },
+              "key_env": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "account_status_snapshot": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model_id",
+          "status",
+          "price_unit"
+        ],
+        "properties": {
+          "model_id": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "catalogued",
+              "pricing_snapshot",
+              "needs_live_refresh"
+            ]
+          },
+          "price_unit": {
+            "const": "chicken_token"
+          },
+          "role": {
+            "type": "string"
+          },
+          "pricing": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "usd_approx_note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "route",
+          "provider_id",
+          "model_id",
+          "base_url",
+          "price_unit",
+          "recommendation_status"
+        ],
+        "properties": {
+          "route": {
+            "type": "string"
+          },
+          "provider_id": {
+            "type": "string"
+          },
+          "model_id": {
+            "type": "string"
+          },
+          "base_url": {
+            "type": "string"
+          },
+          "price_unit": {
+            "type": "string"
+          },
+          "recommendation_status": {
+            "enum": [
+              "candidate",
+              "failover_only",
+              "needs_live_refresh"
+            ]
+          },
+          "wire_api": {
+            "type": "string"
+          },
+          "key_env": {
+            "type": "string"
+          },
+          "usd_approx": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "formula": {
+                "type": "string"
+              },
+              "approx_usd_per_chicken": {
+                "type": "number"
+              }
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
