@@ -61,7 +61,9 @@ function Read-EnvFile {
     return $map
 }
 
-$codexCommand = Get-Command codex -CommandType Application -ErrorAction Stop
+if (-not (Get-Command codex -ErrorAction SilentlyContinue)) {
+    throw 'codex CLI not found on PATH.'
+}
 $gitCommand = Get-Command git -CommandType Application -ErrorAction Stop
 $resolvedWorkingDirectory = (Resolve-Path -LiteralPath $WorkingDirectory -ErrorAction Stop).Path
 $repositoryRoot = & $gitCommand.Source -C $resolvedWorkingDirectory rev-parse --show-toplevel
@@ -112,12 +114,13 @@ $codexExitCode = 1
 try {
     $previousErrorAction = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
-    & $codexCommand.Source @codexArguments 2>> $stderrPath | Tee-Object -FilePath $eventsPath
+    & codex @codexArguments 2>> $stderrPath | Tee-Object -FilePath $eventsPath
     if ($null -ne $LASTEXITCODE) { $codexExitCode = [int]$LASTEXITCODE }
     $ErrorActionPreference = $previousErrorAction
 } catch {
     try { Add-Content -LiteralPath $stderrPath -Value ("harness-catch: " + $_.Exception.Message) } catch {}
-    if ($null -ne $LASTEXITCODE) { $codexExitCode = [int]$LASTEXITCODE }
+    $codexExitCode = 1
+    if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) { $codexExitCode = [int]$LASTEXITCODE }
 } finally {
     Stop-AstraTelemetry -State $otel -ExitCode $codexExitCode -StderrPath $stderrPath -EventsPath $eventsPath
     Remove-Item Env:INFERHUB_API_KEY -ErrorAction SilentlyContinue
