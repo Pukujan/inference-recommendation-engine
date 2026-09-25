@@ -94,8 +94,9 @@ $otelCodexArgs = Get-AstraCodexOtelArgs
 
 $codexArguments = @(
     'exec',
+    '--dangerously-bypass-approvals-and-sandbox',
     '--sandbox', 'danger-full-access',
-    '--config', 'approval_policy=never',
+    '--config', 'approval_policy="never"',
     '--config', 'model_provider="inferhub"',
     '--config', 'model_providers.inferhub.name="InferHub"',
     '--config', ('model_providers.inferhub.base_url="{0}"' -f $envMap['INFERHUB_API_URL'].TrimEnd('/')),
