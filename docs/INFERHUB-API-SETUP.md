@@ -65,8 +65,10 @@ Use `npx @inferhub/helper` for provider setup, then the repository runner for
 an authorized long-running task:
 
 ```powershell
-.\operational/pc-codex-harness (see repository operational tree: pc/run-codex-harness.ps1) -Model "<configured-provider/model-id>" -Prompt "<authorized task>"
-# or: .\run_codex_harness.ps1 -Model "..." -Prompt "..." -WrapperScript .\operational/pc-codex-harness (see repository operational tree: pc/run-codex-harness.ps1)
+.\run_codex_harness.ps1 -Model "<configured-provider/model-id>" -Prompt "<authorized task>"
+# Traced InferHub-key runs: resolve pc/run-codex-harness.ps1 under operational/ and pass it:
+#   $wrap = (Get-ChildItem -Path operational -Recurse -Filter run-codex-harness.ps1 | Select-Object -First 1).FullName
+#   .\run_codex_harness.ps1 -Model "..." -Prompt "..." -WrapperScript $wrap
 ```
 
 The operational runner passes danger-full-access, approval_policy=never (no routine approval prompts), pins the InferHub provider, and applies the Astra OTel wrapper (`llm.provider=inferhub`). Network access
