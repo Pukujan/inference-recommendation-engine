@@ -1,0 +1,98 @@
+{
+  "schema": "ire-agent-recommendation/v1",
+  "schema_file": "schemas/recommendations/v1.agent-recommendation.schema.json",
+  "id": "jev-judge-agent-tests",
+  "title": "Accept agent-written code only with a deterministic hard gate; optional JEV judge for holdout and meaning-level metamorphic checks",
+  "status": "recommended",
+  "confidence": "medium",
+  "confidence_notes": "PCM durable write covers the TypeSafe JEV contract and an OpenRouter Decisions smoke. Live holdout execution and confidence calibration remain open, so treat JEV pass rates as provisional.",
+  "hypothesis_notice": "Hypothesis components: live holdout runner, catalogue availability of typesafe/jev, and calibration against known-good/bad packs. Deterministic hard gates are mandatory even while those remain open.",
+  "audience": [
+    "builder",
+    "planner",
+    "judge",
+    "verifier",
+    "agent"
+  ],
+  "applies_when": [
+    "accepting agent-written code or agent-produced patches",
+    "designing hidden holdout or meaning-level metamorphic checks",
+    "choosing a judge family distinct from the builder model"
+  ],
+  "requirements": {
+    "deterministic_hard_gate": {
+      "required": true,
+      "role": "hard gate",
+      "notes": "Mechanical and spec checks must pass. Do not substitute JEV for deterministic coverage."
+    },
+    "optional_jev_judge": {
+      "required": false,
+      "role": "optional semantic judge",
+      "use_for": [
+        "hidden holdouts",
+        "meaning-level metamorphic relations"
+      ],
+      "notes": "Abstain, uncertain, parse, and provider errors count as not pass. Never promote JEV outputs to objective gold. Staff must never see holdout contents."
+    }
+  },
+  "contract": {
+    "api_kind": "TypeSafe typed decision API",
+    "endpoint": "POST https://openrouter.ai/api/alpha/decisions",
+    "pinned_model": "typesafe/jev-1.13",
+    "not_chat": true,
+    "provider": "openrouter",
+    "inputs": [
+      "state",
+      "closed questions"
+    ],
+    "outputs": [
+      "answer",
+      "probabilities",
+      "confidence"
+    ],
+    "question_primitives": [
+      "choice",
+      "score",
+      "noul"
+    ],
+    "confidence_is_not_correctness": true,
+    "abstain_is_not_pass": true,
+    "judge_family_ne_builder": true,
+    "staff_never_see_holdout": true
+  },
+  "citations": {
+    "guide_path": "D:/claude/_workspace/pcm-astra-owner/guides/JEV-JUDGE-TESTS.md",
+    "guide_sha256": "8b9cbe4d078d71610c2a933284a1330c9bab47a78b63b090aa10acabc6bd1f20",
+    "related_guide_paths": [
+      "D:/claude/_workspace/pcm-astra-owner/guides/README.md",
+      "D:/claude/_workspace/pcm-astra-owner/holdout/README.md"
+    ],
+    "ledger_event_id": "ILE-6bf5001780c0acbef3a8d952",
+    "ledger_followup_event_id": null,
+    "ledger_correlation_id": "pcm-astra-jev-judge-tests-20260924",
+    "skill_name": "jev-judge-agent-tests",
+    "eval_lab_docs": [
+      "D:/claude/eval-lab/docs/JEV_RESEARCH_AND_USAGE_AUDIT.md",
+      "D:/claude/eval-lab/docs/JEV_EVAL_LAB_INTEGRATION_CONTRACT.md",
+      "D:/claude/eval-lab/docs/TASK-0010-OPENROUTER-JEV.md",
+      "D:/claude/eval-lab/docs/INDEPENDENT_JEV_BENCHMARK_AUDIT.md"
+    ],
+    "github_issues": [
+      40,
+      29
+    ]
+  },
+  "provenance": {
+    "source_agent": "PCM durable research write",
+    "durable_write_cited": "ILE-6bf5001780c0acbef3a8d952",
+    "openrouter_smoke_cost_usd": 1.5e-05,
+    "openrouter_balance_note": "key works; not free tier; about USD 2.68 of 5.00 remaining at PCM observation",
+    "recorded_by": "agent:grok-bot-ire-jev-recommendation"
+  },
+  "unverified": [
+    "typesafe/jev availability on the project catalogue BYOK endpoint",
+    "live run-holdout.ps1 execution",
+    "confidence calibration versus PCM gold packs"
+  ],
+  "updated_at": "2026-09-25T01:18:14Z"
+}
