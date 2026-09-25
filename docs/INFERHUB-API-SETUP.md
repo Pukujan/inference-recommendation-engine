@@ -65,10 +65,10 @@ Use `npx @inferhub/helper` for provider setup, then the repository runner for
 an authorized long-running task:
 
 ```powershell
-.\run_codex_harness.ps1 -Model "<configured-provider/model-id>" -Prompt "<authorized task>"
+.\run_codex_harness.ps1 -Model "<configured-provider/model-id>" -Prompt "<authorized task>" -InferHub
 ```
 
-The runner passes workspace-write, no routine approval prompts, network access
+The runner passes danger-full-access, approval_policy=never (no routine approval prompts), and with -InferHub the Astra OTel wrapper plus InferHub provider config. Network access
 for workspace tool execution, and JSONL progress output. It returns Codex's
 process exit code. Provider and key configuration remain in the CLI's approved
 configuration/secret source. On Windows, launch child commands through the
@@ -279,7 +279,7 @@ into this repository. Load the key named `INFERHUB_API_KEY` from the approved
 secret source. Never print it.
 
 This repository's authorized Codex runner remains `.\run_codex_harness.ps1`
-with workspace-write scope. A full-access relaunch recorded for another
+with danger-full-access and approval_policy=never. Use `-InferHub` for InferHub-key runs so traces land in the gravebuster collector. A full-access relaunch recorded for another
 project is not authorization here. If the BYOK route is unavailable, stop
 rather than fall back to a subscription route. That routing rule stays on
 issue #32 and is not implemented by this guide.
