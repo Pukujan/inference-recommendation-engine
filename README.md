@@ -75,17 +75,10 @@ The repository separates what is shipped from what an adapter must provide:
 
 The score is a policy result, not an objective intelligence label. Model-assisted judgments, vendor marketing, and missing measurements cannot silently become proof.
 
-## Image generation and use
 
-The README visuals avoid provider screenshots and unsupported claims. The generated hero shows an anime-inspired maintainer and friendly robot comparing price, supply, and evidence before following an inspectable route. The supporting banner shows why a sparse cheap ask and a well-supplied higher ask contribute differently.
+## Specs and examples
 
-Their exact title and subtitle copy, prompt intent, alt text, dimensions, crop behavior, rejection conditions, and review decisions are recorded in [`.content-system/asset-manifest.json`](.content-system/asset-manifest.json), [`.content-system/visual-style.json`](.content-system/visual-style.json), and [`docs/content-system-assets/IMAGE_NOTES.md`](docs/content-system-assets/IMAGE_NOTES.md). No external image service or credential is needed to reuse the committed assets.
-
-For future visual changes, follow the pinned helper's [`CONTENT_RESEARCH.md`](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/CONTENT_RESEARCH.md), [`BRAND_DIRECTION.md`](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/BRAND_DIRECTION.md), [`IMAGE_GUIDE.md`](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/IMAGE_GUIDE.md), and [`HOLDOUT_EVALUATION.md`](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/HOLDOUT_EVALUATION.md). Use ChatGPT's built-in image generation for narrative banners, keep the exact title/subtitle in the prompt, preserve the human and robot at narrow widths, and reject visuals that imply live guarantees.
-
-## Templates and guides
-
-Start with the target adapter in [`.content-system/`](.content-system/) and the public contract in [`spec/`](spec/):
+Start with the public contract in [`spec/`](spec/) and the local adapter records in [`.content-system/`](.content-system/):
 
 - [`spec/INVARIANTS.md`](spec/INVARIANTS.md) — executable design relationships;
 - [`spec/PRICE-SUPPLY-WEIGHTING.md`](spec/PRICE-SUPPLY-WEIGHTING.md) — ladder weighting and asymmetric price regime;
@@ -94,13 +87,11 @@ Start with the target adapter in [`.content-system/`](.content-system/) and the 
 - [`docs/ISSUE-LEDGER-OPERATIONS.md`](docs/ISSUE-LEDGER-OPERATIONS.md) — private local operational guidance and the SQLite incident ledger, separate from GitHub's project issue and change history;
 - [`tests/`](tests/) — invariant, property, and metamorphic coverage.
 
-The human-facing workflow is pinned to [the README playbook](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/README_PLAYBOOK.md), [the image guide](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/IMAGE_GUIDE.md), [the content research](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/CONTENT_RESEARCH.md), [the brand direction](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/BRAND_DIRECTION.md), [the migration guide](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/MIGRATING_TO_0.3.md), [the holdout protocol](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/HOLDOUT_EVALUATION.md), and [the README template](https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/templates/README.template.md).
 
 ## Prior work and references
 
 The ranking contract carries forward the repository's earlier research on reliability signals, percentiles, instrumentation, redundancy, and property testing in [`RESEARCH-BASIS.md`](RESEARCH-BASIS.md). The public engine is intentionally smaller than a hosted router so that adapters can add their own source and temporal rules without changing the core.
 
-The README story and visual contract are pinned to [Content Generation Modules](https://github.com/Pukujan/content-generation-modules/tree/32f7cc4e54588549cb536d3ab0439004b15d10bb), version `0.3.1`, commit `32f7cc4e54588549cb536d3ab0439004b15d10bb`. The target adapter records that pin so future agents do not silently read a moving branch.
 
 ## Try it
 

@@ -1,6 +1,6 @@
 # README image generation notes
 
-These are project-bound narrative raster assets generated with ChatGPT’s built-in image generation tool on 2026-09-22. The target repository uses the `content-generation-modules` `0.3.1` visual contract, pinned to commit `32f7cc4e54588549cb536d3ab0439004b15d10bb`.
+These are project-bound narrative raster assets generated with ChatGPT’s built-in image generation tool on 2026-09-22. The target repository uses the `content-generation-modules` `0.5.7` visual contract, pinned to commit `c069613ca8b3e02bcf5aba1960160583537f8a3a`.
 
 The visual direction follows the repository’s accepted prior-work signals from [Harness on Steroids](https://github.com/Pukujan/harness-on-steroids) and [Eval Lab](https://github.com/Pukujan/Eval-lab): anime-inspired editorial scenes, a recurring human and friendly robot, deep blue-violet evening light, warm accents, and a clean diagram that answers one reader question. The characters and compositions are original to this repository.
 
