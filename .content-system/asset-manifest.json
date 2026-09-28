@@ -1,6 +1,6 @@
 {
   "schema_version": "content-generation.asset-manifest.v1",
-  "system_version": "0.3.1",
+  "system_version": "0.5.7",
   "assets": [
     {
       "path": "docs/content-system-assets/hero-generated.png",
@@ -18,7 +18,7 @@
       "review_decision": "accepted",
       "provider": "built-in image_gen",
       "prompt_record": "docs/content-system-assets/IMAGE_NOTES.md",
-      "helper_visual_contract": "content-generation-modules v0.3.1",
+      "helper_visual_contract": "content-generation-modules v0.5.7",
       "hash": "7406aa4ec75f0872fdeb0aabeda52366221a9738dba6e465af2519b447810357"
     },
     {
@@ -37,7 +37,7 @@
       "review_decision": "accepted",
       "provider": "built-in image_gen",
       "prompt_record": "docs/content-system-assets/IMAGE_NOTES.md",
-      "helper_visual_contract": "content-generation-modules v0.3.1",
+      "helper_visual_contract": "content-generation-modules v0.5.7",
       "hash": "470f780451701f484f0e03966745a35391f7b833e2dd599bee9bb2b78e75a0d0"
     }
   ]

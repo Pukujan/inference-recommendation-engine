@@ -1,5 +1,5 @@
 {
-  "schema_version": "content-generation.project-brief.v1",
+  "schema_version": "content-generation.project-brief.v2",
   "project": "Inference Recommendation Engine",
   "audience": [
     "developers comparing multiple inference routes",
@@ -19,22 +19,74 @@
     {
       "claim": "The public package exposes empirical price-supply weighting and top-ranking helpers.",
       "source": "src/supply.mjs; src/index.mjs",
-      "status": "shipped"
+      "status": "shipped",
+      "supports": "Shows the shipped API that builds ladders, weights price by supply, and ranks candidates.",
+      "limits": "Does not prove any live provider catalog, concurrency, or success rate.",
+      "source_revision": {
+        "kind": "repository_artifact",
+        "reference": "src/supply.mjs",
+        "repository": "Pukujan/inference-recommendation-engine",
+        "commit": "a6c291dbd72fd1a324ec13ff491933150b10581b",
+        "path": "src/supply.mjs",
+        "locator": "export function weightPriceLadder",
+        "uri": "https://github.com/Pukujan/inference-recommendation-engine/blob/a6c291dbd72fd1a324ec13ff491933150b10581b/src/supply.mjs"
+      },
+      "recorded_at": "2026-09-28T05:40:00-04:00",
+      "cite_in_readme": false
     },
     {
       "claim": "The price-supply rules and boundaries are documented as a public contract.",
       "source": "spec/PRICE-SUPPLY-WEIGHTING.md; spec/INVARIANTS.md",
-      "status": "shipped"
+      "status": "shipped",
+      "supports": "Documents the ladder weighting contract and executable invariants maintainers can test against.",
+      "limits": "Policy boundaries are design choices, not universal economic truths.",
+      "source_revision": {
+        "kind": "repository_artifact",
+        "reference": "spec/PRICE-SUPPLY-WEIGHTING.md",
+        "repository": "Pukujan/inference-recommendation-engine",
+        "commit": "a6c291dbd72fd1a324ec13ff491933150b10581b",
+        "path": "spec/PRICE-SUPPLY-WEIGHTING.md",
+        "locator": "# Price-supply weighting",
+        "uri": "https://github.com/Pukujan/inference-recommendation-engine/blob/a6c291dbd72fd1a324ec13ff491933150b10581b/spec/PRICE-SUPPLY-WEIGHTING.md"
+      },
+      "recorded_at": "2026-09-28T05:40:00-04:00",
+      "cite_in_readme": false
     },
     {
       "claim": "Property and relation-based tests cover supply weighting, saturation, upward movement from strongly supplied higher asks, and deterministic ranking.",
       "source": "tests/supply.test.mjs; tests/properties.test.mjs; tests/metamorphic.test.mjs",
-      "status": "experimentally_supported"
+      "status": "experimentally_supported",
+      "supports": "Synthetic tests show expected ranking relations under controlled ladders and policy.",
+      "limits": "Synthetic fixtures do not prove any provider live behavior.",
+      "source_revision": {
+        "kind": "repository_artifact",
+        "reference": "tests/supply.test.mjs",
+        "repository": "Pukujan/inference-recommendation-engine",
+        "commit": "a6c291dbd72fd1a324ec13ff491933150b10581b",
+        "path": "tests/supply.test.mjs",
+        "locator": "describe(",
+        "uri": "https://github.com/Pukujan/inference-recommendation-engine/blob/a6c291dbd72fd1a324ec13ff491933150b10581b/tests/supply.test.mjs"
+      },
+      "recorded_at": "2026-09-28T05:40:00-04:00",
+      "cite_in_readme": false
     },
     {
       "claim": "An adapter can connect rolling or temporal source records without putting credentials in this package.",
       "source": "README.md; spec/INVARIANTS.md",
-      "status": "shipped"
+      "status": "shipped",
+      "supports": "Public docs and invariants keep provider contact and credentials outside the core package.",
+      "limits": "Adapters still own collection quality, windows, and source integrity.",
+      "source_revision": {
+        "kind": "repository_artifact",
+        "reference": "spec/INVARIANTS.md",
+        "repository": "Pukujan/inference-recommendation-engine",
+        "commit": "a6c291dbd72fd1a324ec13ff491933150b10581b",
+        "path": "spec/INVARIANTS.md",
+        "locator": "# Invariants",
+        "uri": "https://github.com/Pukujan/inference-recommendation-engine/blob/a6c291dbd72fd1a324ec13ff491933150b10581b/spec/INVARIANTS.md"
+      },
+      "recorded_at": "2026-09-28T05:40:00-04:00",
+      "cite_in_readme": false
     }
   ],
   "boundaries": [

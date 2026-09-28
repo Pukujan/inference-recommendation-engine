@@ -2,11 +2,14 @@
   "schema_version": "content-generation.visual-style.v1",
   "reference_asset": "docs/content-system-assets/hero-generated.png",
   "generation_workflow": "built-in image_gen",
-  "narrative_roles": ["hero", "supporting"],
+  "narrative_roles": [
+    "hero",
+    "supporting"
+  ],
   "reference_work": [
     "https://github.com/Pukujan/harness-on-steroids/blob/main/docs/content-system-assets/hero.png",
     "https://github.com/Pukujan/Eval-lab/blob/main/assets/eval-lab-banner.png",
-    "https://github.com/Pukujan/content-generation-modules/blob/32f7cc4e54588549cb536d3ab0439004b15d10bb/docs/BRAND_DIRECTION.md"
+    "https://github.com/Pukujan/content-generation-modules/blob/c069613ca8b3e02bcf5aba1960160583537f8a3a/docs/BRAND_DIRECTION.md"
   ],
   "palette": {
     "background": "#111B4D",
@@ -32,8 +35,16 @@
   "style": "Original anime-inspired editorial product illustration with cinematic blue-violet evening light, cyan glass signals, coral price accents, warm gold recommendations, and clean case-study composition.",
   "text_policy": "Narrative PNG assets carry one exact title and one exact subtitle supplied verbatim in the prompt. Incidental prop lettering is not relied on. No technical diagram should replace the narrative asset.",
   "roles": {
-    "hero": {"orientation": "wide", "dimensions": "1536x1024 PNG", "path": "docs/content-system-assets/hero-generated.png"},
-    "supporting": {"orientation": "wide", "dimensions": "1536x1024 PNG", "path": "docs/content-system-assets/supporting-generated.png"}
+    "hero": {
+      "orientation": "wide",
+      "dimensions": "1536x1024 PNG",
+      "path": "docs/content-system-assets/hero-generated.png"
+    },
+    "supporting": {
+      "orientation": "wide",
+      "dimensions": "1536x1024 PNG",
+      "path": "docs/content-system-assets/supporting-generated.png"
+    }
   },
   "reject_when": [
     "the human and robot relationship is missing or obscured",
