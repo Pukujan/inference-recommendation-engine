@@ -80,6 +80,11 @@ Route catalogue (IRE #46 M4): `catalogue.py` joins the static lists in `lists/` 
 sha256-checked, never edited) with live price and `fact_route_reliability` into
 `catalogue/route-catalogue.{json,csv}` every logs run; schema `schemas/route-catalogue.v1.schema.json`.
 The logs run then compacts finished UTC days (`lake.compact_finished`).
+Frontier list (IRE #67): `frontier.py --raw-dir DIR [--fetch --env-file F]` GETs `/api/catalog` (key),
+`/api/status` and `/api/market` (public) and writes `lists/research_model_frontier_{recommendations,routes}.csv`
++ `research_model_frontier_recommendations.json` (schema `schemas/frontier-recommendations.v1.schema.json`,
+capability prior `frontier_prior.v1.json`) and `manifest.json` `generated_lists`. The Top 20 files and
+`manifest.lists` are never touched.
 First install (units are installed by `deploy.sh`, but new timers must be enabled once):
 `sudo systemctl enable --now inferhub-collect-fast.timer inferhub-collect-logs.timer inferhub-snapshot-publish.timer`.
 
