@@ -85,8 +85,9 @@ from the Actions tab (`workflow_dispatch`). Each run:
 4. opens or updates a PR from `auto/daily-lists` with the `lists/` changes and turns on squash
    auto-merge, so they reach `main` once `test` passes. It never commits to `main`.
 
-PRs opened with the workflow token don't start other workflows on their own, so the run starts
-`ci.yml` on the PR branch with `workflow_dispatch`. A failed step fails the run, and GitHub emails
+CI runs started by a bot PR wait for approval, so the refresh approves its own PR's `ci.yml` run
+and `test` gates the merge as usual. This needs the repo setting "Allow GitHub Actions to create
+and approve pull requests" (Settings > Actions > General). A failed step fails the run, and GitHub emails
 the repo owner. The key is only passed as an environment variable and is never printed.
 
 To run the same steps by hand:
