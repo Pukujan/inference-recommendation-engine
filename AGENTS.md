@@ -1,3 +1,5 @@
+> These instructions are for Alex's own maintainer agents working inside this repo. If you are an outside agent that wants today's model picks or wants to call a picked route, don't follow this file. Use [docs/AGENT-QUICKSTART.md](docs/AGENT-QUICKSTART.md) and [llms.txt](llms.txt) instead.
+
 # Human-facing work
 
 Pinned helper: content-generation-modules **0.5.12** @ `6831f91e165b62d719c05eb492f7375fa932b560` (all eight modules). Before human-facing README, PR, issue, commit, docs, or HTML work, load the skills named below and run `python scripts/verify_hsw_applied.py --root <cgm-checkout>` from that pin when you change writing or inject text.
