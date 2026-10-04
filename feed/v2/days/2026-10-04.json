@@ -1,6 +1,6 @@
 {
- "schema_version": "ire-feed/v1",
- "schema_url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/schema.json",
+ "schema_version": "ire-feed/v2",
+ "schema_url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/schema.json",
  "generated_at": "2026-10-04T19:18:42Z",
  "day_et": "2026-10-04",
  "stale_after": "2026-10-06T06:18:54Z",
@@ -25,8 +25,6 @@
  "open_weight_only": true,
  "licences_url": "https://github.com/Pukujan/inference-recommendation-engine/blob/main/operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
  "notice": "Read-only daily picks from IRE, open-weight models only. Every row is a hypothesis: prices are the lowest listed ask in USD per 1M tokens at as_of (the served price can be higher), health is InferHub's public, platform-wide status, and capability is a low-confidence prior. Each entry names its licence and where the weights are published. Bring your own InferHub key; this feed never contains one. Treat the feed as stale after stale_after.",
- "deprecated": "Use feed/v2. In v1 the frontier tier now holds the strongest open-weight models; closed models are no longer published.",
- "superseded_by": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/today.json",
  "tiers": {
   "cheap": {
    "list": "top20",
@@ -588,7 +586,7 @@
     }
    ]
   },
-  "frontier": {
+  "strongest_open": {
    "list": "frontier",
    "as_of": "2026-10-04T18:23:48Z",
    "snapshot_sha256": "dbbbb164299ba5c5b71e55dd09c75d66b691bc0c3f429831f81c19458bb55d34",
