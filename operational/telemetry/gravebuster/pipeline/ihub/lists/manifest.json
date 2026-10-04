@@ -36,16 +36,16 @@
     "json": "research_model_frontier_recommendations.json"
    },
    "sha256": {
-    "research_model_frontier_recommendations.csv": "ecdf87f25cab5e49efddf2d5e274d47c1699b4c6b066b6178df32338a37eebe4",
-    "research_model_frontier_routes.csv": "44ed10fa8725638bea6f43f48f8448d40ceac6ceaae94d189536812dc8cb6d17",
-    "research_model_frontier_recommendations.json": "e46a884747ffff4c52b2cc80820b0dc00e1672a3af6ab1993061938b5c0c9714"
+    "research_model_frontier_recommendations.csv": "e8245e250690801f2f46f711909fdbd65e6500d6f40eb30b3a9c2b2a158ad246",
+    "research_model_frontier_routes.csv": "a156ee1bed52913d7923a61dbcb4fd8f4209c51756ac828444847de8e7d3504d",
+    "research_model_frontier_recommendations.json": "f3a870d071004fded8428b59f285367cf78f2e30a9d2a80b9b32aee0ad7e26a5"
    },
    "schema": "ihub-frontier-recommendations/v1",
    "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/frontier-recommendations.v1.schema.json",
    "generator": "operational/telemetry/gravebuster/pipeline/ihub/frontier.py",
-   "generated_at": "2026-10-04T00:02:28Z",
-   "code_commit": "03862b286ca5a317520b1d93c51099de6c312af4",
-   "snapshot_sha256": "b65938c3cf255c67070eef3488a200592d6de539cdd7eabff42dfd9029b94340",
+   "generated_at": "2026-10-04T11:17:56Z",
+   "code_commit": "9a8fba05175dc8e43938e475102bdfaaf4e3a745",
+   "snapshot_sha256": "54819cd1391f58322f3cbb8dfb4102a26d5eaac5b915f73f5c5d1ece52834529",
    "rank_column": "frontier_rank",
    "eligible_column": "recommendation_eligible",
    "meaning": "Frontier / expensive tier, ranked capability first with live InferHub route prices. Separate from the cheap Top 20, which it never changes. Generated in this repo (not a verbatim copy).",
