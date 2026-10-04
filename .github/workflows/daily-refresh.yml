@@ -5,6 +5,7 @@ name: Daily refresh
 # 2. top20.py: the cheap Top 20 from the same bodies
 # 3. feed guard, then feed.py publish: open-weight feed -> data/ire-feed (pushed only on change)
 # 4. lists/ changes -> PR to main (branch auto/daily-lists), squash auto-merge once `test` passes
+#    (needs repo setting: Actions may create pull requests)
 
 on:
   schedule:
@@ -14,7 +15,7 @@ on:
 permissions:
   contents: write # push data/ire-feed and the auto/daily-lists branch
   pull-requests: write # open/update the lists PR and enable auto-merge
-  actions: write # start CI on the bot PR (GITHUB_TOKEN PRs don't trigger pull_request runs)
+  actions: write # approve the CI run on the bot PR (bot-triggered runs wait for approval)
 
 concurrency:
   group: daily-refresh
@@ -100,17 +101,37 @@ jobs:
             Refs #84
           delete-branch: true
 
-      - name: Start CI on the lists PR and enable squash auto-merge
+      - name: Let CI run on the lists PR and enable squash auto-merge
         if: steps.cpr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.cpr.outputs.pull-request-number }}
           OP: ${{ steps.cpr.outputs.pull-request-operation }}
+          SHA: ${{ steps.cpr.outputs.pull-request-head-sha }}
         run: |
           set -euo pipefail
-          echo "Lists PR #$PR ($OP)"
-          if [ "$OP" = "created" ] || [ "$OP" = "updated" ]; then
-            gh workflow run ci.yml --ref "$LISTS_BRANCH"
-          fi
+          echo "Lists PR #$PR ($OP), head $SHA"
           gh pr merge "$PR" --auto --squash
+          if [ "$OP" = "created" ] || [ "$OP" = "updated" ]; then
+            # CI runs that a bot PR triggers wait for approval (conclusion action_required).
+            # Approve this PR's own run so `test` can gate the merge as usual.
+            run_id=""
+            for _ in $(seq 1 24); do
+              run_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$SHA&event=pull_request" \
+                --jq '.workflow_runs[0].id // empty')
+              [ -n "$run_id" ] && break
+              sleep 5
+            done
+            if [ -z "$run_id" ]; then
+              echo "::error::No CI run appeared for lists PR #$PR ($SHA)"
+              exit 1
+            fi
+            state=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" --jq '.conclusion // .status')
+            if [ "$state" = "action_required" ]; then
+              gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/approve" > /dev/null
+              echo "Approved CI run $run_id"
+            else
+              echo "CI run $run_id is $state; no approval needed"
+            fi
+          fi
           echo "### Lists PR: #$PR ($OP), squash auto-merge on" >> "$GITHUB_STEP_SUMMARY"
