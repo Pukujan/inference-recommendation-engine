@@ -1,21 +1,21 @@
 {
  "schema_version": "ire-feed/v1",
  "schema_url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/schema.json",
- "generated_at": "2026-10-04T20:42:46Z",
+ "generated_at": "2026-10-04T20:47:47Z",
  "day_et": "2026-10-04",
- "stale_after": "2026-10-06T08:42:45Z",
- "code_commit": "ce701f70c02275b568fb95eea7bf93b5623c438f",
+ "stale_after": "2026-10-06T08:47:45Z",
+ "code_commit": "534e6f022afb5420e1bcfc60171fb21c33a769b1",
  "source_repo": "https://github.com/Pukujan/inference-recommendation-engine",
- "snapshot_sha256": "d3c7195bc52cc978bf2880de1671b0a9a6bd6084c0bd7c5a2bf53633c954ff93",
+ "snapshot_sha256": "583481d4fd65b8573d7e554ee16defe51d16d568b8ba7d08595588908f0a6378",
  "sources": {
   "top20": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_top20_recommendations.csv",
-   "sha256": "6503840ae48e89560df995154da42d17d8eac2c4391f6f46444deb0fd2c8ca38",
-   "sidecar_sha256": "09c3240a1dee83bd1e81201b0f8d8812fe691e81085913d7dbaf4c7032b71576"
+   "sha256": "446722dd3a7c1479892d525318e50be476d464447a2342705788a2040771d84d",
+   "sidecar_sha256": "b371f6e93c37b3642f7821885441130673c72eeee0987efcf599a944a60500c0"
   },
   "frontier": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_frontier_recommendations.json",
-   "sha256": "faa3711780b803ce08043cf57f646e67423c47047bcabb1dc8a3ca42cc5f3d72"
+   "sha256": "341e4d12ed17476b3760adb82e7fb1956390f2a099f59e16d9283af92183a437"
   },
   "licences": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
@@ -30,8 +30,8 @@
  "tiers": {
   "cheap": {
    "list": "top20",
-   "as_of": "2026-10-04T20:42:45Z",
-   "snapshot_sha256": "d3c7195bc52cc978bf2880de1671b0a9a6bd6084c0bd7c5a2bf53633c954ff93",
+   "as_of": "2026-10-04T20:47:45Z",
+   "snapshot_sha256": "583481d4fd65b8573d7e554ee16defe51d16d568b8ba7d08595588908f0a6378",
    "description": "Open-weight models from IRE's cheap Top 20, ranked; gated rows stay visible with their gate_reasons, recommended marks the usable ones.",
    "entries": [
     {
@@ -259,7 +259,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 95.69%)",
+       "model alias operational (24h 95.71%)",
        "rail_state=operational"
       ]
      },
@@ -430,7 +430,7 @@
       "status": "degraded",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=major_outage (24h 67.72%), model-wide signal"
+       "model alias_state=major_outage (24h 67.7%), model-wide signal"
       ]
      },
      "confidence": "low",
@@ -475,7 +475,7 @@
       "status": "degraded",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=degraded (24h 97.83%), model-wide signal"
+       "model alias_state=degraded (24h 97.81%), model-wide signal"
       ]
      },
      "confidence": "low",
@@ -589,8 +589,8 @@
   },
   "frontier": {
    "list": "frontier",
-   "as_of": "2026-10-04T20:42:45Z",
-   "snapshot_sha256": "d3c7195bc52cc978bf2880de1671b0a9a6bd6084c0bd7c5a2bf53633c954ff93",
+   "as_of": "2026-10-04T20:47:45Z",
+   "snapshot_sha256": "583481d4fd65b8573d7e554ee16defe51d16d568b8ba7d08595588908f0a6378",
    "description": "The strongest recommended open-weight models, capability first, each with its cheapest healthy route.",
    "entries": [
     {
@@ -652,7 +652,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 95.69%)",
+       "model alias operational (24h 95.71%)",
        "rail_state=operational"
       ]
      },
