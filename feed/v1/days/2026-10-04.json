@@ -1,21 +1,21 @@
 {
  "schema_version": "ire-feed/v1",
  "schema_url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/schema.json",
- "generated_at": "2026-10-04T20:36:06Z",
+ "generated_at": "2026-10-04T20:42:46Z",
  "day_et": "2026-10-04",
- "stale_after": "2026-10-06T08:36:05Z",
- "code_commit": "ff7f484111f7ef972bbbad327da27ba898a69a2a",
+ "stale_after": "2026-10-06T08:42:45Z",
+ "code_commit": "ce701f70c02275b568fb95eea7bf93b5623c438f",
  "source_repo": "https://github.com/Pukujan/inference-recommendation-engine",
- "snapshot_sha256": "918907800187f8d33e2f8d64bc01421549152ba0ca6131e3d8c0af184ba1e70d",
+ "snapshot_sha256": "d3c7195bc52cc978bf2880de1671b0a9a6bd6084c0bd7c5a2bf53633c954ff93",
  "sources": {
   "top20": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_top20_recommendations.csv",
-   "sha256": "a982e99cb12bdadc64e376060899e1fcf37ab317028cc3c81300bd360f701bfd",
-   "sidecar_sha256": "966962ee1b691800b175810885d308b118d70a2402c5e0b06380bc78f2509b22"
+   "sha256": "6503840ae48e89560df995154da42d17d8eac2c4391f6f46444deb0fd2c8ca38",
+   "sidecar_sha256": "09c3240a1dee83bd1e81201b0f8d8812fe691e81085913d7dbaf4c7032b71576"
   },
   "frontier": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_frontier_recommendations.json",
-   "sha256": "90dbbb658fc1c052b5ac9ca34974e3a306ed998d38991c3fc87b26f427615663"
+   "sha256": "faa3711780b803ce08043cf57f646e67423c47047bcabb1dc8a3ca42cc5f3d72"
   },
   "licences": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
@@ -30,8 +30,8 @@
  "tiers": {
   "cheap": {
    "list": "top20",
-   "as_of": "2026-10-04T20:36:05Z",
-   "snapshot_sha256": "918907800187f8d33e2f8d64bc01421549152ba0ca6131e3d8c0af184ba1e70d",
+   "as_of": "2026-10-04T20:42:45Z",
+   "snapshot_sha256": "d3c7195bc52cc978bf2880de1671b0a9a6bd6084c0bd7c5a2bf53633c954ff93",
    "description": "Open-weight models from IRE's cheap Top 20, ranked; gated rows stay visible with their gate_reasons, recommended marks the usable ones.",
    "entries": [
     {
@@ -65,8 +65,8 @@
       "alicn/deepseek-v4.1-flash",
       "cb/deepseek-v4.1-flash",
       "cbcn/deepseek-v4.1-flash",
-      "cp/cline-pass/deepseek-v4.1-flash",
       "cmc/deepseek/deepseek-v4.1-flash",
+      "cp/cline-pass/deepseek-v4.1-flash",
       "ali/deepseek-v4.1-flash",
       "ocg/deepseek-v4.1-flash"
      ],
@@ -179,7 +179,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 97.98%)",
+       "model alias operational (24h 97.99%)",
        "rail_state=operational"
       ]
      },
@@ -194,8 +194,8 @@
      ],
      "routes": [
       "cbcn/deepseek-v4-flash",
-      "ocg/deepseek-v4-flash",
-      "cmc/deepseek/deepseek-v4-flash"
+      "cmc/deepseek/deepseek-v4-flash",
+      "ocg/deepseek-v4-flash"
      ],
      "open_weight": true,
      "licence": {
@@ -259,7 +259,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 95.66%)",
+       "model alias operational (24h 95.69%)",
        "rail_state=operational"
       ]
      },
@@ -286,46 +286,6 @@
     },
     {
      "rank": 7,
-     "model_family": "Kimi K2.7 Code",
-     "vendor": "Moonshot",
-     "recommended": true,
-     "gate_reasons": [],
-     "best_route": "ali/kimi-k2.7-code",
-     "price_usd_per_mtok": {
-      "input": 0.06555,
-      "output": 0.276,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "healthy",
-      "confidence": "medium",
-      "reasons": [
-       "model alias operational (24h 99.19%)",
-       "rail_state=operational"
-      ]
-     },
-     "confidence": "low",
-     "tier": "mid",
-     "capability_score_100": 25.812,
-     "price_regime": "near_free",
-     "system_prompt_handling": "unspecified",
-     "preferred_endpoint": null,
-     "caveats": [],
-     "routes": [
-      "ali/kimi-k2.7-code",
-      "ocg/kimi-k2.7-code",
-      "cmc/moonshotai/Kimi-K2.7-Code",
-      "cbcn/kimi-k2.7"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "Modified MIT",
-      "url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
-     }
-    },
-    {
-     "rank": 8,
      "model_family": "GLM 5.3",
      "vendor": "Z.ai",
      "recommended": true,
@@ -368,48 +328,47 @@
      }
     },
     {
-     "rank": 9,
-     "model_family": "MiMo V2.5",
-     "vendor": "Xiaomi",
-     "recommended": false,
-     "gate_reasons": [
-      "not_routing_eligible"
-     ],
-     "best_route": "cp/cline-pass/mimo-v2.5",
+     "rank": 8,
+     "model_family": "Kimi K2.7 Code",
+     "vendor": "Moonshot",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "cmc/moonshotai/Kimi-K2.7-Code",
      "price_usd_per_mtok": {
-      "input": 0.035,
-      "output": 0.07,
+      "input": 0.0475,
+      "output": 0.2,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
-      "status": "degraded",
-      "confidence": "low",
+      "status": "healthy",
+      "confidence": "medium",
       "reasons": [
-       "model alias low_traffic, 24h availability 65.38% < 95.0"
+       "model alias operational (24h 99.18%)",
+       "rail_state=operational"
       ]
      },
      "confidence": "low",
      "tier": "mid",
-     "capability_score_100": 25.987,
+     "capability_score_100": 25.812,
      "price_regime": "near_free",
      "system_prompt_handling": "unspecified",
      "preferred_endpoint": null,
      "caveats": [],
      "routes": [
-      "cp/cline-pass/mimo-v2.5",
-      "cmc/xiaomi/mimo-v2.5",
-      "mimo/mimo-v2.5",
-      "ocg/mimo-v2.5"
+      "cmc/moonshotai/Kimi-K2.7-Code",
+      "ali/kimi-k2.7-code",
+      "ocg/kimi-k2.7-code",
+      "cbcn/kimi-k2.7"
      ],
      "open_weight": true,
      "licence": {
-      "name": "MIT",
-      "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5",
-      "weights_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5"
+      "name": "Modified MIT",
+      "url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
      }
     },
     {
-     "rank": 10,
+     "rank": 9,
      "model_family": "MiniMax M2.7",
      "vendor": null,
      "recommended": false,
@@ -443,8 +402,8 @@
       "mm/MiniMax-M2.7",
       "mmcn/MiniMax-M2.7",
       "cbcn/minimax-m2.7",
-      "ocg/minimax-m2.7",
-      "cmc/MiniMaxAI/MiniMax-M2.7"
+      "cmc/MiniMaxAI/MiniMax-M2.7",
+      "ocg/minimax-m2.7"
      ],
      "open_weight": true,
      "licence": {
@@ -454,7 +413,7 @@
      }
     },
     {
-     "rank": 11,
+     "rank": 10,
      "model_family": "GLM 5.2",
      "vendor": "Z.ai",
      "recommended": false,
@@ -471,7 +430,7 @@
       "status": "degraded",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=major_outage (24h 67.95%), model-wide signal"
+       "model alias_state=major_outage (24h 67.72%), model-wide signal"
       ]
      },
      "confidence": "low",
@@ -496,7 +455,7 @@
      }
     },
     {
-     "rank": 12,
+     "rank": 11,
      "model_family": "Kimi K2.6",
      "vendor": "Moonshot",
      "recommended": false,
@@ -516,7 +475,7 @@
       "status": "degraded",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=degraded (24h 97.87%), model-wide signal"
+       "model alias_state=degraded (24h 97.83%), model-wide signal"
       ]
      },
      "confidence": "low",
@@ -530,14 +489,55 @@
      ],
      "routes": [
       "cbcn/kimi-k2.6",
-      "ocg/kimi-k2.6",
-      "cmc/moonshotai/Kimi-K2.6"
+      "cmc/moonshotai/Kimi-K2.6",
+      "ocg/kimi-k2.6"
      ],
      "open_weight": true,
      "licence": {
       "name": "Modified MIT",
       "url": "https://huggingface.co/moonshotai/Kimi-K2.6/blob/main/LICENSE",
       "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.6"
+     }
+    },
+    {
+     "rank": 12,
+     "model_family": "MiMo V2.5",
+     "vendor": "Xiaomi",
+     "recommended": false,
+     "gate_reasons": [
+      "not_routing_eligible"
+     ],
+     "best_route": "cmc/xiaomi/mimo-v2.5",
+     "price_usd_per_mtok": {
+      "input": 0.007,
+      "output": 0.014,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "degraded",
+      "confidence": "low",
+      "reasons": [
+       "model alias low_traffic, 24h availability 65.38% < 95.0"
+      ]
+     },
+     "confidence": "low",
+     "tier": "mid",
+     "capability_score_100": 25.987,
+     "price_regime": "near_free",
+     "system_prompt_handling": "unspecified",
+     "preferred_endpoint": null,
+     "caveats": [],
+     "routes": [
+      "cmc/xiaomi/mimo-v2.5",
+      "cp/cline-pass/mimo-v2.5",
+      "mimo/mimo-v2.5",
+      "ocg/mimo-v2.5"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "MIT",
+      "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5",
+      "weights_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5"
      }
     },
     {
@@ -589,8 +589,8 @@
   },
   "frontier": {
    "list": "frontier",
-   "as_of": "2026-10-04T20:36:05Z",
-   "snapshot_sha256": "918907800187f8d33e2f8d64bc01421549152ba0ca6131e3d8c0af184ba1e70d",
+   "as_of": "2026-10-04T20:42:45Z",
+   "snapshot_sha256": "d3c7195bc52cc978bf2880de1671b0a9a6bd6084c0bd7c5a2bf53633c954ff93",
    "description": "The strongest recommended open-weight models, capability first, each with its cheapest healthy route.",
    "entries": [
     {
@@ -652,7 +652,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 95.66%)",
+       "model alias operational (24h 95.69%)",
        "rail_state=operational"
       ]
      },
@@ -733,8 +733,8 @@
      "gate_reasons": [],
      "best_route": "cmc/zai-org/GLM-5.1",
      "price_usd_per_mtok": {
-      "input": 0.7,
-      "output": 2.2,
+      "input": 0.028,
+      "output": 0.088,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
@@ -748,10 +748,12 @@
      "confidence": "low",
      "tier": "upper_mid",
      "capability_score_100": 64.0,
-     "price_regime": "over_policy",
+     "price_regime": "under_policy",
      "system_prompt_handling": "unspecified",
      "preferred_endpoint": null,
-     "caveats": [],
+     "caveats": [
+      "only 1 seller at the cheapest ask; served price may be higher"
+     ],
      "routes": [
       "cmc/zai-org/GLM-5.1"
      ],
