@@ -10,7 +10,7 @@ For coding agents and scripts that need today's model pick. Humans: read [START-
 - `schema_version` is `ire-feed/v2`. Refuse any other major version. (`feed/v1/` still serves the same data in the old shape, deprecated.)
 - Open-weight models only. Every entry has `open_weight: true` and `licence` (`name`, `url`, `weights_url`). No official-price or discount fields.
 - The feed never contains a key. You need your own `INFERHUB_API_KEY`. Read it from the environment; never log it, never put it in a URL.
-- One refresh per day, published on the orphan branch `data/ire-feed`. Cache for hours, not seconds.
+- One refresh per day, run by the GitHub Action `.github/workflows/daily-refresh.yml` at 11:10 UTC and published on the orphan branch `data/ire-feed`. Cache for hours, not seconds.
 
 ## Pick a route
 

@@ -92,6 +92,8 @@ come from `top20_prior.v1.json` (carried over from the 2026-09-22 list, low conf
 is live. The daily shortlist file is still the old verbatim copy.
 Refresh both lists from one fetch:
 `python frontier.py --raw-dir DIR --fetch --env-file F && python top20.py --raw-dir DIR`.
+The GitHub Action `.github/workflows/daily-refresh.yml` does this every day at 11:10 UTC, publishes
+the feed and opens the lists PR (see `FEED.md`, IRE #84).
 First install (units are installed by `deploy.sh`, but new timers must be enabled once):
 `sudo systemctl enable --now inferhub-collect-fast.timer inferhub-collect-logs.timer inferhub-snapshot-publish.timer`.
 

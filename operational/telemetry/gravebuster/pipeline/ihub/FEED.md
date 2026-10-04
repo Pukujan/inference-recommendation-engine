@@ -73,6 +73,24 @@ hit. CI builds the feed from the committed lists and runs the guard on every pus
 
 ## Refresh
 
+The refresh runs as a GitHub Action, [`.github/workflows/daily-refresh.yml`](../../../../../.github/workflows/daily-refresh.yml)
+(IRE #84). It runs every day at 11:10 UTC (7:10 AM EDT, 6:10 AM EST) and can be started by hand
+from the Actions tab (`workflow_dispatch`). Each run:
+
+1. runs `frontier.py --fetch` with the `INFERHUB_API_KEY` repo secret (three GETs: `/api/catalog`
+   with the key, `/api/status` and `/api/market` public), then `top20.py` on the same bodies;
+2. builds the feed and runs `feed.py check`, so a closed model or a credential fails the run before
+   anything is pushed;
+3. runs `feed.py publish`, which pushes to `data/ire-feed` only when the feed changed;
+4. opens or updates a PR from `auto/daily-lists` with the `lists/` changes and turns on squash
+   auto-merge, so they reach `main` once `test` passes. It never commits to `main`.
+
+PRs opened with the workflow token don't start other workflows on their own, so the run starts
+`ci.yml` on the PR branch with `workflow_dispatch`. A failed step fails the run, and GitHub emails
+the repo owner. The key is only passed as an environment variable and is never printed.
+
+To run the same steps by hand:
+
 ```bash
 cd <ire checkout>/operational/telemetry/gravebuster/pipeline/ihub
 python frontier.py --raw-dir "$RAW" --fetch --env-file "$ENV_FILE"   # one GET round, frontier list
@@ -80,5 +98,5 @@ python top20.py --raw-dir "$RAW"                                     # cheap Top
 python feed.py publish                                               # feed -> data/ire-feed
 ```
 
-`publish` builds from the lists in the checkout it runs in. Commit the refreshed lists to `main`
-through a PR as usual, or run `publish` right after the refresh to put that day's lists in the feed.
+`publish` builds from the lists in the checkout it runs in, so run it right after the refresh to put
+that day's lists in the feed. The refreshed lists still go to `main` through a PR.
