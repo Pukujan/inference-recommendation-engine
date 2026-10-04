@@ -6,8 +6,11 @@
 orphan branch `data/ire-feed` and read with a plain GET:
 
 ```
-https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/today.json
+https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/today.json
 ```
+
+The feed only lists **open-weight models**: families whose weights are published for download
+under a licence we've checked. See "Open-weight only" below.
 
 | Option | Verdict | Why |
 | --- | --- | --- |
@@ -20,32 +23,53 @@ https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/i
 
 | Path on `data/ire-feed` | What it is |
 | --- | --- |
-| `feed/v1/today.json` | Today's picks: `tiers.cheap` (the Top 20, gated rows included) and `tiers.frontier` (recommended picks only) |
-| `feed/v1/days/YYYY-MM-DD.json` | The same document for each ET day. Append-only. |
-| `feed/v1/index.json` | Every day with its URL and sha256 |
-| `feed/v1/schema.json` | JSON Schema (source: `schemas/feed.v1.schema.json` here) |
+| `feed/v2/today.json` | Today's picks: `tiers.cheap` (the open-weight rows of the Top 20, gated rows included, ranked 1..n) and `tiers.strongest_open` (the strongest recommended open-weight models) |
+| `feed/v2/days/YYYY-MM-DD.json` | The same document for each ET day. Append-only. |
+| `feed/v2/index.json` | Every day with its URL and sha256 |
+| `feed/v2/schema.json` | JSON Schema (source: `schemas/feed.v2.schema.json` here) |
+| `feed/v1/...` | Deprecated. The same open-weight data in the old shape, with `strongest_open` under the old `frontier` key, plus `deprecated` and `superseded_by`. Readers should move to v2. |
 
-Each entry has `rank`, `model_family`, `recommended`, `gate_reasons`, `best_route`,
+Each entry has `rank`, `model_family`, `open_weight` (always `true`), `licence` (`name`, `url`,
+`weights_url`), `recommended`, `gate_reasons`, `best_route`,
 `price_usd_per_mtok.input/output` (the best route's lowest listed ask), `health.status/reasons`,
 `confidence`, `caveats` and every `routes` id, best first.
 
 Top-level provenance: `schema_version`, `generated_at`, `day_et`, `stale_after` (oldest list
 `as_of` + 36 h), `code_commit`, `snapshot_sha256`, `sources.*.sha256` (each input list),
-`source_repo`. Each tier has its own `as_of`.
+`source_repo`, `open_weight_only` and `licences_url`. Each tier has its own `as_of`.
+
+The feed has no official-price or discount fields. Prices are the listed ask and nothing else.
 
 ## Rules for readers
 
 - If `now > stale_after`, treat the feed as stale and say so. Don't pretend it's live.
 - Prices move during the day. Check the route before a long run.
 - `recommended: false` rows are listed on purpose. Read `gate_reasons` before using one.
-- `cx/` routes send your system prompt as a developer message (see each row's `caveats`).
+- Read the `licence` before you build on a model. Some open-weight licences (MiniMax, for one)
+  restrict commercial use.
+
+## Open-weight only
+
+`model_licences.v1.json` (next to `feed.py`) maps each model family to its vendor, licence,
+licence URL and weights URL, checked against the vendor's Hugging Face repository. A family goes
+into the feed only when it's listed there with `open_weight: true`. Closed, API-only families
+(GPT, Claude, Gemini, Grok, Muse Spark) are listed with `open_weight: false` or not at all, and
+families we couldn't match to a published checkpoint are listed with `open_weight: null`. Both
+stay out. To add a family, check its weights and licence, add the record, and open a PR.
+
+This applies to the public feed only. The lists in `lists/` and `frontier.py` output are
+unchanged.
 
 ## Guard
 
-`feed.py check DIR` fails if any file looks like it holds a credential: `sk-` keys, bearer
+`feed.py check DIR` fails if a `today.json` or `days/*.json` names a closed model family or
+vendor in a model, vendor or route field, if an entry isn't marked `open_weight` or has no
+verified licence record, or if any key mentions an official price or discount. It also fails if
+any file looks like it holds a credential: `sk-` keys, bearer
 tokens, `Authorization` or `x-api-key` headers, GitHub tokens, AWS keys, `*_API_KEY=` lines and
 private key blocks. `write_feed` and `publish` run the same scan and refuse to write or push on a
-hit. CI builds the feed from the committed lists and runs the guard on every push.
+hit. CI builds the feed from the committed lists and runs the guard on every push, and
+`operational/tests/test_telemetry_ihub_feed.py` covers the open-weight rules.
 
 ## Refresh
 

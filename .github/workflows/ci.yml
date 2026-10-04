@@ -31,7 +31,7 @@ jobs:
       - run: pnpm check:public
       - run: pnpm test:operational
       - run: pnpm pack --dry-run
-      - name: Feed secret guard (build today's feed from the committed lists, then scan it)
+      - name: Feed guard (build today's public feed, then fail on credentials, closed models or price-comparison fields)
         run: |
           feed=$(ls operational/*/gravebuster/pipeline/ihub/feed.py)
           uv run --locked python "$feed" build --out "$RUNNER_TEMP/ire-feed"

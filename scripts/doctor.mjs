@@ -7,7 +7,7 @@
 import { pathToFileURL } from 'node:url';
 
 export const FEED_URL =
-  'https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/today.json';
+  'https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/today.json';
 export const STATUS_URL = 'https://inferhub.dev/api/status';
 export const KEY_VARS = ['INFERHUB_API_KEY', 'ANTHROPIC_API_KEY', 'OPENAI_API_KEY'];
 const MIN_NODE_MAJOR = 20;
@@ -70,18 +70,18 @@ export async function checkFeed(fetchImpl = fetch, now = new Date(), timeoutMs =
   } catch (error) {
     return check('feed', 'fail', `Could not fetch today's picks (${error.message})`, `Open ${FEED_URL} in a browser; if it fails there too, the daily feed has not been published.`);
   }
-  if (doc?.schema_version !== 'ire-feed/v1') {
+  if (doc?.schema_version !== 'ire-feed/v2') {
     return check('feed', 'fail', `Unexpected feed schema ${doc?.schema_version}`, 'Update your IRE checkout (git pull) and run the doctor again.');
   }
   const pick = (tier) => (doc.tiers?.[tier]?.entries ?? []).find((e) => e.recommended) ?? null;
   const cheap = pick('cheap');
-  const frontier = pick('frontier');
+  const strongest = pick('strongest_open');
   const generated = new Date(doc.generated_at);
   const ageHours = Math.round(((now - generated) / 36e5) * 10) / 10;
   const stale = now > new Date(doc.stale_after);
   const picks = {
     cheap: cheap && { model_family: cheap.model_family, best_route: cheap.best_route, price_usd_per_mtok: cheap.price_usd_per_mtok },
-    frontier: frontier && { model_family: frontier.model_family, best_route: frontier.best_route, price_usd_per_mtok: frontier.price_usd_per_mtok },
+    strongest_open: strongest && { model_family: strongest.model_family, best_route: strongest.best_route, price_usd_per_mtok: strongest.price_usd_per_mtok },
   };
   const detail = { day_et: doc.day_et, generated_at: doc.generated_at, stale_after: doc.stale_after, age_hours: ageHours, stale, picks };
   if (stale) {
@@ -116,11 +116,11 @@ export function render(report) {
   const lines = ['IRE doctor', ''];
   for (const r of report.results) lines.push(`  ${mark[r.status]}  ${r.summary}`);
   const p = report.results.find((r) => r.id === 'feed')?.picks;
-  if (p?.cheap || p?.frontier) {
+  if (p?.cheap || p?.strongest_open) {
     lines.push('', "Today's picks:");
-    for (const tier of ['cheap', 'frontier']) {
+    for (const [tier, label] of [['cheap', 'cheap'], ['strongest_open', 'strongest']]) {
       const e = p[tier];
-      if (e) lines.push(`  ${tier.padEnd(8)} ${e.model_family} via ${e.best_route} ($${e.price_usd_per_mtok?.input} in / $${e.price_usd_per_mtok?.output} out per 1M tokens)`);
+      if (e) lines.push(`  ${label.padEnd(9)} ${e.model_family} via ${e.best_route} ($${e.price_usd_per_mtok?.input} in / $${e.price_usd_per_mtok?.output} out per 1M tokens)`);
     }
   }
   lines.push('', report.ok ? 'IRE works for you. Next:' : 'Something needs fixing first. Next:');
