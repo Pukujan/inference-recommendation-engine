@@ -1,5 +1,7 @@
 # Inference Recommendation Engine
 
+**Want today's model pick?** People start with [START-HERE.md](START-HERE.md). Agents and scripts start with [docs/AGENT-QUICKSTART.md](docs/AGENT-QUICKSTART.md) or [llms.txt](llms.txt). Run `pnpm ire:doctor` to check your setup.
+
 > When a cheap inference route is only barely available, the lowest number is not the decision. This local, provider-neutral engine turns price ladders, supply, runtime evidence, and editable policy into a recommendation you can inspect and reproduce.
 
 <p align="center">
