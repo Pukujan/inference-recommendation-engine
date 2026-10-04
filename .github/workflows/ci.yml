@@ -31,3 +31,35 @@ jobs:
       - run: pnpm check:public
       - run: pnpm test:operational
       - run: pnpm pack --dry-run
+      # Agent stack validators (ACS multi-agent-hotload, release train 2026-10-01).
+      # Pins match stack-manifest.json and AGENTS.md "Pinned stack". Fail closed.
+      - name: Check out pinned agent stack validators
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/stack"
+          echo "STACK_ROOT=$root" >> "$GITHUB_ENV"
+          fetch() {
+            git init --quiet "$root/$1"
+            git -C "$root/$1" fetch --quiet --depth 1 "https://github.com/Pukujan/$2.git" "$3"
+            git -C "$root/$1" checkout --quiet FETCH_HEAD
+          }
+          fetch train agent-stack-train main
+          fetch pcm project-continuity-modules 4e2385474b4af9249ca009cbdcb38c4498932475
+          fetch cgm content-generation-modules 6831f91e165b62d719c05eb492f7375fa932b560
+          fetch oio observational-issue-ops 2dace20b08deccfad91de8984e5670f4bf680ddb
+          fetch acs agent-custom-setup e1d7732be4cb4683df218ea3f999338053612d8d
+      - name: Validate stack-manifest against the release train
+        run: uv run --no-project --with jsonschema python "$STACK_ROOT/train/scripts/check_manifest.py" --manifest stack-manifest.json --train "$STACK_ROOT/train/stack-releases.json"
+      - name: Validate PCM continuity files
+        run: PYTHONPATH="$STACK_ROOT/pcm/src" uv run --no-project --with jsonschema python -m continuity validate --root .
+      - name: Validate CGM 0.5.12 adapter
+        run: |
+          uv run --no-project --with jsonschema python "$STACK_ROOT/cgm/scripts/validate_content_system.py" --root "$STACK_ROOT/cgm" --adapter .content-system --project-root .
+          uv run --no-project --with jsonschema python "$STACK_ROOT/cgm/scripts/verify_adopter_content.py" --project-root .
+      - name: Validate OIO install
+        run: uv run --no-project --with-requirements "$STACK_ROOT/oio/requirements.txt" python "$STACK_ROOT/oio/.github/scripts/oio_installer.py" --target "$GITHUB_WORKSPACE" --check
+      - name: Validate ACS hot-loader
+        run: |
+          pack="$STACK_ROOT/acs/modules/coordination/multi-agent-hotload/v0.1.0"
+          uv run --no-project --with jsonschema python "$pack/scripts/hotload_check.py" --root "$pack" --assignment .coord/assignment.json --cgm-root "$STACK_ROOT/cgm" --adopter-root "$GITHUB_WORKSPACE"

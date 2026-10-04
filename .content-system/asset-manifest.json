@@ -1,6 +1,6 @@
 {
   "schema_version": "content-generation.asset-manifest.v1",
-  "system_version": "0.5.7",
+  "system_version": "0.5.12",
   "assets": [
     {
       "path": "docs/content-system-assets/hero-generated.png",
