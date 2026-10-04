@@ -68,10 +68,12 @@ class ListTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256(raw).hexdigest(), lst["sha256_expected"])
         top = by["top20"]["entries"]
         self.assertEqual([e["rank"] for e in top], list(range(1, 21)))
-        self.assertEqual(top[0]["model_family"], "DeepSeek V4.1 Flash")
-        self.assertIn("cb/deepseek-v4.1-flash", top[0]["routes"])
-        self.assertFalse(top[2]["recommendation_eligible"])  # Gemini 3.8 Flash is gated
-        self.assertEqual(top[2]["gate_reasons"], ["insufficient_provider_breadth"])
+        # The Top 20 is regenerated daily (top20.py, #76), so check shape, not today's picks.
+        self.assertTrue(top[0]["model_family"])
+        self.assertTrue(all(e["routes"] for e in top))
+        gated = [e for e in top if not e["recommendation_eligible"]]
+        self.assertTrue(all(e["gate_reasons"] for e in gated))
+        self.assertTrue(any(e["recommendation_eligible"] for e in top))
         self.assertEqual(len(by["daily_shortlist"]["entries"]), 9)
 
 

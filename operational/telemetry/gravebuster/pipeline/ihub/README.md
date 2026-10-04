@@ -83,8 +83,15 @@ The logs run then compacts finished UTC days (`lake.compact_finished`).
 Frontier list (IRE #67): `frontier.py --raw-dir DIR [--fetch --env-file F]` GETs `/api/catalog` (key),
 `/api/status` and `/api/market` (public) and writes `lists/research_model_frontier_{recommendations,routes}.csv`
 + `research_model_frontier_recommendations.json` (schema `schemas/frontier-recommendations.v1.schema.json`,
-capability prior `frontier_prior.v1.json`) and `manifest.json` `generated_lists`. The Top 20 files and
-`manifest.lists` are never touched.
+capability prior `frontier_prior.v1.json`) and `manifest.json` `generated_lists`. It never touches the Top 20.
+Cheap Top 20 (IRE #76): `top20.py --raw-dir DIR` reuses the same three GET bodies and rewrites
+`lists/research_model_top20_recommendations.csv` at the same path with the same 21 columns, plus the
+sidecar `research_model_top20_recommendations.json` (per-row confidence, best route, live prices, health,
+gate reasons, provenance) and the `top20` entry of `manifest.lists`. Capability, tier and release date
+come from `top20_prior.v1.json` (carried over from the 2026-09-22 list, low confidence); everything else
+is live. The daily shortlist file is still the old verbatim copy.
+Refresh both lists from one fetch:
+`python frontier.py --raw-dir DIR --fetch --env-file F && python top20.py --raw-dir DIR`.
 First install (units are installed by `deploy.sh`, but new timers must be enabled once):
 `sudo systemctl enable --now inferhub-collect-fast.timer inferhub-collect-logs.timer inferhub-snapshot-publish.timer`.
 
