@@ -1,5 +1,7 @@
 # Project
 
+<!-- continuity:project {"id":"inference-recommendation-engine","protocol_version":"0.1.0-draft","schema":"project-continuity.project.v1","title":"Inference Recommendation Engine"} -->
+
 Inference Recommendation Engine is a local-first, provider-neutral ranking core for inference routes.
 
 ## Stable goals

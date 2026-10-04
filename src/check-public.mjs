@@ -26,6 +26,14 @@ const operationalLedgerPaths = [
   /^schemas\/ckff-route-candidates/i,
   /^providers\/ckff\//i,
 ];
+// Files installed and checked byte-for-byte by the pinned agent stack (OIO installer, ACS assignment schema).
+// They use broad technical terms; the product-name guard still applies to them.
+const vendoredStackPaths = [
+  /^\.oio\//,
+  /^\.coord\//,
+  /^\.github\/scripts\/oio_[a-z_]+\.py$/,
+  /^\.github\/ISSUE_TEMPLATE\/observational-issue\.yml$/,
+];
 const namedIntegration = ['infer', 'hub'].join('');
 const explicitlyDocumentedPaths = new Set([
   'agents.md',
@@ -52,7 +60,9 @@ function walk(directory) {
     else {
       const relative = path.relative(root, absolute).split(path.sep).join('/');
       // Keep the product-name guard global; ledger docs use broad technical terms.
-      const operationalLedger = operationalLedgerPaths.some((pattern) => pattern.test(relative));
+      const operationalLedger =
+        operationalLedgerPaths.some((pattern) => pattern.test(relative)) ||
+        vendoredStackPaths.some((pattern) => pattern.test(relative));
       const explicitIntegrationReference =
         explicitlyDocumentedPaths.has(relative.toLowerCase()) ||
         explicitlyDocumentedPrefixes.some((prefix) => relative.toLowerCase().startsWith(prefix));

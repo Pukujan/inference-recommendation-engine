@@ -3,11 +3,15 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0010
-updated_at: 2026-09-24T23:05:00Z
+active_task: IRE-0011
+updated_at: 2026-10-04T18:10:00Z
 ---
 
+<!-- continuity:current {"active_task":"IRE-0011","active_task_file":"tasks/TASK-IRE-0011-acs-hotload-stack.md","protocol_version":"0.1.0-draft","schema":"project-continuity.current.v1"} -->
+
 ## State
+
+IRE-0011 (issue #71, parent #70) is active: IRE is moving onto the current ACS hot-load stack (PCM 0.6.0, CGM 0.5.12, OIO 0.1.0, ACS multi-agent-hotload 0.1.0) before the public onboarding work in #70.
 
 IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008's copyable Astra owner and Kilo background-staff setup merged in PR #34 and issue #33 is closed. IRE-0009's Codex receipt importer merged in PR #37. Issue #36 is the closeout record.
 

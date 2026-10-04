@@ -1,0 +1,132 @@
+{
+  "schema_version": "0.1.0",
+  "project": "Inference Recommendation Engine ACS adopter",
+  "recorded_at": "2026-10-04T18:10:00Z",
+  "notes": "ACS multi-agent-hotload adopter state. Live join/continue order wins; the seed list is a hint only. FULL PCM (4e23854, CLI 0.6.0) + FULL CGM 0.5.12 (6831f91e, eight modules) + OIO 0.1.0 are pinned. Boss lease is minutes (default 30, range 15-120); the watchdog is agent-less and liveness-only. The decision-boss seat is vacant until the first live continuer claims it.",
+  "role_fill": {
+    "mode": "join_continue_order",
+    "seed_is_hint_only": true,
+    "notes": "First live continuer with a valid lease is decision boss; later continuers fill coder or worker seats. Tool identity does not assign roles."
+  },
+  "agents": [
+    {
+      "agent_id": "executor-inference-recommendation-engine",
+      "role_seed": "decision_boss",
+      "harness": "grok-bot",
+      "machine_label": "box",
+      "may_implement": true,
+      "notes": "Seed hint for an empty room; live join/continue order wins when filling vacant seats."
+    }
+  ],
+  "boss_failover": {
+    "lease_ttl_minutes": 30,
+    "check_in": {
+      "mechanism": "claim_file",
+      "interval_hint_minutes": 15,
+      "claim_file_path": ".coord/boss_claim.json"
+    },
+    "claim_queue": [],
+    "standby": [],
+    "grace_minutes": 10,
+    "who_is_boss_now": null,
+    "as_of_history": []
+  },
+  "watchdog": {
+    "watchdog_interval_minutes": 10,
+    "idle_window": {
+      "minutes": 20
+    },
+    "runner": "github_action",
+    "inputs": [
+      "claim_heartbeat",
+      "github_commit",
+      "github_pr",
+      "local_telemetry_optional"
+    ],
+    "on_fresh_heartbeat": "noop",
+    "on_stale_with_github_activity": "nudge_check_in_keep_boss",
+    "on_stale_idle": "flag_seat_at_risk",
+    "on_past_lease_ttl": "write_vacant_in_claim_file",
+    "notes": "AGENT-LESS. Cron/Action/script only. No LLM. No peer agent. Watchdog != failover. ~10m liveness/nudge only."
+  },
+  "pins": {
+    "acs": {
+      "repo": "https://github.com/Pukujan/agent-custom-setup",
+      "module": "modules/coordination/multi-agent-hotload/v0.1.0",
+      "version": "0.1.0",
+      "revision": "e1d7732be4cb4683df218ea3f999338053612d8d"
+    },
+    "pcm": {
+      "repo": "https://github.com/Pukujan/project-continuity-modules",
+      "revision": "4e2385474b4af9249ca009cbdcb38c4498932475",
+      "cli_version": "0.6.0",
+      "protocol": "0.1.0-draft",
+      "role": "full_stack",
+      "required_features": [
+        "checkout_continuity_checkpoints",
+        "github_issues_own_task_progression",
+        "pr_only_to_default_branch",
+        "required_ci_gates",
+        "branch_protection_preference",
+        "github_auto_merge_preference",
+        "fail_closed_on_missing_gates",
+        "leaf_parent_dependency_receipts"
+      ],
+      "notes": "Full PCM for adopters. Continuity/checkpoints yes; still NOT the proposal/ACCEPT layer (that stays GitHub + PROPOSALS.md). Pin commit SHA; do not silently follow moving main."
+    },
+    "cgm": {
+      "repo": "https://github.com/Pukujan/content-generation-modules",
+      "revision": "6831f91e165b62d719c05eb492f7375fa932b560",
+      "version": "0.5.12",
+      "role": "full_stack",
+      "modules": [
+        "brand-foundation",
+        "content-context",
+        "writing-direction",
+        "human-sounding-writing",
+        "human-output-naming",
+        "visual-direction",
+        "image-generation",
+        "html-demo"
+      ],
+      "human_output_contract": [
+        "docs/README_PLAYBOOK.md",
+        "templates/README.template.md",
+        "templates/readme-contract.json",
+        "schemas/readme-contract.schema.json",
+        "docs/README_QUALITY_PDD.md",
+        "docs/README_QUALITY_SDD.md",
+        "docs/README_QUALITY_TDD.md",
+        "docs/PROVENANCE_AND_CITATION.md",
+        "docs/WRITING_ROUTING.md",
+        "docs/ACS_VERIFY.md",
+        "docs/writing-routing.json",
+        "docs/HUMAN_SOUNDING_WRITING.md",
+        "docs/human-sounding-rules.json",
+        "docs/IMAGE_GUIDE.md",
+        "docs/CONTENT_RESEARCH.md",
+        "docs/BRAND_DIRECTION.md",
+        "AGENTS.md",
+        "system-version.json",
+        "docs/HUMAN_OUTPUT_NAMING.md",
+        "docs/human-output-naming.json"
+      ],
+      "routing": {
+        "readme_product_entry": "writing-direction (MUST load; scan-first selective bold; do not apply HSW bold restraints)",
+        "pr_issue_docs_commits": "human-sounding-writing / hsw (MUST load for PR/issue titles+bodies, docs, commits)",
+        "posts_blogs_papers": "human-sounding-writing (hsw / HSW)",
+        "html_reports_compare_appendable": "human-sounding-writing / hsw (MUST; default ON; no per-report opt-in)",
+        "generated_artifact_filenames": "human-output-naming / hon (MUST; basenames + legends)",
+        "contract": "docs/writing-routing.json + docs/ACS_VERIFY.md; application=must_load; acs_prompt_inject after VALID"
+      },
+      "notes": "FULL CGM 0.5.12 required for ACS and all hotloader adopters. Eight modules including human-output-naming. Not HSW+writing-direction only. Validate with scripts/validate_content_system.py (full adapter); then apply acs_prompt_inject."
+    }
+  },
+  "ticket_links": {
+    "parent_issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/70",
+    "child_issues": [
+      "https://github.com/Pukujan/inference-recommendation-engine/issues/71"
+    ],
+    "notes": "Parent/child notes only; no full DAG engine."
+  }
+}

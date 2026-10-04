@@ -1,0 +1,10 @@
+{
+  "schema_version": "inference-recommendation-engine.boss-claim.v1",
+  "status": "vacant",
+  "who_is_boss_now": null,
+  "last_heartbeat": null,
+  "last_github_activity": null,
+  "claim_queue": [],
+  "recorded_at": "2026-10-04T18:10:00Z",
+  "notes": "Fresh ACS adopter: no agent has claimed the decision-boss seat. The first live continuer fills it under join/continue order and renews the check-in every <=15 minutes against the 30-minute lease TTL. The agent-less watchdog (~10m) only flags liveness and may write vacant after the TTL; it does not appoint a boss. A returning old boss joins the end of the claim_queue (no automatic reclaim)."
+}
