@@ -20,7 +20,8 @@
     "test:properties": "node --test tests/properties.test.mjs tests/metamorphic.test.mjs",
     "test:operational": "uv run --locked python -B -m unittest discover -s operational/tests -p \"test_*.py\"",
     "check:public": "node src/check-public.mjs",
-    "demo": "node src/cli.mjs"
+    "demo": "node src/cli.mjs",
+    "ire:doctor": "node scripts/doctor.mjs"
   },
   "engines": {
     "node": ">=20"

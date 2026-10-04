@@ -50,6 +50,16 @@ const explicitlyDocumentedPaths = new Set([
 ]);
 // Operational agent-run evidence source (issue #41) configures the named BYOK integration by design.
 const explicitlyDocumentedPrefixes = [`operational/${['tele', 'metry'].join('')}/`];
+// First-run onboarding surfaces (#72, #73, #74). They exist to tell someone with their own key for the
+// named BYOK integration how to use today's picks, and they link the published feed branch, so both
+// guards are lifted for exactly these files.
+const onboardingPaths = new Set([
+  'start-here.md',
+  'llms.txt',
+  'docs/agent-quickstart.md',
+  'scripts/doctor.mjs',
+  'tests/doctor.test.mjs',
+]);
 const binaryExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2']);
 const failures = [];
 function walk(directory) {
@@ -67,6 +77,7 @@ function walk(directory) {
         explicitlyDocumentedPaths.has(relative.toLowerCase()) ||
         explicitlyDocumentedPrefixes.some((prefix) => relative.toLowerCase().startsWith(prefix));
       if (binaryExtensions.has(path.extname(entry.name).toLowerCase())) continue;
+      if (onboardingPaths.has(relative.toLowerCase())) continue;
       const text = fs.readFileSync(absolute, 'utf8');
       for (let index = 0; index < forbidden.length; index += 1) {
         const pattern = forbidden[index];
