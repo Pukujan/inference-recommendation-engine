@@ -1,0 +1,116 @@
+name: Daily refresh
+
+# Refreshes today's picks once a day (IRE #84). Replaces the old assistant-run routine.
+# 1. frontier.py --fetch: three GETs to InferHub (catalog with the key, status and market public)
+# 2. top20.py: the cheap Top 20 from the same bodies
+# 3. feed guard, then feed.py publish: open-weight feed -> data/ire-feed (pushed only on change)
+# 4. lists/ changes -> PR to main (branch auto/daily-lists), squash auto-merge once `test` passes
+
+on:
+  schedule:
+    - cron: "10 11 * * *" # 7:10 AM EDT (6:10 AM EST)
+  workflow_dispatch:
+
+permissions:
+  contents: write # push data/ire-feed and the auto/daily-lists branch
+  pull-requests: write # open/update the lists PR and enable auto-merge
+  actions: write # start CI on the bot PR (GITHUB_TOKEN PRs don't trigger pull_request runs)
+
+concurrency:
+  group: daily-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      IHUB: operational/telemetry/gravebuster/pipeline/ihub
+      LISTS_BRANCH: auto/daily-lists
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.7
+          enable-cache: true
+
+      - name: Check the InferHub key is configured
+        env:
+          INFERHUB_API_KEY: ${{ secrets.INFERHUB_API_KEY }}
+        run: |
+          if [ -z "${INFERHUB_API_KEY}" ]; then
+            echo "::error::Repo secret INFERHUB_API_KEY is not set"
+            exit 1
+          fi
+
+      - name: Fetch live InferHub data and build the frontier list
+        env:
+          INFERHUB_API_KEY: ${{ secrets.INFERHUB_API_KEY }}
+        run: |
+          set -euo pipefail
+          uv run --locked python "$IHUB/frontier.py" --raw-dir "$RUNNER_TEMP/ihub-raw" --fetch
+
+      - name: Build the cheap Top 20 from the same bodies
+        run: |
+          set -euo pipefail
+          uv run --locked python "$IHUB/top20.py" --raw-dir "$RUNNER_TEMP/ihub-raw"
+
+      - name: Feed guard (fail on credentials, closed models or price-comparison fields)
+        run: |
+          set -euo pipefail
+          uv run --locked python "$IHUB/feed.py" build --out "$RUNNER_TEMP/ire-feed-check"
+          uv run --locked python "$IHUB/feed.py" check "$RUNNER_TEMP/ire-feed-check"
+
+      - name: Publish the feed to data/ire-feed (no-op when unchanged)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh auth setup-git
+          # publish re-runs the same guard on the data-branch tree before it commits or pushes
+          uv run --locked python "$IHUB/feed.py" publish | tee "$RUNNER_TEMP/publish.json"
+          {
+            echo "### Feed publish"
+            echo '```json'
+            cat "$RUNNER_TEMP/publish.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update the lists PR
+        id: cpr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: ${{ env.LISTS_BRANCH }}
+          base: main
+          add-paths: ${{ env.IHUB }}/lists
+          commit-message: "lists: daily InferHub refresh (frontier + Top 20)"
+          title: "Daily lists refresh: frontier and Top 20"
+          body: |
+            The daily refresh (`.github/workflows/daily-refresh.yml`, IRE #84) rebuilt the frontier
+            list and the cheap Top 20 from live InferHub data.
+
+            It changes only `${{ env.IHUB }}/lists/`. The public feed on `data/ire-feed` was already
+            published from these lists in the same run.
+
+            Merges by squash once `test` passes. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Refs #84
+          delete-branch: true
+
+      - name: Start CI on the lists PR and enable squash auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.cpr.outputs.pull-request-number }}
+          OP: ${{ steps.cpr.outputs.pull-request-operation }}
+        run: |
+          set -euo pipefail
+          echo "Lists PR #$PR ($OP)"
+          if [ "$OP" = "created" ] || [ "$OP" = "updated" ]; then
+            gh workflow run ci.yml --ref "$LISTS_BRANCH"
+          fi
+          gh pr merge "$PR" --auto --squash
+          echo "### Lists PR: #$PR ($OP), squash auto-merge on" >> "$GITHUB_STEP_SUMMARY"

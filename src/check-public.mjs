@@ -60,6 +60,9 @@ const onboardingPaths = new Set([
   'scripts/doctor.mjs',
   'tests/doctor.test.mjs',
 ]);
+// The daily refresh workflow (#84) runs the operational list builders, reads the named BYOK key from a
+// repo secret and pushes the published feed branch, so both guards are lifted for exactly this file.
+const scheduledRefreshPaths = new Set(['.github/workflows/daily-refresh.yml']);
 const binaryExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.woff', '.woff2']);
 const failures = [];
 function walk(directory) {
@@ -78,6 +81,7 @@ function walk(directory) {
         explicitlyDocumentedPrefixes.some((prefix) => relative.toLowerCase().startsWith(prefix));
       if (binaryExtensions.has(path.extname(entry.name).toLowerCase())) continue;
       if (onboardingPaths.has(relative.toLowerCase())) continue;
+      if (scheduledRefreshPaths.has(relative.toLowerCase())) continue;
       const text = fs.readFileSync(absolute, 'utf8');
       for (let index = 0; index < forbidden.length; index += 1) {
         const pattern = forbidden[index];
