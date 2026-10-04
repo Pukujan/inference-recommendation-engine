@@ -1,0 +1,33 @@
+{
+ "schema": "ihub-static-lists/v1",
+ "profile": "daily-cheap-reliable-recent",
+ "generated_utc": "2026-09-22T17:10:44.385Z",
+ "lists": [
+  {
+   "list": "top20",
+   "file": "research_model_top20_recommendations.csv",
+   "sha256": "a982e99cb12bdadc64e376060899e1fcf37ab317028cc3c81300bd360f701bfd",
+   "rank_column": "recommendation_rank",
+   "eligible_column": "recommendation_eligible",
+   "generated_at": "2026-10-04T20:36:05Z",
+   "code_commit": "ff7f484111f7ef972bbbad327da27ba898a69a2a",
+   "snapshot_sha256": "918907800187f8d33e2f8d64bc01421549152ba0ca6131e3d8c0af184ba1e70d",
+   "sidecar_json": "research_model_top20_recommendations.json",
+   "sidecar_json_sha256": "966962ee1b691800b175810885d308b118d70a2402c5e0b06380bc78f2509b22",
+   "schema": "ihub-top20-recommendations/v1",
+   "issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/76"
+  },
+  {
+   "list": "daily_shortlist",
+   "file": "research_model_daily_shortlist.csv",
+   "sha256": "51cd8f45bc4acacc09f531f07a35d9e5a5f529d7d645965c92d062ab18362e5b",
+   "rank_column": "rank",
+   "eligible_column": null
+  }
+ ],
+ "related_source_hashes": {
+  "TOP-20-RECOMMENDATIONS.md": "06278141b5d5435a2fa9df5e74e6ea08561d799a7295bcbec98efb8f680de787",
+  "data/daily-shortlist.json": "830f6d0789bed32313e92aab49ebcf1e789b5ad485ddeb7ec48f7dd41f586e93"
+ },
+ "fixture_note": "Frozen copy of lists/ on main, 2026-10-04 (IRE #84). Text fields trimmed."
+}
