@@ -1,0 +1,40 @@
+{
+ "schema": "ire-model-licences/v1",
+ "description": "Licence source per model family, used to keep the public feed (data/ire-feed) open-weight only. open_weight is true only when the vendor publishes downloadable weights for that family, checked against the vendor's Hugging Face repository and its licence file. A family missing from this map, or with open_weight false or null, is excluded from the public feed. API-only products are listed with open_weight false. Families whose API name has no matching published weights are listed with open_weight null (unverified) and stay out until someone checks them.",
+ "checked_at": "2026-10-04",
+ "families": {
+  "DeepSeek V4 Flash":   {"vendor": "DeepSeek", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash/blob/main/LICENSE", "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash"},
+  "DeepSeek V4 Pro":     {"vendor": "DeepSeek", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/LICENSE", "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"},
+  "DeepSeek V4.1 Flash": {"vendor": "DeepSeek", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/LICENSE", "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"},
+  "GLM 5.1":             {"vendor": "Z.ai", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/zai-org/GLM-5.1/blob/main/LICENSE", "weights_url": "https://huggingface.co/zai-org/GLM-5.1"},
+  "GLM 5.2":             {"vendor": "Z.ai", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE", "weights_url": "https://huggingface.co/zai-org/GLM-5.2"},
+  "GLM 5.3":             {"vendor": "Z.ai", "open_weight": true, "licence": "GLM-5.3 License (MIT-style)", "licence_url": "https://huggingface.co/zai-org/GLM-5.3/blob/main/LICENSE", "weights_url": "https://huggingface.co/zai-org/GLM-5.3"},
+  "GLM 5.3 Flash":       {"vendor": "Z.ai", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/zai-org/GLM-5.3-Flash/blob/main/LICENSE", "weights_url": "https://huggingface.co/zai-org/GLM-5.3-Flash"},
+  "Kimi K2.6":           {"vendor": "Moonshot", "open_weight": true, "licence": "Modified MIT", "licence_url": "https://huggingface.co/moonshotai/Kimi-K2.6/blob/main/LICENSE", "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.6"},
+  "Kimi K2.7 Code":      {"vendor": "Moonshot", "open_weight": true, "licence": "Modified MIT", "licence_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code/blob/main/LICENSE", "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"},
+  "Kimi K3":             {"vendor": "Moonshot", "open_weight": true, "licence": "Kimi K3 License (modified MIT)", "licence_url": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/LICENSE", "weights_url": "https://huggingface.co/moonshotai/Kimi-K3"},
+  "MiniMax M2.7":        {"vendor": "MiniMax", "open_weight": true, "licence": "MiniMax M2.7 non-commercial licence (commercial use needs MiniMax's written permission)", "licence_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7/blob/main/LICENSE", "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7"},
+  "MiniMax M3":          {"vendor": "MiniMax", "open_weight": true, "licence": "MiniMax Community License (commercial use has conditions)", "licence_url": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/LICENSE", "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M3"},
+  "Qwen3.8 Flash":       {"vendor": "Alibaba/Qwen", "open_weight": true, "licence": "Qwen Community License 1.0", "licence_url": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/blob/main/LICENSE", "weights_url": "https://huggingface.co/Qwen/Qwen3.8-Flash-Next", "note": "The model card says the hosted Qwen3.8-Flash is the official version based on the open Qwen3.8-Flash-Next weights, with extra production features."},
+  "Qwen 3.8 Max":        {"vendor": "Alibaba", "open_weight": true, "licence": "Qwen3.8-Max License", "licence_url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/blob/main/LICENSE", "weights_url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B", "note": "The model card says the hosted Qwen3.8-Max is the official version based on the open Qwen3.8-2.4T-A95B weights, with extra features."},
+  "MiMo V2.5":           {"vendor": "Xiaomi", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5", "weights_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5", "note": "Licence from the model card metadata; the repo has no LICENSE file."},
+  "MiMo V2.5 Pro":       {"vendor": "Xiaomi", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro", "weights_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro", "note": "Licence from the model card metadata; the repo has no LICENSE file."},
+  "MiMo V2.6 Pro":       {"vendor": "Xiaomi", "open_weight": true, "licence": "MIT", "licence_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL", "weights_url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL", "note": "MiMo-V2.6-Pro-RL is the series' flagship checkpoint and its card says it is served on the Xiaomi MiMo API and OpenRouter. Licence from the card metadata."},
+  "Hy4 Preview":         {"vendor": "Tencent", "open_weight": true, "licence": "Apache-2.0", "licence_url": "https://huggingface.co/tencent/Hy4-preview/blob/main/LICENSE", "weights_url": "https://huggingface.co/tencent/Hy4-preview"},
+
+  "Kimi K2.7":           {"vendor": "Moonshot", "open_weight": null, "basis": "No Kimi-K2.7 weights published (only Kimi-K2.7-Code). Unverified, excluded."},
+  "Qwen3.8 Max 0902":    {"vendor": "Alibaba/Qwen", "open_weight": null, "basis": "Dated API snapshot (0902) with no matching weights release. Unverified, excluded."},
+  "Qwen3.8 Omni Flash":  {"vendor": "Alibaba/Qwen", "open_weight": null, "basis": "No Qwen3.8 Omni weights published by Qwen. Unverified, excluded."},
+  "Qwen 3.6 Max":        {"vendor": "Alibaba", "open_weight": null, "basis": "No Qwen3.6-Max weights published; Max models before 3.8 were API-only. Unverified, excluded."},
+  "Qwen 3.7 Max":        {"vendor": "Alibaba", "open_weight": null, "basis": "No Qwen3.7-Max weights published; Max models before 3.8 were API-only. Unverified, excluded."},
+
+  "Muse Spark 1.3 Contributor": {"vendor": "Meta", "open_weight": false, "basis": "No weights published by Meta on Hugging Face (searched 2026-10-04). API-only."}
+ },
+ "closed_vendors": {
+  "OpenAI":    {"families": "GPT", "terms_url": "https://openai.com/policies/terms-of-use"},
+  "Anthropic": {"families": "Claude", "terms_url": "https://www.anthropic.com/legal/commercial-terms"},
+  "Google":    {"families": "Gemini", "terms_url": "https://ai.google.dev/gemini-api/terms"},
+  "xAI":       {"families": "Grok", "terms_url": "https://x.ai/legal/terms-of-service"},
+  "Meta":      {"families": "Muse Spark", "terms_url": null}
+ }
+}

@@ -1,0 +1,337 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/schema.json",
+ "title": "ire-feed/v2",
+ "description": "IRE daily read-only recommendation feed (today.json and days/YYYY-MM-DD.json), open-weight models only. Two tiers: cheap (the open-weight rows of IRE's Top 20, gated rows included, re-ranked 1..n) and strongest_open (recommended open-weight picks only, capability first). Every entry carries open_weight: true and its licence (name, licence URL, weights URL). Prices are the best route's lowest listed ask in USD per 1M tokens at the tier's as_of; the feed carries no official-price or discount fields. Additive fields may appear within v2.",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "generated_at",
+  "day_et",
+  "stale_after",
+  "code_commit",
+  "source_repo",
+  "snapshot_sha256",
+  "sources",
+  "notice",
+  "tiers",
+  "open_weight_only"
+ ],
+ "properties": {
+  "schema_version": {
+   "const": "ire-feed/v2"
+  },
+  "schema_url": {
+   "type": "string"
+  },
+  "generated_at": {
+   "type": "string",
+   "format": "date-time"
+  },
+  "day_et": {
+   "type": "string",
+   "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+  },
+  "stale_after": {
+   "type": "string",
+   "format": "date-time",
+   "description": "oldest list as_of + 36h; treat the feed as stale after this"
+  },
+  "code_commit": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^[0-9a-f]{40}$"
+  },
+  "source_repo": {
+   "type": "string"
+  },
+  "snapshot_sha256": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "sources": {
+   "type": "object",
+   "required": [
+    "top20",
+    "frontier"
+   ],
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "file",
+     "sha256"
+    ],
+    "properties": {
+     "file": {
+      "type": "string"
+     },
+     "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     },
+     "sidecar_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    }
+   }
+  },
+  "notice": {
+   "type": "string"
+  },
+  "tiers": {
+   "type": "object",
+   "required": [
+    "cheap",
+    "strongest_open"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "cheap": {
+     "$ref": "#/$defs/tier"
+    },
+    "strongest_open": {
+     "$ref": "#/$defs/tier"
+    }
+   }
+  },
+  "open_weight_only": {
+   "const": true
+  },
+  "licences_url": {
+   "type": "string"
+  }
+ },
+ "$defs": {
+  "tier": {
+   "type": "object",
+   "required": [
+    "list",
+    "as_of",
+    "snapshot_sha256",
+    "entries"
+   ],
+   "properties": {
+    "list": {
+     "type": "string"
+    },
+    "as_of": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "snapshot_sha256": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "description": {
+     "type": "string"
+    },
+    "entries": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/entry"
+     }
+    }
+   }
+  },
+  "entry": {
+   "type": "object",
+   "required": [
+    "rank",
+    "model_family",
+    "recommended",
+    "gate_reasons",
+    "best_route",
+    "price_usd_per_mtok",
+    "health",
+    "confidence",
+    "routes",
+    "open_weight",
+    "licence"
+   ],
+   "properties": {
+    "rank": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "model_family": {
+     "type": "string",
+     "minLength": 1
+    },
+    "vendor": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "recommended": {
+     "type": "boolean"
+    },
+    "gate_reasons": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "best_route": {
+     "type": "string",
+     "pattern": "^[a-z0-9]+/.+"
+    },
+    "price_usd_per_mtok": {
+     "type": "object",
+     "required": [
+      "input",
+      "output"
+     ],
+     "properties": {
+      "input": {
+       "type": [
+        "number",
+        "null"
+       ],
+       "minimum": 0
+      },
+      "output": {
+       "type": [
+        "number",
+        "null"
+       ],
+       "minimum": 0
+      },
+      "basis": {
+       "type": "string"
+      }
+     },
+     "propertyNames": {
+      "not": {
+       "pattern": "(?i)(official|discount)"
+      }
+     }
+    },
+    "health": {
+     "type": "object",
+     "required": [
+      "status"
+     ],
+     "properties": {
+      "status": {
+       "enum": [
+        "healthy",
+        "insufficient_data",
+        "degraded",
+        "failing",
+        "unavailable",
+        null
+       ]
+      },
+      "confidence": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "reasons": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "confidence": {
+     "enum": [
+      "low",
+      "medium",
+      "high",
+      null
+     ]
+    },
+    "tier": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "capability_score_100": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "price_regime": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "system_prompt_handling": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "preferred_endpoint": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "caveats": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "routes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "minItems": 1
+    },
+    "open_weight": {
+     "const": true
+    },
+    "licence": {
+     "type": "object",
+     "required": [
+      "name",
+      "url",
+      "weights_url"
+     ],
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1
+      },
+      "url": {
+       "type": "string",
+       "pattern": "^https://"
+      },
+      "weights_url": {
+       "type": "string",
+       "pattern": "^https://"
+      }
+     }
+    }
+   },
+   "propertyNames": {
+    "not": {
+     "pattern": "(?i)(official|discount)"
+    }
+   }
+  }
+ },
+ "propertyNames": {
+  "not": {
+   "pattern": "(?i)(official|discount)"
+  }
+ }
+}

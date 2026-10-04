@@ -4,7 +4,7 @@ import { FEED_URL, STATUS_URL, checkKey, checkNode, render, runDoctor } from '..
 
 const SECRET = ['s', 'k-', 'doctor-test-value-123456'].join('');
 const feed = (over = {}) => ({
-  schema_version: 'ire-feed/v1',
+  schema_version: 'ire-feed/v2',
   generated_at: '2026-10-04T18:00:00Z',
   stale_after: '2026-10-06T06:00:00Z',
   day_et: '2026-10-04',
@@ -13,7 +13,7 @@ const feed = (over = {}) => ({
       { rank: 1, model_family: 'Gated One', recommended: false, best_route: 'aa/gated', price_usd_per_mtok: { input: 0.001, output: 0.002 } },
       { rank: 2, model_family: 'Cheap Pick', recommended: true, best_route: 'bb/cheap', price_usd_per_mtok: { input: 0.01, output: 0.04 } },
     ] },
-    frontier: { entries: [{ rank: 1, model_family: 'Big Pick', recommended: true, best_route: 'cx/big', price_usd_per_mtok: { input: 0.1, output: 0.5 } }] },
+    strongest_open: { entries: [{ rank: 1, model_family: 'Big Pick', recommended: true, best_route: 'alicn/big', price_usd_per_mtok: { input: 0.1, output: 0.5 } }] },
   },
   ...over,
 });
@@ -64,6 +64,8 @@ test('healthy run: GET only, no key sent, first recommended picks shown', async 
   const text = render(report);
   assert.match(text, /PASS {2}Today's picks for 2026-10-04 are fresh/);
   assert.match(text, /bb\/cheap/);
+  assert.equal(fd.picks.strongest_open.model_family, 'Big Pick');
+  assert.match(text, /strongest +Big Pick via alicn\/big/);
   assert.ok(!text.includes(SECRET));
   assert.ok(!JSON.stringify(report).includes(SECRET));
 });

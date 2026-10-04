@@ -1,6 +1,6 @@
 # Start here
 
-You have an InferHub key and want to know which model to point your tools at today. IRE answers that once a day. It reads InferHub's live price ladder and route health, applies a written price and supply policy, and publishes two short lists: a cheap tier (up to 20 models) and a frontier tier. Each pick names the exact route to call, what it costs right now, and why it was or wasn't recommended.
+You have an InferHub key and want to know which model to point your tools at today. IRE answers that once a day. It reads InferHub's live price ladder and route health, applies a written price and supply policy, and publishes two short lists of open-weight models: a cheap tier and the strongest open-weight models it can find a healthy route for. Each pick names the exact route to call, what it costs right now, and why it was or wasn't recommended.
 
 IRE doesn't proxy anything or hold your key. You call InferHub yourself, with your own key, using the route name IRE picked.
 
@@ -15,9 +15,9 @@ The doctor checks that `INFERHUB_API_KEY` is set (it never prints the value), ma
 
 ## Today's picks
 
-https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/today.json
+https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/today.json
 
-Open it in a browser. `tiers.cheap.entries` and `tiers.frontier.entries` are ranked lists. Take the first entry with `"recommended": true` and copy its `best_route`, for example `alicn/deepseek-v4.1-flash`. Prices are the lowest listed ask in USD per million tokens when the list was built, and you can be billed more than that. Past days live under `feed/v1/days/` on the same branch. If `stale_after` is in the past, the daily run was missed; the picks still work, but check the price on InferHub first.
+Open it in a browser. `tiers.cheap.entries` and `tiers.strongest_open.entries` are ranked lists. Take the first entry with `"recommended": true` and copy its `best_route`, for example `alicn/deepseek-v4.1-flash`. Prices are the lowest listed ask in USD per million tokens when the list was built, and you can be billed more than that. Every pick is an open-weight model, and each entry links its licence and the published weights. Past days live under `feed/v2/days/` on the same branch. If `stale_after` is in the past, the daily run was missed; the picks still work, but check the price on InferHub first.
 
 ## Use a pick with your own key
 
@@ -78,9 +78,9 @@ The part before the slash is the provider rail InferHub sends your request throu
 
 Some rails change your prompt on the way through. `cb/` adds a short system note ahead of yours, which you can switch off per key under Dashboard → API keys → Prompt filtering. `cc/` adds a one-line client header before your system prompt.
 
-## The cx/ caveat
+## Why only open-weight models
 
-On `cx/` routes, your system prompt is sent upstream as a developer message, and the upstream's required instructions field is filled with "You are a helpful assistant.". Most chat use won't notice. If your tool relies on a strict system prompt, call the native `/v1/responses` endpoint instead of `/v1/chat/completions`; that path keeps your instructions as sent. The feed repeats this in each `cx/` entry's `caveats`.
+The feed only lists models whose weights are published, so you can run them elsewhere if a rail disappears. `operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json` has the licence and weights link for every family; anything we couldn't check stays out. Open-weight doesn't always mean free for commercial use. MiniMax's licences, for example, attach conditions, so read the licence before you ship on one.
 
 ## What IRE doesn't promise
 
