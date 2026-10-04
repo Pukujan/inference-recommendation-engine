@@ -31,6 +31,11 @@ jobs:
       - run: pnpm check:public
       - run: pnpm test:operational
       - run: pnpm pack --dry-run
+      - name: Feed secret guard (build today's feed from the committed lists, then scan it)
+        run: |
+          feed=$(ls operational/*/gravebuster/pipeline/ihub/feed.py)
+          uv run --locked python "$feed" build --out "$RUNNER_TEMP/ire-feed"
+          uv run --locked python "$feed" check "$RUNNER_TEMP/ire-feed"
       # Agent stack validators (ACS multi-agent-hotload, release train 2026-10-01).
       # Pins match stack-manifest.json and AGENTS.md "Pinned stack". Fail closed.
       - name: Check out pinned agent stack validators
