@@ -23,6 +23,9 @@ C = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(C)
 SCHEMA = json.loads((IHUB / C.SCHEMA_FILE).read_text(encoding="utf-8"))
 END = "2026-09-24 23:30:00"
+# BuildTests assert specific routes, so they read a frozen copy of the lists (main on 2026-10-04).
+# The daily refresh (IRE #84) rewrites lists/ every day; ListTests still check that live copy's shape.
+FROZEN_LISTS = str(Path(__file__).resolve().parent / "fixtures" / "ihub-lists-2026-10-04")
 
 
 def win(route: str, window: str, requests: int, ok: int, client: int = 0, **kw: object) -> dict:
@@ -181,7 +184,7 @@ def sample_doc() -> dict:
         },  # fmt: skip
         "inputs_sha256": "e" * 64,
     }
-    return C.build(rel, prices, dims, status, C.load_lists(), meta)
+    return C.build(rel, prices, dims, status, C.load_lists(FROZEN_LISTS), meta)
 
 
 class BuildTests(unittest.TestCase):
@@ -216,7 +219,7 @@ class BuildTests(unittest.TestCase):
 
     def test_static_list_fields_are_copied_unchanged(self) -> None:
         doc = sample_doc()
-        lists = {x["list"]: x for x in C.load_lists()["lists"]}
+        lists = {x["list"]: x for x in C.load_lists(FROZEN_LISTS)["lists"]}
         for r in doc["routes"]:
             for mem in r["lists"]:
                 e = next(x for x in lists[mem["list"]]["entries"] if x["rank"] == mem["rank"])
