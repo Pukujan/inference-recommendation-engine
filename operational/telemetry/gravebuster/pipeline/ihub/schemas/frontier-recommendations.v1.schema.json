@@ -1,0 +1,969 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/Pukujan/inference-recommendation-engine/blob/main/operational/telemetry/gravebuster/pipeline/ihub/schemas/frontier-recommendations.v1.schema.json",
+ "title": "ihub-frontier-recommendations/v1",
+ "description": "Frontier / expensive-tier InferHub recommendation list for agents (IRE #67). Ranked capability first; live route prices from /api/catalog. Separate from the cheap Top 20, which it never changes. Each model row is a hypothesis with status, confidence, evidence and provenance. Sibling CSVs: research_model_frontier_recommendations.csv (models[], one row per model) and research_model_frontier_routes.csv (routes[], one row per route); list cells are joined with '; ' and caveat/reason cells with ' | '.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema",
+  "schema_file",
+  "hypothesis_notice",
+  "generated_at",
+  "code_commit",
+  "provenance",
+  "method",
+  "counts",
+  "models",
+  "routes",
+  "unclassified_text_routes"
+ ],
+ "properties": {
+  "schema": {
+   "const": "ihub-frontier-recommendations/v1"
+  },
+  "schema_file": {
+   "type": "string"
+  },
+  "hypothesis_notice": {
+   "type": "string"
+  },
+  "generated_at": {
+   "type": "string"
+  },
+  "code_commit": {
+   "type": [
+    "string",
+    "null"
+   ]
+  },
+  "provenance": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "snapshot_sha256",
+    "sources",
+    "capability_prior"
+   ],
+   "properties": {
+    "snapshot_sha256": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "sources": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "endpoint",
+       "url",
+       "auth",
+       "method",
+       "fetched_at",
+       "sha256",
+       "bytes"
+      ],
+      "properties": {
+       "endpoint": {
+        "enum": [
+         "catalog",
+         "status",
+         "market"
+        ]
+       },
+       "url": {
+        "type": "string"
+       },
+       "auth": {
+        "enum": [
+         "key",
+         "public"
+        ]
+       },
+       "method": {
+        "const": "GET"
+       },
+       "fetched_at": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "fetched_from": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+       },
+       "bytes": {
+        "type": "integer"
+       }
+      }
+     }
+    },
+    "capability_prior": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "file",
+      "sha256",
+      "status",
+      "confidence"
+     ],
+     "properties": {
+      "file": {
+       "type": "string"
+      },
+      "sha256": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "status": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "confidence": {
+       "type": [
+        "string",
+        "null"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "method": {
+   "type": "object"
+  },
+  "counts": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "models",
+    "recommended",
+    "gated",
+    "routes",
+    "unclassified_text_routes"
+   ],
+   "properties": {
+    "models": {
+     "type": "integer"
+    },
+    "recommended": {
+     "type": "integer"
+    },
+    "gated": {
+     "type": "integer"
+    },
+    "routes": {
+     "type": "integer"
+    },
+    "unclassified_text_routes": {
+     "type": "integer"
+    }
+   }
+  },
+  "models": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "frontier_rank",
+     "model_family",
+     "vendor",
+     "line",
+     "line_class",
+     "version",
+     "tier",
+     "capability_score_100",
+     "capability_basis",
+     "recommendation_status",
+     "recommendation_eligible",
+     "gate_reasons",
+     "gate_exceptions",
+     "generation_status",
+     "major_version",
+     "vendor_current_major",
+     "newer_versions_in_line",
+     "confidence",
+     "capability_confidence",
+     "health_confidence",
+     "best_route",
+     "best_route_health",
+     "best_route_min_ask_in",
+     "best_route_min_ask_out",
+     "best_route_blended_min_ask_3to1",
+     "best_route_official_in",
+     "best_route_official_out",
+     "best_route_discount_vs_official_in_pct",
+     "best_route_sellers_at_min_ask_in",
+     "best_route_listings_in",
+     "price_policy_threshold_usd_per_mtok",
+     "price_policy_basis",
+     "price_policy_status",
+     "best_route_system_prompt_handling",
+     "best_route_preferred_endpoint",
+     "best_route_caveats",
+     "route_count",
+     "healthy_route_count",
+     "routes",
+     "evidence"
+    ],
+    "properties": {
+     "frontier_rank": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "model_family": {
+      "type": "string"
+     },
+     "vendor": {
+      "type": "string"
+     },
+     "line": {
+      "type": "string"
+     },
+     "line_class": {
+      "enum": [
+       "flagship",
+       "frontier",
+       "near_frontier",
+       "small"
+      ]
+     },
+     "version": {
+      "type": "string"
+     },
+     "tier": {
+      "enum": [
+       "frontier",
+       "top",
+       "upper_mid",
+       "mid"
+      ]
+     },
+     "capability_score_100": {
+      "type": "number"
+     },
+     "capability_basis": {
+      "type": "string"
+     },
+     "recommendation_status": {
+      "enum": [
+       "recommended",
+       "gated"
+      ]
+     },
+     "recommendation_eligible": {
+      "type": "boolean"
+     },
+     "gate_reasons": {
+      "type": "array",
+      "items": {
+       "enum": [
+        "older_generation",
+        "below_frontier_capability",
+        "no_healthy_route",
+        "no_live_route"
+       ]
+      }
+     },
+     "gate_exceptions": {
+      "type": "array",
+      "items": {
+       "enum": [
+        "older_gen_allowed_cheaper"
+       ]
+      }
+     },
+     "generation_status": {
+      "enum": [
+       "current",
+       "older_gated",
+       "older_allowed_cheaper"
+      ]
+     },
+     "major_version": {
+      "type": "integer"
+     },
+     "vendor_current_major": {
+      "type": "integer"
+     },
+     "newer_versions_in_line": {
+      "type": "integer"
+     },
+     "confidence": {
+      "enum": [
+       "low",
+       "medium",
+       "high"
+      ]
+     },
+     "capability_confidence": {
+      "enum": [
+       "low",
+       "medium",
+       "high"
+      ]
+     },
+     "health_confidence": {
+      "enum": [
+       "low",
+       "medium",
+       "high"
+      ]
+     },
+     "best_route": {
+      "type": "string"
+     },
+     "best_route_health": {
+      "enum": [
+       "healthy",
+       "insufficient_data",
+       "degraded",
+       "failing",
+       "unavailable"
+      ]
+     },
+     "best_route_min_ask_in": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_min_ask_out": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_blended_min_ask_3to1": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_official_in": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_official_out": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_discount_vs_official_in_pct": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "best_route_sellers_at_min_ask_in": {
+      "type": "integer"
+     },
+     "best_route_listings_in": {
+      "type": "integer"
+     },
+     "price_policy_threshold_usd_per_mtok": {
+      "type": "number"
+     },
+     "price_policy_basis": {
+      "const": "best_route_min_ask_in"
+     },
+     "price_policy_status": {
+      "enum": [
+       "under_policy",
+       "over_policy",
+       null
+      ]
+     },
+     "best_route_system_prompt_handling": {
+      "enum": [
+       "developer_message",
+       "upstream_note",
+       "unspecified"
+      ]
+     },
+     "best_route_preferred_endpoint": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "best_route_caveats": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "route_count": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "healthy_route_count": {
+      "type": "integer"
+     },
+     "routes": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "minItems": 1
+     },
+     "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "generation",
+       "best_route_health_reasons",
+       "best_route_selection"
+      ],
+      "properties": {
+       "generation": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "best_route_health_reasons": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "best_route_selection": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "allOf": [
+     {
+      "if": {
+       "properties": {
+        "recommendation_eligible": {
+         "const": true
+        }
+       }
+      },
+      "then": {
+       "properties": {
+        "gate_reasons": {
+         "maxItems": 0
+        },
+        "recommendation_status": {
+         "const": "recommended"
+        }
+       }
+      },
+      "else": {
+       "properties": {
+        "gate_reasons": {
+         "minItems": 1
+        },
+        "recommendation_status": {
+         "const": "gated"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "routes": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "route",
+     "rail",
+     "rail_label",
+     "model_id",
+     "model_label",
+     "model_family",
+     "vendor",
+     "line",
+     "line_class",
+     "version",
+     "variant",
+     "enabled",
+     "price",
+     "sellers",
+     "health",
+     "context_window",
+     "max_output_tokens",
+     "supports_cache",
+     "cache_hit_rate_24h",
+     "system_prompt_handling",
+     "preferred_endpoint",
+     "required_instructions_value",
+     "caveats",
+     "is_astra_owner_route",
+     "frontier_rank",
+     "is_best_route"
+    ],
+    "properties": {
+     "route": {
+      "type": "string"
+     },
+     "rail": {
+      "type": "string"
+     },
+     "rail_label": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model_id": {
+      "type": "string"
+     },
+     "model_label": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "model_family": {
+      "type": "string"
+     },
+     "vendor": {
+      "type": "string"
+     },
+     "line": {
+      "type": "string"
+     },
+     "line_class": {
+      "enum": [
+       "flagship",
+       "frontier",
+       "near_frontier",
+       "small"
+      ]
+     },
+     "version": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)*$"
+     },
+     "variant": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "enabled": {
+      "type": "boolean"
+     },
+     "price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "min_ask_in",
+       "min_ask_out",
+       "blended_min_ask_3to1",
+       "cw_median_ask_in",
+       "cw_median_ask_out",
+       "official_in",
+       "official_out",
+       "discount_vs_official_in_pct",
+       "discount_vs_official_out_pct",
+       "last_trade_rate",
+       "min_ask_in_under_policy",
+       "min_ask_out_under_policy"
+      ],
+      "properties": {
+       "min_ask_in": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "min_ask_out": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "blended_min_ask_3to1": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "cw_median_ask_in": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "cw_median_ask_out": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "official_in": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "official_out": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "discount_vs_official_in_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "discount_vs_official_out_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "last_trade_rate": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "min_ask_in_under_policy": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "min_ask_out_under_policy": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       }
+      }
+     },
+     "sellers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "sellers_at_min_ask_in",
+       "listings_in",
+       "price_tiers_in",
+       "rail_active_providers"
+      ],
+      "properties": {
+       "sellers_at_min_ask_in": {
+        "type": "integer"
+       },
+       "listings_in": {
+        "type": "integer"
+       },
+       "price_tiers_in": {
+        "type": "integer"
+       },
+       "rail_active_providers": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       }
+      }
+     },
+     "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "status",
+       "confidence",
+       "reasons",
+       "rail_state",
+       "rail_availability_24h_pct",
+       "alias",
+       "alias_state",
+       "alias_availability_24h_pct",
+       "recent_traffic_observed"
+      ],
+      "properties": {
+       "status": {
+        "enum": [
+         "healthy",
+         "insufficient_data",
+         "degraded",
+         "failing",
+         "unavailable"
+        ]
+       },
+       "confidence": {
+        "enum": [
+         "low",
+         "medium",
+         "high"
+        ]
+       },
+       "reasons": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "rail_state": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "rail_availability_24h_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "alias": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "alias_state": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "alias_availability_24h_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "recent_traffic_observed": {
+        "type": "boolean"
+       }
+      }
+     },
+     "context_window": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "max_output_tokens": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "supports_cache": {
+      "type": [
+       "boolean",
+       "null"
+      ]
+     },
+     "cache_hit_rate_24h": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "system_prompt_handling": {
+      "enum": [
+       "developer_message",
+       "upstream_note",
+       "unspecified"
+      ]
+     },
+     "preferred_endpoint": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "required_instructions_value": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "caveats": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "is_astra_owner_route": {
+      "type": "boolean"
+     },
+     "frontier_rank": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "is_best_route": {
+      "type": "boolean"
+     }
+    },
+    "allOf": [
+     {
+      "if": {
+       "properties": {
+        "rail": {
+         "const": "cx"
+        }
+       }
+      },
+      "then": {
+       "properties": {
+        "system_prompt_handling": {
+         "const": "developer_message"
+        },
+        "preferred_endpoint": {
+         "const": "/v1/responses"
+        },
+        "required_instructions_value": {
+         "const": "You are a helpful assistant."
+        },
+        "caveats": {
+         "contains": {
+          "const": "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent."
+         }
+        }
+       }
+      },
+      "else": {
+       "properties": {
+        "system_prompt_handling": {
+         "enum": [
+          "upstream_note",
+          "unspecified"
+         ]
+        },
+        "preferred_endpoint": {
+         "type": "null"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "unclassified_text_routes": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ },
+ "x-csv": {
+  "models": {
+   "file": "research_model_frontier_recommendations.csv",
+   "columns": [
+    "frontier_rank",
+    "model_family",
+    "vendor",
+    "line",
+    "version",
+    "tier",
+    "capability_score_100",
+    "capability_basis",
+    "recommendation_status",
+    "recommendation_eligible",
+    "gate_reasons",
+    "gate_exceptions",
+    "generation_status",
+    "major_version",
+    "vendor_current_major",
+    "confidence",
+    "capability_confidence",
+    "health_confidence",
+    "best_route",
+    "best_route_health",
+    "best_route_min_ask_in",
+    "best_route_min_ask_out",
+    "best_route_blended_min_ask_3to1",
+    "best_route_official_in",
+    "best_route_official_out",
+    "best_route_discount_vs_official_in_pct",
+    "best_route_sellers_at_min_ask_in",
+    "best_route_listings_in",
+    "price_policy_threshold_usd_per_mtok",
+    "price_policy_status",
+    "best_route_system_prompt_handling",
+    "best_route_preferred_endpoint",
+    "best_route_caveats",
+    "route_count",
+    "healthy_route_count",
+    "model_ids",
+    "route_prices",
+    "generated_at",
+    "code_commit",
+    "snapshot_sha256"
+   ]
+  },
+  "routes": {
+   "file": "research_model_frontier_routes.csv",
+   "columns": [
+    "frontier_rank",
+    "model_family",
+    "route",
+    "is_best_route",
+    "rail",
+    "rail_label",
+    "model_id",
+    "model_label",
+    "variant",
+    "enabled",
+    "health_status",
+    "health_confidence",
+    "health_reasons",
+    "rail_state",
+    "alias",
+    "alias_state",
+    "alias_availability_24h_pct",
+    "recent_traffic_observed",
+    "min_ask_in",
+    "min_ask_out",
+    "blended_min_ask_3to1",
+    "cw_median_ask_in",
+    "cw_median_ask_out",
+    "official_in",
+    "official_out",
+    "discount_vs_official_in_pct",
+    "discount_vs_official_out_pct",
+    "last_trade_rate",
+    "min_ask_in_under_policy",
+    "sellers_at_min_ask_in",
+    "listings_in",
+    "price_tiers_in",
+    "rail_active_providers",
+    "system_prompt_handling",
+    "preferred_endpoint",
+    "required_instructions_value",
+    "caveats",
+    "is_astra_owner_route",
+    "context_window",
+    "generated_at",
+    "code_commit",
+    "snapshot_sha256"
+   ]
+  }
+ }
+}

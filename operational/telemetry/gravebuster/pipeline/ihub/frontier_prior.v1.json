@@ -1,0 +1,35 @@
+{
+ "schema": "ihub-frontier-capability-prior/v1",
+ "status": "hypothesis",
+ "confidence": "low",
+ "basis": "Curated line prior: each vendor model line gets a base capability from its position in the vendor's own line-up (flagship > frontier > near-frontier > small), and frontier.py subtracts version_lag_penalty for every newer live version in the same line. No benchmark numbers are used: the AA/LiveBench capability_score_100 behind the cheap Top 20 lived in the off-repo D:/claude/inferhub workspace, which was wiped on 2026-10-03. Replace with benchmark evidence when #65 workstream 3 lands.",
+ "issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/67",
+ "min_frontier_capability_100": 60,
+ "version_lag_penalty": 3,
+ "line_classes": {
+  "flagship": "vendor's most expensive / highest line",
+  "frontier": "vendor's main frontier line",
+  "near_frontier": "strong current open-weight or second-tier line",
+  "small": "fast / cheap line; listed for the generation gate, never frontier"
+ },
+ "lines": [
+  {"line": "gpt-astra", "vendor": "OpenAI", "family_template": "GPT {v} Astra", "line_class": "flagship", "capability_prior_100": 95, "id_pattern": "^gpt-(?P<v>\\d+(?:\\.\\d+)?)-astra(?P<variant>-.+)?$"},
+  {"line": "gpt-sol", "vendor": "OpenAI", "family_template": "GPT {v} Sol", "line_class": "frontier", "capability_prior_100": 90, "id_pattern": "^gpt-(?P<v>\\d+(?:\\.\\d+)?)-sol(?P<variant>-.+)?$"},
+  {"line": "gpt-base", "vendor": "OpenAI", "family_template": "GPT {v}", "line_class": "frontier", "capability_prior_100": 86, "id_pattern": "^gpt-(?P<v>\\d+(?:\\.\\d+)?)$"},
+  {"line": "gpt-codex", "vendor": "OpenAI", "family_template": "GPT {v} Codex", "line_class": "frontier", "capability_prior_100": 84, "id_pattern": "^gpt-(?P<v>\\d+(?:\\.\\d+)?)-codex(?P<variant>-.+)?$"},
+  {"line": "gpt-terra", "vendor": "OpenAI", "family_template": "GPT {v} Terra", "line_class": "near_frontier", "capability_prior_100": 78, "id_pattern": "^gpt-(?P<v>\\d+(?:\\.\\d+)?)-terra(?P<variant>-.+)?$"},
+  {"line": "gpt-luna", "vendor": "OpenAI", "family_template": "GPT {v} Luna", "line_class": "small", "capability_prior_100": 45, "id_pattern": "^gpt-(?P<v>\\d+(?:\\.\\d+)?)-luna(?P<variant>-.+)?$"},
+  {"line": "claude-fable", "vendor": "Anthropic", "family_template": "Claude Fable {v}", "line_class": "flagship", "capability_prior_100": 95, "id_pattern": "^claude-fable-(?P<v>\\d+(?:[.-]\\d+)?)(?P<variant>-[a-z].*)?$"},
+  {"line": "claude-opus", "vendor": "Anthropic", "family_template": "Claude Opus {v}", "line_class": "frontier", "capability_prior_100": 91, "older_gen_exception": "allowed_if_cheaper_than_current_line", "id_pattern": "^claude-opus-(?P<v>\\d+(?:[.-]\\d+)?)(?P<variant>-[0-9]*[a-z].*)?$"},
+  {"line": "claude-sonnet", "vendor": "Anthropic", "family_template": "Claude Sonnet {v}", "line_class": "frontier", "capability_prior_100": 85, "older_gen_exception": "allowed_if_cheaper_than_current_line", "id_pattern": "^claude-sonnet-(?P<v>\\d+(?:[.-]\\d+)?)(?P<variant>-[0-9]*[a-z].*)?$"},
+  {"line": "claude-haiku", "vendor": "Anthropic", "family_template": "Claude Haiku {v}", "line_class": "small", "capability_prior_100": 50, "id_pattern": "^claude-haiku-(?P<v>\\d+(?:[.-]\\d+)?)(?P<variant>-[a-z].*)?$"},
+  {"line": "gemini-pro", "vendor": "Google", "family_template": "Gemini {v} Pro", "line_class": "frontier", "capability_prior_100": 86, "id_pattern": "^gemini-(?:(?P<v>\\d+(?:\\.\\d+)?)-)?pro(?P<variant>-.+)?$", "label_pattern": "^Gemini (?P<v>\\d+(?:\\.\\d+)?) Pro"},
+  {"line": "gemini-flash", "vendor": "Google", "family_template": "Gemini {v} Flash", "line_class": "small", "capability_prior_100": 55, "id_pattern": "^gemini-(?P<v>\\d+(?:\\.\\d+)?)-flash(?P<variant>-.+)?$"},
+  {"line": "grok", "vendor": "xAI", "family_template": "Grok {v}", "line_class": "near_frontier", "capability_prior_100": 76, "id_pattern": "^grok-(?P<v>\\d+(?:\\.\\d+)?)(?P<variant>-.+)?$"},
+  {"line": "kimi-k", "vendor": "Moonshot", "family_template": "Kimi K{v}", "line_class": "near_frontier", "capability_prior_100": 76, "id_pattern": "^kimi-k(?P<v>\\d+(?:\\.\\d+)?)(?P<variant>-.+)?$"},
+  {"line": "qwen-max", "vendor": "Alibaba", "family_template": "Qwen {v} Max", "line_class": "near_frontier", "capability_prior_100": 74, "id_pattern": "^qwen(?P<v>\\d+(?:\\.\\d+)?)-max(?P<variant>-.+)?$"},
+  {"line": "deepseek-pro", "vendor": "DeepSeek", "family_template": "DeepSeek V{v} Pro", "line_class": "near_frontier", "capability_prior_100": 72, "id_pattern": "^deepseek-v(?P<v>\\d+(?:\\.\\d+)?)-pro(?P<variant>-.+)?$"},
+  {"line": "glm", "vendor": "Z.ai", "family_template": "GLM {v}", "line_class": "near_frontier", "capability_prior_100": 70, "id_pattern": "^glm-(?P<v>\\d+(?:\\.\\d+)?)$"},
+  {"line": "mimo-pro", "vendor": "Xiaomi", "family_template": "MiMo V{v} Pro", "line_class": "near_frontier", "capability_prior_100": 66, "id_pattern": "^mimo-v(?P<v>\\d+(?:\\.\\d+)?)-pro(?P<variant>-.+)?$"}
+ ]
+}

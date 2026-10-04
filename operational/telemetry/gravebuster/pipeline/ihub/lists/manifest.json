@@ -26,5 +26,30 @@
  "related_source_hashes": {
   "TOP-20-RECOMMENDATIONS.md": "06278141b5d5435a2fa9df5e74e6ea08561d799a7295bcbec98efb8f680de787",
   "data/daily-shortlist.json": "830f6d0789bed32313e92aab49ebcf1e789b5ad485ddeb7ec48f7dd41f586e93"
- }
+ },
+ "generated_lists": [
+  {
+   "list": "frontier",
+   "files": {
+    "models_csv": "research_model_frontier_recommendations.csv",
+    "routes_csv": "research_model_frontier_routes.csv",
+    "json": "research_model_frontier_recommendations.json"
+   },
+   "sha256": {
+    "research_model_frontier_recommendations.csv": "ecdf87f25cab5e49efddf2d5e274d47c1699b4c6b066b6178df32338a37eebe4",
+    "research_model_frontier_routes.csv": "44ed10fa8725638bea6f43f48f8448d40ceac6ceaae94d189536812dc8cb6d17",
+    "research_model_frontier_recommendations.json": "e46a884747ffff4c52b2cc80820b0dc00e1672a3af6ab1993061938b5c0c9714"
+   },
+   "schema": "ihub-frontier-recommendations/v1",
+   "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/frontier-recommendations.v1.schema.json",
+   "generator": "operational/telemetry/gravebuster/pipeline/ihub/frontier.py",
+   "generated_at": "2026-10-04T00:02:28Z",
+   "code_commit": "03862b286ca5a317520b1d93c51099de6c312af4",
+   "snapshot_sha256": "b65938c3cf255c67070eef3488a200592d6de539cdd7eabff42dfd9029b94340",
+   "rank_column": "frontier_rank",
+   "eligible_column": "recommendation_eligible",
+   "meaning": "Frontier / expensive tier, ranked capability first with live InferHub route prices. Separate from the cheap Top 20, which it never changes. Generated in this repo (not a verbatim copy).",
+   "issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/67"
+  }
+ ]
 }
