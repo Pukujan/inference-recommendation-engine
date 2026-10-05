@@ -175,6 +175,16 @@ class BuildTests(unittest.TestCase):
                       {"models": []}, PRIOR, META)  # fmt: skip
         self.assertIn("not_routing_eligible", doc["entries"][0]["gate_reasons"])
 
+    def test_same_ask_prefers_deeper_supply(self) -> None:
+        # Two rails quote the same ask; the one with more sellers at it is the named best route
+        # and leads model_ids, so the launcher does not route to a thin quote (issue #94).
+        cat = [
+            rail("aa", [mdl("cheap-one", 0.005, n=3)]),
+            rail("bb", [mdl("cheap-one", 0.005, n=500)]),
+        ]
+        doc = T.build(cat, status(["aa", "bb"]), {"models": []}, PRIOR, META)
+        self.assertEqual(doc["entries"][0]["best_route"], "bb/cheap-one")
+
     def test_deterministic(self) -> None:
         self.assertEqual(T.to_csv(synthetic()), T.to_csv(synthetic()))
         self.assertEqual(T.to_json(synthetic()), T.to_json(synthetic()))

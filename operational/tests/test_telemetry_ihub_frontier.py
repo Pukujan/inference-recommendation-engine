@@ -129,11 +129,9 @@ def check_invariants(tc: unittest.TestCase, doc: dict[str, Any]) -> None:
         tc.assertEqual(m["recommendation_eligible"], not m["gate_reasons"])
         if m["recommendation_eligible"]:
             tc.assertEqual(m["best_route_health"], "healthy")
-        # cheapest healthy route: nothing healthier, nothing cheaper at the same health
+        # the named best route is exactly the one the family chooser picks
         best = routes[m["best_route"]]
-        bk = F._route_sort_key(best)
-        for rid in m["routes"]:
-            tc.assertLessEqual(bk, F._route_sort_key(routes[rid]))
+        tc.assertIs(best, F.best_route([routes[rid] for rid in m["routes"]]))
         # price policy is a field, consistent with the live ask
         if m["best_route_min_ask_in"] is not None:
             under = m["best_route_min_ask_in"] < m["price_policy_threshold_usd_per_mtok"]
@@ -205,6 +203,31 @@ class FrontierBuildTests(unittest.TestCase):
         self.assertIn("below_frontier_capability", m["Claude Haiku 4.5"]["gate_reasons"])
         # model-wide outage gates current-gen Opus 5 on health, visibly
         self.assertEqual(m["Claude Opus 5"]["gate_reasons"], ["no_healthy_route"])
+
+    def test_same_ask_prefers_deeper_supply(self) -> None:
+        # Two rails quote the same min ask; the one backing it with more sellers wins, so a
+        # deep route is not passed over for a thin one quoting the same price (issue #94).
+        cat = [
+            rail("aa", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.01, 3)])]),
+            rail("bb", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.01, 900)])]),
+        ]
+        st = status(["aa", "bb"], {"gpt-5.6-terra": ("operational", 99.9)})
+        meta = {"generated_at": "x", "code_commit": None, "snapshot_sha256": None, "sources": []}
+        doc = F.build(cat, st, {"models": []}, PRIOR, meta)
+        m = {x["model_family"]: x for x in doc["models"]}["GPT 5.6 Terra"]
+        self.assertEqual(m["best_route"], "bb/gpt-5.6-terra")
+
+    def test_cheaper_ask_outside_band_still_wins(self) -> None:
+        # Supply depth only breaks near-ties: a route well below the band is still chosen.
+        cat = [
+            rail("aa", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.01, 3)])]),
+            rail("bb", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.02, 900)])]),
+        ]
+        st = status(["aa", "bb"], {"gpt-5.6-terra": ("operational", 99.9)})
+        meta = {"generated_at": "x", "code_commit": None, "snapshot_sha256": None, "sources": []}
+        doc = F.build(cat, st, {"models": []}, PRIOR, meta)
+        m = {x["model_family"]: x for x in doc["models"]}["GPT 5.6 Terra"]
+        self.assertEqual(m["best_route"], "aa/gpt-5.6-terra")
 
     def test_cx_caveat_fields(self) -> None:
         r = {x["route"]: x for x in sample()["routes"]}

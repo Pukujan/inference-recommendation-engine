@@ -49,6 +49,9 @@ OUT_ROUTES_CSV = "research_model_frontier_routes.csv"
 OUT_JSON = "research_model_frontier_recommendations.json"
 POLICY_PER_MTOK = float(os.environ.get("IHUB_POLICY_PER_MTOK", "0.10"))
 BLEND_INPUT_WEIGHT = 3  # blended ask = (3 * in + 1 * out) / 4, used only to compare routes
+# A route counts as price-tied with the cheapest ask at its own health tier when its blended ask
+# is within this fraction of it; ties are broken by supply depth at that ask (see route_order).
+ROUTE_PRICE_TIE_TOL = 0.05
 
 CATALOG_URL = "https://inferhub.dev/api/catalog"
 STATUS_URL = "https://inferhub.dev/api/status"
@@ -404,14 +407,54 @@ def build_routes(
     return routes, sorted(unclassified)
 
 
-def _route_sort_key(r: dict[str, Any]) -> tuple[Any, ...]:
-    b = r["price"]["blended_min_ask_3to1"]
-    return (HEALTH_ORDER[r["health"]["status"]], b if b is not None else math.inf, r["route"])
+def _route_ask(r: dict[str, Any]) -> float | None:
+    return r["price"]["blended_min_ask_3to1"]
+
+
+def _route_depth(r: dict[str, Any]) -> int:
+    return int(r["sellers"]["sellers_at_min_ask_in"] or 0)
+
+
+def route_order(routes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Order one family's routes: health status, then price band, then supply depth, ask, route.
+
+    The band is what keeps the named route honest. Two rails can quote the same min ask while
+    one backs it with thousands of sellers and the other with a handful; the deep rail is the
+    route a caller should be sent to. So a route within ROUTE_PRICE_TIE_TOL of the cheapest ask
+    at its own health tier counts as price-tied, and inside that band more sellers at the ask
+    wins. Outside the band the cheaper ask still wins, so a genuinely cheaper route is never
+    passed over for a deeper but dearer one.
+    """
+    if not routes:
+        return []
+    leader_by_status: dict[str, float] = {}
+    for r in routes:
+        a = _route_ask(r)
+        if a is None:
+            continue
+        s = r["health"]["status"]
+        if s not in leader_by_status or a < leader_by_status[s]:
+            leader_by_status[s] = a
+
+    def key(r: dict[str, Any]) -> tuple[Any, ...]:
+        a = _route_ask(r)
+        s = r["health"]["status"]
+        ref = leader_by_status.get(s)
+        tied = ref is not None and a is not None and a <= ref * (1 + ROUTE_PRICE_TIE_TOL)
+        return (
+            HEALTH_ORDER[s],
+            0 if tied else 1,
+            -_route_depth(r),
+            a if a is not None else math.inf,
+            r["route"],
+        )
+
+    return sorted(routes, key=key)
 
 
 def best_route(routes: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Cheapest healthy route; falls back to the best-status route when none is healthy."""
-    return min(routes, key=_route_sort_key) if routes else None
+    """Best route for one family: best health, then the cheapest ask with a supply tie-break."""
+    return route_order(routes)[0] if routes else None
 
 
 def build_models(routes: list[dict[str, Any]], prior: dict[str, Any]) -> list[dict[str, Any]]:
@@ -451,7 +494,7 @@ def build_models(routes: list[dict[str, Any]], prior: dict[str, Any]) -> list[di
                 "newer_versions_in_line": newer,
                 "capability_score_100": score,
                 "tier": tier_for(score),
-                "routes": sorted(rs, key=_route_sort_key),
+                "routes": route_order(rs),
                 "best": best,
             }
         )
@@ -579,8 +622,9 @@ def _model_doc(m: dict[str, Any], prior: dict[str, Any]) -> dict[str, Any]:
         "evidence": {
             "generation": m["generation_evidence"],
             "best_route_health_reasons": b["health"]["reasons"],
-            "best_route_selection": "lowest health status, then lowest blended (3:1) live min "
-            "ask, then route id",
+            "best_route_selection": "lowest health status, then the cheapest blended (3:1) live "
+            f"min ask with a supply-depth tie-break inside a {ROUTE_PRICE_TIE_TOL:.0%} price "
+            "band, then route id",
         },
     }
 
@@ -600,7 +644,13 @@ def build(
     for r in routes:
         r["frontier_rank"] = rank[r["model_family"]]
         r["is_best_route"] = r["route"] in best
-    routes.sort(key=lambda r: (r["frontier_rank"], _route_sort_key(r)))
+    by_family: dict[str, list[dict[str, Any]]] = {}
+    for r in routes:
+        by_family.setdefault(r["model_family"], []).append(r)
+    ordered: list[dict[str, Any]] = []
+    for m in models:
+        ordered.extend(route_order(by_family.get(m["model_family"], [])))
+    routes[:] = ordered
     return {
         "schema": SCHEMA_ID,
         "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/" + SCHEMA_FILE,
