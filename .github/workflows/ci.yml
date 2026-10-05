@@ -53,7 +53,7 @@ jobs:
           fetch pcm project-continuity-modules 4e2385474b4af9249ca009cbdcb38c4498932475
           fetch cgm content-generation-modules 6831f91e165b62d719c05eb492f7375fa932b560
           fetch oio observational-issue-ops 2dace20b08deccfad91de8984e5670f4bf680ddb
-          fetch acs agent-custom-setup e1d7732be4cb4683df218ea3f999338053612d8d
+          fetch acs agent-custom-setup 38f8f52e8d210db3ce258bf911ebb560c6e0fe4c
       - name: Validate stack-manifest against the release train
         run: uv run --no-project --with jsonschema python "$STACK_ROOT/train/scripts/check_manifest.py" --manifest stack-manifest.json --train "$STACK_ROOT/train/stack-releases.json"
       - name: Validate PCM continuity files
@@ -68,3 +68,5 @@ jobs:
         run: |
           pack="$STACK_ROOT/acs/modules/coordination/multi-agent-hotload/v0.1.0"
           uv run --no-project --with jsonschema python "$pack/scripts/hotload_check.py" --root "$pack" --assignment .coord/assignment.json --cgm-root "$STACK_ROOT/cgm" --adopter-root "$GITHUB_WORKSPACE"
+      - name: Check dev root layout (ACS dev_root_check)
+        run: uv run --no-project python "$STACK_ROOT/acs/modules/coordination/multi-agent-hotload/v0.1.0/scripts/dev_root_check.py" --dev-root "$(dirname "$GITHUB_WORKSPACE")"
