@@ -34,7 +34,7 @@ IRE adopts the ACS multi-agent hot-load stack. `stack-manifest.json` pins the tr
 - **PCM** `4e2385474b4af9249ca009cbdcb38c4498932475` (CLI 0.6.0, protocol 0.1.0-draft): continuity files, checkpoints, PR-only changes to `main`, required CI gates. `.continuity/config.json` uses `single-checkout` mode, matching the canonical-checkout rule below.
 - **CGM** `6831f91e165b62d719c05eb492f7375fa932b560` (0.5.12, all eight modules). README and product entry use `writing-direction`; PRs, issues, docs and commits use `human-sounding-writing`; generated file names use `human-output-naming`.
 - **OIO** 0.1.0 (`2dace20b08deccfad91de8984e5670f4bf680ddb`): the observational-issue form and its triage workflow.
-- **ACS** `multi-agent-hotload` 0.1.0 (`e1d7732be4cb4683df218ea3f999338053612d8d`): join-order roles, a boss lease in minutes, the claim file in `.coord/`, and an agent-less watchdog.
+- **ACS** `multi-agent-hotload` 0.1.0 (`38f8f52e8d210db3ce258bf911ebb560c6e0fe4c`): join-order roles, a boss lease in minutes, the claim file in `.coord/`, and an agent-less watchdog.
 
 To check the install locally, check out those commits and run:
 
@@ -51,6 +51,21 @@ python <acs>/modules/coordination/multi-agent-hotload/v0.1.0/scripts/hotload_che
 - Join or continue order fills roles. The first live continuer is decision boss, then coder1, coder2 and so on.
 - The decision-boss seat is a lease (default 30 minutes, range 15 to 120). Re-read `.coord/boss_claim.json` on every wake. A returning old boss joins the end of the queue.
 - The watchdog only checks liveness. It is not failover and does not appoint a boss.
+
+## Dev root hygiene
+
+The dev root (`D:\development` on Windows, `~/development` elsewhere, or wherever `ACS_DEV_ROOT` points) holds one main checkout per repo and nothing else.
+
+- Don't create git worktrees, dependency or sibling clones, scratch folders, or caches in the dev root.
+- Put them in the ACS cache instead: `%LOCALAPPDATA%\acs\{deps,scratch,worktrees}` on Windows, `~/.cache/acs/{deps,scratch,worktrees}` on macOS and Linux. `ACS_CACHE_DIR` moves the cache.
+- Before you finish, push any real work to a branch and remove the worktrees and scratch folders you made. Never delete a checkout that has uncommitted, unpushed, or stashed work just to tidy up.
+- To check, run the pinned ACS script: `python <acs>/modules/coordination/multi-agent-hotload/v0.1.0/scripts/dev_root_check.py --dev-root <dev root>`. It prints JSON and exits non-zero when it finds anything other than main checkouts. `--clean` shows a fix and only acts with `--yes`.
+
+Paste this at session boot along with the CGM `system_block` (it comes from the ACS hotloader's `PROMPT_INJECT.md` at `38f8f52`):
+
+```
+Dev root hygiene (ACS): the dev root (ACS_DEV_ROOT; default D:\development on Windows, ~/development elsewhere) holds exactly one main checkout per repo. Never create git worktrees, dependency or sibling clones, scratch folders, or caches there. Put them under the ACS cache instead: %LOCALAPPDATA%\acs\{deps,scratch,worktrees} on Windows, ~/.cache/acs/{deps,scratch,worktrees} on macOS/Linux (ACS_CACHE_DIR overrides). Check with scripts/dev_root_check.py.
+```
 
 ## Canonical checkout and checkpoint delivery
 
