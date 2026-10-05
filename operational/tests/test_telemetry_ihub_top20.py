@@ -33,6 +33,10 @@ OLD_HEADER = (
     "price_regime,reliability_weight_boost,reliability_score_100,performance_evidence_status,"
     "shortlist_score_100,model_ids"
 )
+# Appended on 2026-10-05 (issue #94): the best route's cheapest listed ask, in the launcher's
+# free-below price basis, so a consumer can show it beside the supply-weighted blend.
+NEW_COLUMNS = ["best_route_min_ask_in_usdc_per_1m", "best_route_min_ask_out_usdc_per_1m"]
+FULL_HEADER = OLD_HEADER + "," + ",".join(NEW_COLUMNS)
 META = {"generated_at": "2026-10-04T18:00:00Z", "code_commit": "0" * 40,
         "snapshot_sha256": "a" * 64, "sources": []}  # fmt: skip
 
@@ -105,9 +109,12 @@ def synthetic() -> dict[str, Any]:
 
 class FormatTests(unittest.TestCase):
     def test_header_is_byte_compatible(self) -> None:
-        self.assertEqual(",".join(T.CSV_COLUMNS), OLD_HEADER)
+        self.assertEqual(",".join(T.CSV_COLUMNS), FULL_HEADER)
+        # The 2026-09-22 columns keep their exact names and order; the two ask columns follow.
+        self.assertEqual(T.CSV_COLUMNS[: len(OLD_HEADER.split(","))], OLD_HEADER.split(","))
+        self.assertEqual(T.CSV_COLUMNS[-2:], NEW_COLUMNS)
         committed = (LISTS / T.OUT_CSV).read_bytes()
-        self.assertTrue(committed.startswith(OLD_HEADER.encode() + b"\n"))
+        self.assertTrue(committed.startswith(FULL_HEADER.encode() + b"\n"))
         self.assertNotIn(b"\r", committed)
         self.assertTrue(committed.endswith(b"\n"))
 
@@ -208,7 +215,7 @@ class BuildTests(unittest.TestCase):
                 "capability": float(r["capability_score_100"]),
                 "recency": T.recency_score(days),
                 "boost": float(r["reliability_weight_boost"]),
-            })  # fmt: skip
+            }, T.METHOD["legacy_shortlist_weights"])  # fmt: skip
             errs.append(s - float(r["shortlist_score_100"]))
         self.assertLess(max(abs(e) for e in errs), 1.5)
         self.assertLess(math.sqrt(sum(e * e for e in errs) / len(errs)), 0.75)
