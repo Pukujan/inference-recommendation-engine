@@ -2,40 +2,40 @@
  "schema": "ihub-frontier-recommendations/v1",
  "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/frontier-recommendations.v1.schema.json",
  "hypothesis_notice": "Each row is a hypothesis, not a fact. Capability comes from a curated line prior (low confidence, no benchmarks). Route health comes from InferHub's public status (platform-wide, not this account's own requests). Prices are live listed asks in USD per 1M tokens at fetched_at; the served price can be higher. The cheap Top 20 is a separate list and is not changed by this one.",
- "generated_at": "2026-10-05T23:37:50Z",
- "code_commit": "075e252a39de3f52ba001c3a053a9543e8cc4262",
+ "generated_at": "2026-10-05T23:57:14Z",
+ "code_commit": "6b93453346e07fe59d3d50d817a706e44d895bdc",
  "provenance": {
-  "snapshot_sha256": "ed6ee8851a835043c81fa7ef0020b2a603c6e8169e9d3ed69cffcbbf50eb456a",
+  "snapshot_sha256": "d86f6da2fa1488874f1e47227e2f34a6aa726a2e3569f7323ecd9c38197d863a",
   "sources": [
    {
     "endpoint": "catalog",
     "url": "https://inferhub.dev/api/catalog",
     "auth": "key",
     "method": "GET",
-    "fetched_at": "2026-10-05T23:37:49Z",
+    "fetched_at": "2026-10-05T23:57:12Z",
     "fetched_from": null,
-    "sha256": "09a6e69d17a6e87cd0b74f8a6e6db65db053ffda95621f6acc61d9e39d6cace2",
-    "bytes": 111807
+    "sha256": "0b4b290aba80d019d245b4025f2adf35e3794a3c424d4ae1d420b6224be9eba6",
+    "bytes": 111754
    },
    {
     "endpoint": "status",
     "url": "https://inferhub.dev/api/status",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-10-05T23:37:50Z",
+    "fetched_at": "2026-10-05T23:57:13Z",
     "fetched_from": null,
-    "sha256": "4b5c52c741cd43fab1bd459e640fa409a3ef7e83fdb2e4e7e39db74f3c8b1db7",
-    "bytes": 235514
+    "sha256": "a28e1622fc6aaa9d10c06e81163def093037351ecc743c0a753fd4a6e29c459e",
+    "bytes": 236079
    },
    {
     "endpoint": "market",
     "url": "https://inferhub.dev/api/market",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-10-05T23:37:50Z",
+    "fetched_at": "2026-10-05T23:57:14Z",
     "fetched_from": null,
-    "sha256": "2161e36d558ee8c1709331c8e62b5fa2d6f4f0b6f72215099a2b1946673e6d8e",
-    "bytes": 23197
+    "sha256": "28fe6ca263f48b01e3fe5e5670715cd696499ac2b5208b60618f390e5c8f7efa",
+    "bytes": 23116
    }
   ],
   "capability_prior": {
@@ -69,8 +69,8 @@
  },
  "counts": {
   "models": 41,
-  "recommended": 12,
-  "gated": 29,
+  "recommended": 11,
+  "gated": 30,
   "routes": 93,
   "unclassified_text_routes": 56
  },
@@ -104,8 +104,8 @@
    "best_route_official_in": 10.0,
    "best_route_official_out": 50.0,
    "best_route_discount_vs_official_in_pct": 98.1,
-   "best_route_sellers_at_min_ask_in": 5,
-   "best_route_listings_in": 41,
+   "best_route_sellers_at_min_ask_in": 4,
+   "best_route_listings_in": 38,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -123,7 +123,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias operational (24h 99.06%)",
+     "model alias operational (24h 99.07%)",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -152,14 +152,14 @@
    "health_confidence": "medium",
    "best_route": "cx/gpt-6.1-sol",
    "best_route_health": "healthy",
-   "best_route_min_ask_in": 0.04,
-   "best_route_min_ask_out": 0.2,
-   "best_route_blended_min_ask_3to1": 0.08,
+   "best_route_min_ask_in": 0.024,
+   "best_route_min_ask_out": 0.12,
+   "best_route_blended_min_ask_3to1": 0.048,
    "best_route_official_in": 2.0,
    "best_route_official_out": 10.0,
-   "best_route_discount_vs_official_in_pct": 98.0,
+   "best_route_discount_vs_official_in_pct": 98.8,
    "best_route_sellers_at_min_ask_in": 1,
-   "best_route_listings_in": 37,
+   "best_route_listings_in": 35,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -177,7 +177,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias operational (24h 99.18%)",
+     "model alias operational (24h 99.17%)",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -204,34 +204,35 @@
    "confidence": "low",
    "capability_confidence": "low",
    "health_confidence": "medium",
-   "best_route": "cb/gpt-6-sol",
+   "best_route": "cx/gpt-6-sol",
    "best_route_health": "healthy",
-   "best_route_min_ask_in": 0.042,
-   "best_route_min_ask_out": 0.21,
-   "best_route_blended_min_ask_3to1": 0.084,
+   "best_route_min_ask_in": 0.034,
+   "best_route_min_ask_out": 0.17,
+   "best_route_blended_min_ask_3to1": 0.068,
    "best_route_official_in": 2.0,
    "best_route_official_out": 10.0,
-   "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 5401,
-   "best_route_listings_in": 36568,
+   "best_route_discount_vs_official_in_pct": 98.3,
+   "best_route_sellers_at_min_ask_in": 1,
+   "best_route_listings_in": 61,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
+   "best_route_system_prompt_handling": "developer_message",
+   "best_route_preferred_endpoint": "/v1/responses",
    "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent.",
+    "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "route_count": 2,
    "healthy_route_count": 2,
    "routes": [
-    "cb/gpt-6-sol",
-    "cx/gpt-6-sol"
+    "cx/gpt-6-sol",
+    "cb/gpt-6-sol"
    ],
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias operational (24h 98.25%)",
+     "model alias operational (24h 98.27%)",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -260,25 +261,24 @@
    "health_confidence": "low",
    "best_route": "ag/gemini-pro-agent",
    "best_route_health": "healthy",
-   "best_route_min_ask_in": 0.006,
-   "best_route_min_ask_out": 0.036,
-   "best_route_blended_min_ask_3to1": 0.0135,
+   "best_route_min_ask_in": 0.02,
+   "best_route_min_ask_out": 0.12,
+   "best_route_blended_min_ask_3to1": 0.045,
    "best_route_official_in": 2.0,
    "best_route_official_out": 12.0,
-   "best_route_discount_vs_official_in_pct": 99.7,
-   "best_route_sellers_at_min_ask_in": 1,
-   "best_route_listings_in": 300,
+   "best_route_discount_vs_official_in_pct": 99.0,
+   "best_route_sellers_at_min_ask_in": 3,
+   "best_route_listings_in": 306,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
    "best_route_system_prompt_handling": "unspecified",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
-    "route variant 'agent' (same model family, different upstream id)",
-    "only 1 seller at the cheapest ask; served price may be higher"
+    "route variant 'agent' (same model family, different upstream id)"
    ],
    "route_count": 2,
-   "healthy_route_count": 2,
+   "healthy_route_count": 1,
    "routes": [
     "ag/gemini-pro-agent",
     "cb/gemini-3.1-pro"
@@ -323,8 +323,8 @@
    "best_route_official_in": 3.0,
    "best_route_official_out": 15.0,
    "best_route_discount_vs_official_in_pct": 99.9,
-   "best_route_sellers_at_min_ask_in": 191,
-   "best_route_listings_in": 1781,
+   "best_route_sellers_at_min_ask_in": 190,
+   "best_route_listings_in": 1786,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -339,10 +339,10 @@
    ],
    "evidence": {
     "generation": [
-     "older generation 4 < current 5; blended ask 0.006 < cheapest current claude-sonnet 0.98"
+     "older generation 4 < current 5; blended ask 0.006 < cheapest current claude-sonnet 0.796"
     ],
     "best_route_health_reasons": [
-     "model alias operational (24h 98.43%)",
+     "model alias operational (24h 98.44%)",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -370,7 +370,7 @@
    "newer_versions_in_line": 4,
    "confidence": "low",
    "capability_confidence": "low",
-   "health_confidence": "medium",
+   "health_confidence": "low",
    "best_route": "ag/claude-opus-4-6-thinking",
    "best_route_health": "healthy",
    "best_route_min_ask_in": 0.005,
@@ -380,7 +380,7 @@
    "best_route_official_out": 25.0,
    "best_route_discount_vs_official_in_pct": 99.9,
    "best_route_sellers_at_min_ask_in": 196,
-   "best_route_listings_in": 1820,
+   "best_route_listings_in": 1825,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -401,7 +401,7 @@
      "older generation 4 < current 5; blended ask 0.01 < cheapest current claude-opus 0.21"
     ],
     "best_route_health_reasons": [
-     "model alias operational (24h 100.0%)",
+     "model alias low_traffic, 24h availability 100.0%",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -456,7 +456,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias low_traffic, 24h availability 99.81%",
+     "model alias low_traffic, 24h availability 99.8%",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -491,8 +491,8 @@
    "best_route_official_in": 2.0,
    "best_route_official_out": 6.0,
    "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 5401,
-   "best_route_listings_in": 36210,
+   "best_route_sellers_at_min_ask_in": 5325,
+   "best_route_listings_in": 36372,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -621,69 +621,14 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias low_traffic, 24h availability 96.03%"
-    ],
-    "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
-   }
-  },
-  {
-   "frontier_rank": 11,
-   "model_family": "GLM 5.2",
-   "vendor": "Z.ai",
-   "line": "glm",
-   "line_class": "near_frontier",
-   "version": "5.2",
-   "tier": "upper_mid",
-   "capability_score_100": 67.0,
-   "capability_basis": "curated_line_prior_minus_version_lag",
-   "recommendation_status": "recommended",
-   "recommendation_eligible": true,
-   "gate_reasons": [],
-   "gate_exceptions": [],
-   "generation_status": "current",
-   "major_version": 5,
-   "vendor_current_major": 5,
-   "newer_versions_in_line": 1,
-   "confidence": "low",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "best_route": "alicn/glm-5.2",
-   "best_route_health": "healthy",
-   "best_route_min_ask_in": 0.0014,
-   "best_route_min_ask_out": 0.0044,
-   "best_route_blended_min_ask_3to1": 0.00215,
-   "best_route_official_in": 1.4,
-   "best_route_official_out": 4.4,
-   "best_route_discount_vs_official_in_pct": 99.9,
-   "best_route_sellers_at_min_ask_in": 8,
-   "best_route_listings_in": 8,
-   "price_policy_threshold_usd_per_mtok": 0.1,
-   "price_policy_basis": "best_route_min_ask_in",
-   "price_policy_status": "under_policy",
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "route_count": 5,
-   "healthy_route_count": 5,
-   "routes": [
-    "alicn/glm-5.2",
-    "cb/glm-5.2",
-    "cbcn/glm-5.2",
-    "ali/glm-5.2",
-    "cmc/zai-org/GLM-5.2"
-   ],
-   "evidence": {
-    "generation": [],
-    "best_route_health_reasons": [
-     "model alias operational (24h 82.81%)",
+     "model alias low_traffic, 24h availability 95.89%",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 12,
+   "frontier_rank": 11,
    "model_family": "GLM 5.1",
    "vendor": "Z.ai",
    "line": "glm",
@@ -734,7 +679,7 @@
    }
   },
   {
-   "frontier_rank": 13,
+   "frontier_rank": 12,
    "model_family": "Claude Fable 5.1",
    "vendor": "Anthropic",
    "line": "claude-fable",
@@ -765,7 +710,7 @@
    "best_route_official_out": 50.0,
    "best_route_discount_vs_official_in_pct": 80.1,
    "best_route_sellers_at_min_ask_in": 5,
-   "best_route_listings_in": 25,
+   "best_route_listings_in": 26,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -782,13 +727,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 29.43%), model-wide signal"
+     "model alias_state=major_outage (24h 29.1%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 14,
+   "frontier_rank": 13,
    "model_family": "Claude Fable 5",
    "vendor": "Anthropic",
    "line": "claude-fable",
@@ -819,7 +764,7 @@
    "best_route_official_out": 50.0,
    "best_route_discount_vs_official_in_pct": 80.1,
    "best_route_sellers_at_min_ask_in": 5,
-   "best_route_listings_in": 25,
+   "best_route_listings_in": 26,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -836,13 +781,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 34.43%), model-wide signal"
+     "model alias_state=major_outage (24h 34.41%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 15,
+   "frontier_rank": 14,
    "model_family": "Claude Opus 5.5",
    "vendor": "Anthropic",
    "line": "claude-opus",
@@ -873,7 +818,7 @@
    "best_route_official_out": 20.0,
    "best_route_discount_vs_official_in_pct": 80.1,
    "best_route_sellers_at_min_ask_in": 5,
-   "best_route_listings_in": 26,
+   "best_route_listings_in": 27,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -890,13 +835,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 71.5%), model-wide signal"
+     "model alias_state=major_outage (24h 71.14%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 16,
+   "frontier_rank": 15,
    "model_family": "Claude Opus 5",
    "vendor": "Anthropic",
    "line": "claude-opus",
@@ -926,8 +871,8 @@
    "best_route_official_in": 5.0,
    "best_route_official_out": 25.0,
    "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 13056,
-   "best_route_listings_in": 36754,
+   "best_route_sellers_at_min_ask_in": 13001,
+   "best_route_listings_in": 36916,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -945,13 +890,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 4.69%), model-wide signal"
+     "model alias_state=major_outage (24h 4.59%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 17,
+   "frontier_rank": 16,
    "model_family": "GPT 5.5",
    "vendor": "OpenAI",
    "line": "gpt-base",
@@ -982,8 +927,8 @@
    "best_route_official_in": 5.0,
    "best_route_official_out": 30.0,
    "best_route_discount_vs_official_in_pct": 99.1,
-   "best_route_sellers_at_min_ask_in": 1917,
-   "best_route_listings_in": 36209,
+   "best_route_sellers_at_min_ask_in": 1926,
+   "best_route_listings_in": 36371,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1003,13 +948,13 @@
      "major version 5 < OpenAI current major 6"
     ],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 93.26%), model-wide signal"
+     "model alias_state=major_outage (24h 93.21%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 18,
+   "frontier_rank": 17,
    "model_family": "Claude Sonnet 5.5",
    "vendor": "Anthropic",
    "line": "claude-sonnet",
@@ -1039,8 +984,8 @@
    "best_route_official_in": 2.0,
    "best_route_official_out": 10.0,
    "best_route_discount_vs_official_in_pct": 75.5,
-   "best_route_sellers_at_min_ask_in": 4,
-   "best_route_listings_in": 25,
+   "best_route_sellers_at_min_ask_in": 5,
+   "best_route_listings_in": 26,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -1057,13 +1002,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 58.62%), model-wide signal"
+     "model alias_state=major_outage (24h 58.22%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 19,
+   "frontier_rank": 18,
    "model_family": "Claude Opus 4.8",
    "vendor": "Anthropic",
    "line": "claude-opus",
@@ -1094,8 +1039,8 @@
    "best_route_official_in": 5.0,
    "best_route_official_out": 25.0,
    "best_route_discount_vs_official_in_pct": 75.5,
-   "best_route_sellers_at_min_ask_in": 4,
-   "best_route_listings_in": 25,
+   "best_route_sellers_at_min_ask_in": 5,
+   "best_route_listings_in": 26,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -1114,13 +1059,13 @@
      "major version 4 < Anthropic current major 5"
     ],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 40.05%), model-wide signal"
+     "model alias_state=major_outage (24h 39.92%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 20,
+   "frontier_rank": 19,
    "model_family": "GPT 5.3 Codex",
    "vendor": "OpenAI",
    "line": "gpt-codex",
@@ -1150,8 +1095,8 @@
    "best_route_official_in": 1.75,
    "best_route_official_out": 14.0,
    "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 5401,
-   "best_route_listings_in": 36061,
+   "best_route_sellers_at_min_ask_in": 5325,
+   "best_route_listings_in": 36223,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1170,14 +1115,14 @@
      "major version 5 < OpenAI current major 6"
     ],
     "best_route_health_reasons": [
-     "model alias low_traffic, 24h availability 96.58%",
+     "model alias low_traffic, 24h availability 96.55%",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 21,
+   "frontier_rank": 20,
    "model_family": "GPT 5.6 Sol",
    "vendor": "OpenAI",
    "line": "gpt-sol",
@@ -1189,7 +1134,8 @@
    "recommendation_status": "gated",
    "recommendation_eligible": false,
    "gate_reasons": [
-    "older_generation"
+    "older_generation",
+    "no_healthy_route"
    ],
    "gate_exceptions": [],
    "generation_status": "older_gated",
@@ -1200,15 +1146,15 @@
    "capability_confidence": "low",
    "health_confidence": "medium",
    "best_route": "cx/gpt-5.6-sol",
-   "best_route_health": "healthy",
+   "best_route_health": "degraded",
    "best_route_min_ask_in": 0.095,
    "best_route_min_ask_out": 0.57,
    "best_route_blended_min_ask_3to1": 0.21375,
    "best_route_official_in": 5.0,
    "best_route_official_out": 30.0,
    "best_route_discount_vs_official_in_pct": 98.1,
-   "best_route_sellers_at_min_ask_in": 5,
-   "best_route_listings_in": 37,
+   "best_route_sellers_at_min_ask_in": 4,
+   "best_route_listings_in": 35,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1218,7 +1164,7 @@
     "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent."
    ],
    "route_count": 1,
-   "healthy_route_count": 1,
+   "healthy_route_count": 0,
    "routes": [
     "cx/gpt-5.6-sol"
    ],
@@ -1227,14 +1173,13 @@
      "major version 5 < OpenAI current major 6"
     ],
     "best_route_health_reasons": [
-     "model alias operational (24h 93.81%)",
-     "rail_state=operational"
+     "model alias_state=degraded (24h 93.74%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 22,
+   "frontier_rank": 21,
    "model_family": "GPT 5.4",
    "vendor": "OpenAI",
    "line": "gpt-base",
@@ -1265,8 +1210,8 @@
    "best_route_official_in": 2.5,
    "best_route_official_out": 15.0,
    "best_route_discount_vs_official_in_pct": 99.1,
-   "best_route_sellers_at_min_ask_in": 1917,
-   "best_route_listings_in": 36059,
+   "best_route_sellers_at_min_ask_in": 1926,
+   "best_route_listings_in": 36221,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1285,13 +1230,13 @@
      "major version 5 < OpenAI current major 6"
     ],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 83.72%), model-wide signal"
+     "model alias_state=major_outage (24h 83.14%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 23,
+   "frontier_rank": 22,
    "model_family": "Claude Opus 4.7",
    "vendor": "Anthropic",
    "line": "claude-opus",
@@ -1303,7 +1248,8 @@
    "recommendation_status": "gated",
    "recommendation_eligible": false,
    "gate_reasons": [
-    "older_generation"
+    "older_generation",
+    "no_healthy_route"
    ],
    "gate_exceptions": [],
    "generation_status": "older_gated",
@@ -1314,15 +1260,15 @@
    "capability_confidence": "low",
    "health_confidence": "medium",
    "best_route": "cb/claude-opus-4.7-1m",
-   "best_route_health": "healthy",
+   "best_route_health": "degraded",
    "best_route_min_ask_in": 0.105,
    "best_route_min_ask_out": 0.525,
    "best_route_blended_min_ask_3to1": 0.21,
    "best_route_official_in": 5.0,
    "best_route_official_out": 25.0,
    "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 13056,
-   "best_route_listings_in": 36445,
+   "best_route_sellers_at_min_ask_in": 13001,
+   "best_route_listings_in": 36607,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -1333,7 +1279,7 @@
     "route variant '1m' (same model family, different upstream id)"
    ],
    "route_count": 2,
-   "healthy_route_count": 2,
+   "healthy_route_count": 0,
    "routes": [
     "cb/claude-opus-4.7-1m",
     "cc/claude-opus-4-7"
@@ -1343,14 +1289,13 @@
      "major version 4 < Anthropic current major 5"
     ],
     "best_route_health_reasons": [
-     "model alias operational (24h 97.74%)",
-     "rail_state=operational"
+     "model alias_state=degraded (24h 97.52%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 24,
+   "frontier_rank": 23,
    "model_family": "Claude Sonnet 5",
    "vendor": "Anthropic",
    "line": "claude-sonnet",
@@ -1374,14 +1319,14 @@
    "health_confidence": "medium",
    "best_route": "cc/claude-sonnet-5",
    "best_route_health": "degraded",
-   "best_route_min_ask_in": 0.49,
-   "best_route_min_ask_out": 2.45,
-   "best_route_blended_min_ask_3to1": 0.98,
+   "best_route_min_ask_in": 0.398,
+   "best_route_min_ask_out": 1.99,
+   "best_route_blended_min_ask_3to1": 0.796,
    "best_route_official_in": 2.0,
    "best_route_official_out": 10.0,
-   "best_route_discount_vs_official_in_pct": 75.5,
-   "best_route_sellers_at_min_ask_in": 4,
-   "best_route_listings_in": 25,
+   "best_route_discount_vs_official_in_pct": 80.1,
+   "best_route_sellers_at_min_ask_in": 5,
+   "best_route_listings_in": 26,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -1398,13 +1343,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 77.42%), model-wide signal"
+     "model alias_state=major_outage (24h 76.99%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 25,
+   "frontier_rank": 24,
    "model_family": "GPT 5.6 Terra",
    "vendor": "OpenAI",
    "line": "gpt-terra",
@@ -1429,14 +1374,14 @@
    "health_confidence": "medium",
    "best_route": "cx/gpt-5.6-terra",
    "best_route_health": "degraded",
-   "best_route_min_ask_in": 0.04,
-   "best_route_min_ask_out": 0.24,
-   "best_route_blended_min_ask_3to1": 0.09,
+   "best_route_min_ask_in": 0.048,
+   "best_route_min_ask_out": 0.288,
+   "best_route_blended_min_ask_3to1": 0.108,
    "best_route_official_in": 2.0,
    "best_route_official_out": 12.0,
-   "best_route_discount_vs_official_in_pct": 98.0,
+   "best_route_discount_vs_official_in_pct": 97.6,
    "best_route_sellers_at_min_ask_in": 1,
-   "best_route_listings_in": 62,
+   "best_route_listings_in": 61,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1456,13 +1401,13 @@
      "major version 5 < OpenAI current major 6"
     ],
     "best_route_health_reasons": [
-     "model alias_state=degraded (24h 82.79%), model-wide signal"
+     "model alias_state=major_outage (24h 82.43%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 26,
+   "frontier_rank": 25,
    "model_family": "Kimi K3",
    "vendor": "Moonshot",
    "line": "kimi-k",
@@ -1506,21 +1451,21 @@
     "alicn/kimi-k3",
     "cb/kimi-k3",
     "ali/kimi-k3",
-    "cp/cline-pass/kimi-k3",
     "cbcn/kimi-k3",
+    "cp/cline-pass/kimi-k3",
     "cmc/moonshotai/Kimi-K3",
     "ocg/kimi-k3"
    ],
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 27,
+   "frontier_rank": 26,
    "model_family": "Grok 4.7",
    "vendor": "xAI",
    "line": "grok",
@@ -1550,8 +1495,8 @@
    "best_route_official_in": 2.0,
    "best_route_official_out": 6.0,
    "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 5401,
-   "best_route_listings_in": 36210,
+   "best_route_sellers_at_min_ask_in": 5325,
+   "best_route_listings_in": 36372,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1570,13 +1515,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=degraded (24h 95.33%), model-wide signal"
+     "model alias_state=degraded (24h 95.26%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 28,
+   "frontier_rank": 27,
    "model_family": "Claude Sonnet 4.5",
    "vendor": "Anthropic",
    "line": "claude-sonnet",
@@ -1608,7 +1553,7 @@
    "best_route_official_out": 15.0,
    "best_route_discount_vs_official_in_pct": 75.5,
    "best_route_sellers_at_min_ask_in": 4,
-   "best_route_listings_in": 21,
+   "best_route_listings_in": 22,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -1627,13 +1572,13 @@
      "major version 4 < Anthropic current major 5"
     ],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 54.21%), model-wide signal"
+     "model alias_state=major_outage (24h 53.14%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 29,
+   "frontier_rank": 28,
    "model_family": "Kimi K2.7",
    "vendor": "Moonshot",
    "line": "kimi-k",
@@ -1658,14 +1603,14 @@
    "health_confidence": "low",
    "best_route": "cbcn/kimi-k2.7",
    "best_route_health": "insufficient_data",
-   "best_route_min_ask_in": 0.0133,
-   "best_route_min_ask_out": 0.056,
-   "best_route_blended_min_ask_3to1": 0.023975,
+   "best_route_min_ask_in": 0.01425,
+   "best_route_min_ask_out": 0.06,
+   "best_route_blended_min_ask_3to1": 0.025688,
    "best_route_official_in": 0.95,
    "best_route_official_out": 4.0,
-   "best_route_discount_vs_official_in_pct": 98.6,
-   "best_route_sellers_at_min_ask_in": 6,
-   "best_route_listings_in": 6998,
+   "best_route_discount_vs_official_in_pct": 98.5,
+   "best_route_sellers_at_min_ask_in": 18,
+   "best_route_listings_in": 6995,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1693,7 +1638,7 @@
    }
   },
   {
-   "frontier_rank": 30,
+   "frontier_rank": 29,
    "model_family": "DeepSeek V4 Pro",
    "vendor": "DeepSeek",
    "line": "deepseek-pro",
@@ -1745,13 +1690,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 87.4%), model-wide signal"
+     "model alias_state=major_outage (24h 87.19%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 31,
+   "frontier_rank": 30,
    "model_family": "Qwen 3.7 Max",
    "vendor": "Alibaba",
    "line": "qwen-max",
@@ -1799,14 +1744,13 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
      "model alias low_traffic with no 24h availability"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 32,
+   "frontier_rank": 31,
    "model_family": "Kimi K2.6",
    "vendor": "Moonshot",
    "line": "kimi-k",
@@ -1831,14 +1775,14 @@
    "health_confidence": "medium",
    "best_route": "cbcn/kimi-k2.6",
    "best_route_health": "degraded",
-   "best_route_min_ask_in": 0.0133,
-   "best_route_min_ask_out": 0.056,
-   "best_route_blended_min_ask_3to1": 0.023975,
+   "best_route_min_ask_in": 0.01425,
+   "best_route_min_ask_out": 0.06,
+   "best_route_blended_min_ask_3to1": 0.025688,
    "best_route_official_in": 0.95,
    "best_route_official_out": 4.0,
-   "best_route_discount_vs_official_in_pct": 98.6,
-   "best_route_sellers_at_min_ask_in": 6,
-   "best_route_listings_in": 6826,
+   "best_route_discount_vs_official_in_pct": 98.5,
+   "best_route_sellers_at_min_ask_in": 18,
+   "best_route_listings_in": 6823,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -1859,13 +1803,13 @@
      "major version 2 < Moonshot current major 3"
     ],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 88.73%), model-wide signal"
+     "model alias_state=major_outage (24h 88.28%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
   },
   {
-   "frontier_rank": 33,
+   "frontier_rank": 32,
    "model_family": "Qwen 3.6 Max",
    "vendor": "Alibaba",
    "line": "qwen-max",
@@ -1915,6 +1859,62 @@
     "generation": [],
     "best_route_health_reasons": [
      "model alias low_traffic with no 24h availability"
+    ],
+    "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
+   }
+  },
+  {
+   "frontier_rank": 33,
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "line": "glm",
+   "line_class": "near_frontier",
+   "version": "5.2",
+   "tier": "upper_mid",
+   "capability_score_100": 67.0,
+   "capability_basis": "curated_line_prior_minus_version_lag",
+   "recommendation_status": "gated",
+   "recommendation_eligible": false,
+   "gate_reasons": [
+    "no_healthy_route"
+   ],
+   "gate_exceptions": [],
+   "generation_status": "current",
+   "major_version": 5,
+   "vendor_current_major": 5,
+   "newer_versions_in_line": 1,
+   "confidence": "low",
+   "capability_confidence": "low",
+   "health_confidence": "medium",
+   "best_route": "alicn/glm-5.2",
+   "best_route_health": "degraded",
+   "best_route_min_ask_in": 0.0014,
+   "best_route_min_ask_out": 0.0044,
+   "best_route_blended_min_ask_3to1": 0.00215,
+   "best_route_official_in": 1.4,
+   "best_route_official_out": 4.4,
+   "best_route_discount_vs_official_in_pct": 99.9,
+   "best_route_sellers_at_min_ask_in": 8,
+   "best_route_listings_in": 8,
+   "price_policy_threshold_usd_per_mtok": 0.1,
+   "price_policy_basis": "best_route_min_ask_in",
+   "price_policy_status": "under_policy",
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "route_count": 5,
+   "healthy_route_count": 0,
+   "routes": [
+    "alicn/glm-5.2",
+    "cb/glm-5.2",
+    "cbcn/glm-5.2",
+    "ali/glm-5.2",
+    "cmc/zai-org/GLM-5.2"
+   ],
+   "evidence": {
+    "generation": [],
+    "best_route_health_reasons": [
+     "model alias_state=degraded (24h 83.35%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
@@ -1970,7 +1970,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 62.82%), model-wide signal"
+     "model alias_state=major_outage (24h 62.17%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
@@ -2027,7 +2027,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 9.08%), model-wide signal"
+     "model alias_state=major_outage (24h 9.09%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
@@ -2057,14 +2057,14 @@
    "health_confidence": "medium",
    "best_route": "ag/gemini-3.8-flash-high",
    "best_route_health": "healthy",
-   "best_route_min_ask_in": 0.00225,
-   "best_route_min_ask_out": 0.01125,
-   "best_route_blended_min_ask_3to1": 0.0045,
+   "best_route_min_ask_in": 0.0015,
+   "best_route_min_ask_out": 0.0075,
+   "best_route_blended_min_ask_3to1": 0.003,
    "best_route_official_in": 0.75,
    "best_route_official_out": 3.75,
-   "best_route_discount_vs_official_in_pct": 99.7,
-   "best_route_sellers_at_min_ask_in": 52,
-   "best_route_listings_in": 420,
+   "best_route_discount_vs_official_in_pct": 99.8,
+   "best_route_sellers_at_min_ask_in": 3,
+   "best_route_listings_in": 419,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -2081,7 +2081,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias operational (24h 99.08%)",
+     "model alias operational (24h 99.07%)",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -2177,7 +2177,7 @@
    "best_route_official_out": 5.0,
    "best_route_discount_vs_official_in_pct": 75.5,
    "best_route_sellers_at_min_ask_in": 4,
-   "best_route_listings_in": 21,
+   "best_route_listings_in": 22,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "over_policy",
@@ -2196,7 +2196,7 @@
      "major version 4 < Anthropic current major 5"
     ],
     "best_route_health_reasons": [
-     "model alias_state=major_outage (24h 26.6%), model-wide signal"
+     "model alias_state=major_outage (24h 26.26%), model-wide signal"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
    }
@@ -2250,7 +2250,7 @@
    "evidence": {
     "generation": [],
     "best_route_health_reasons": [
-     "model alias low_traffic, 24h availability 98.16%",
+     "model alias low_traffic, 24h availability 98.15%",
      "rail_state=operational"
     ],
     "best_route_selection": "lowest health status, then the cheapest blended (3:1) live min ask with a supply-depth tie-break inside a 5% price band, then route id"
@@ -2287,8 +2287,8 @@
    "best_route_official_in": 0.1,
    "best_route_official_out": 0.5,
    "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 5401,
-   "best_route_listings_in": 36059,
+   "best_route_sellers_at_min_ask_in": 5325,
+   "best_route_listings_in": 36221,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
@@ -2336,29 +2336,30 @@
    "confidence": "low",
    "capability_confidence": "low",
    "health_confidence": "medium",
-   "best_route": "cb/gpt-5.6-luna",
+   "best_route": "cx/gpt-5.6-luna",
    "best_route_health": "healthy",
-   "best_route_min_ask_in": 0.0042,
-   "best_route_min_ask_out": 0.0252,
-   "best_route_blended_min_ask_3to1": 0.00945,
+   "best_route_min_ask_in": 0.0038,
+   "best_route_min_ask_out": 0.0228,
+   "best_route_blended_min_ask_3to1": 0.00855,
    "best_route_official_in": 0.2,
    "best_route_official_out": 1.2,
-   "best_route_discount_vs_official_in_pct": 97.9,
-   "best_route_sellers_at_min_ask_in": 5401,
-   "best_route_listings_in": 36059,
+   "best_route_discount_vs_official_in_pct": 98.1,
+   "best_route_sellers_at_min_ask_in": 1,
+   "best_route_listings_in": 61,
    "price_policy_threshold_usd_per_mtok": 0.1,
    "price_policy_basis": "best_route_min_ask_in",
    "price_policy_status": "under_policy",
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
+   "best_route_system_prompt_handling": "developer_message",
+   "best_route_preferred_endpoint": "/v1/responses",
    "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent.",
+    "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "route_count": 3,
    "healthy_route_count": 3,
    "routes": [
-    "cb/gpt-5.6-luna",
     "cx/gpt-5.6-luna",
+    "cb/gpt-5.6-luna",
     "ocg/gpt-5.6-luna"
    ],
    "evidence": {
@@ -2397,34 +2398,34 @@
     "official_out": 50.0,
     "discount_vs_official_in_pct": 98.1,
     "discount_vs_official_out_pct": 98.1,
-    "last_trade_rate": 0.028189,
+    "last_trade_rate": 0.034148,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5,
-    "listings_in": 41,
-    "price_tiers_in": 18,
-    "rail_active_providers": 74
+    "sellers_at_min_ask_in": 4,
+    "listings_in": 38,
+    "price_tiers_in": 17,
+    "rail_active_providers": 71
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 99.06%)",
+     "model alias operational (24h 99.07%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
+    "rail_availability_24h_pct": 96.8,
     "alias": "gpt-6-astra",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 99.06,
+    "alias_availability_24h_pct": 99.07,
     "recent_traffic_observed": true
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8242,
+   "cache_hit_rate_24h": 0.8223,
    "system_prompt_handling": "developer_message",
    "preferred_endpoint": "/v1/responses",
    "required_instructions_value": "You are a helpful assistant.",
@@ -2458,34 +2459,34 @@
     "official_out": 50.0,
     "discount_vs_official_in_pct": 98.0,
     "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.022614,
+    "last_trade_rate": 0.21648,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 3349,
-    "listings_in": 36574,
+    "sellers_at_min_ask_in": 3342,
+    "listings_in": 36736,
     "price_tiers_in": 35,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 99.06%)",
+     "model alias operational (24h 99.07%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "gpt-6-astra",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 99.06,
+    "alias_availability_24h_pct": 99.07,
     "recent_traffic_observed": true
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.3932,
+   "cache_hit_rate_24h": 0.3915,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -2511,43 +2512,43 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.04,
-    "min_ask_out": 0.2,
-    "blended_min_ask_3to1": 0.08,
+    "min_ask_in": 0.024,
+    "min_ask_out": 0.12,
+    "blended_min_ask_3to1": 0.048,
     "cw_median_ask_in": 0.098,
     "cw_median_ask_out": 0.49,
     "official_in": 2.0,
     "official_out": 10.0,
-    "discount_vs_official_in_pct": 98.0,
-    "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.006544,
+    "discount_vs_official_in_pct": 98.8,
+    "discount_vs_official_out_pct": 98.8,
+    "last_trade_rate": 0.009309,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 1,
-    "listings_in": 37,
+    "listings_in": 35,
     "price_tiers_in": 16,
-    "rail_active_providers": 74
+    "rail_active_providers": 71
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 99.18%)",
+     "model alias operational (24h 99.17%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
+    "rail_availability_24h_pct": 96.8,
     "alias": "gpt-6.1-sol",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 99.18,
+    "alias_availability_24h_pct": 99.17,
     "recent_traffic_observed": true
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.6912,
+   "cache_hit_rate_24h": 0.6918,
    "system_prompt_handling": "developer_message",
    "preferred_endpoint": "/v1/responses",
    "required_instructions_value": "You are a helpful assistant.",
@@ -2557,6 +2558,68 @@
    ],
    "is_astra_owner_route": false,
    "frontier_rank": 2,
+   "is_best_route": true
+  },
+  {
+   "route": "cx/gpt-6-sol",
+   "rail": "cx",
+   "rail_label": "OpenAI Codex",
+   "model_id": "gpt-6-sol",
+   "model_label": "GPT 6 Sol",
+   "model_family": "GPT 6 Sol",
+   "vendor": "OpenAI",
+   "line": "gpt-sol",
+   "line_class": "frontier",
+   "version": "6",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.034,
+    "min_ask_out": 0.17,
+    "blended_min_ask_3to1": 0.068,
+    "cw_median_ask_in": 0.224,
+    "cw_median_ask_out": 1.12,
+    "official_in": 2.0,
+    "official_out": 10.0,
+    "discount_vs_official_in_pct": 98.3,
+    "discount_vs_official_out_pct": 98.3,
+    "last_trade_rate": 0.333333,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": false
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 1,
+    "listings_in": 61,
+    "price_tiers_in": 18,
+    "rail_active_providers": 71
+   },
+   "health": {
+    "status": "healthy",
+    "confidence": "medium",
+    "reasons": [
+     "model alias operational (24h 98.27%)",
+     "rail_state=operational"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 96.8,
+    "alias": "gpt-6-sol",
+    "alias_state": "operational",
+    "alias_availability_24h_pct": 98.27,
+    "recent_traffic_observed": true
+   },
+   "context_window": 272000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.7182,
+   "system_prompt_handling": "developer_message",
+   "preferred_endpoint": "/v1/responses",
+   "required_instructions_value": "You are a helpful assistant.",
+   "caveats": [
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent.",
+    "only 1 seller at the cheapest ask; served price may be higher"
+   ],
+   "is_astra_owner_route": false,
+   "frontier_rank": 3,
    "is_best_route": true
   },
   {
@@ -2582,101 +2645,39 @@
     "official_out": 10.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.006724,
+    "last_trade_rate": 0.00567,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36568,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36730,
     "price_tiers_in": 35,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 98.25%)",
+     "model alias operational (24h 98.27%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "gpt-6-sol",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 98.25,
+    "alias_availability_24h_pct": 98.27,
     "recent_traffic_observed": false
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.5672,
+   "cache_hit_rate_24h": 0.5878,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
    "caveats": [
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "is_astra_owner_route": false,
-   "frontier_rank": 3,
-   "is_best_route": true
-  },
-  {
-   "route": "cx/gpt-6-sol",
-   "rail": "cx",
-   "rail_label": "OpenAI Codex",
-   "model_id": "gpt-6-sol",
-   "model_label": "GPT 6 Sol",
-   "model_family": "GPT 6 Sol",
-   "vendor": "OpenAI",
-   "line": "gpt-sol",
-   "line_class": "frontier",
-   "version": "6",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.04,
-    "min_ask_out": 0.2,
-    "blended_min_ask_3to1": 0.08,
-    "cw_median_ask_in": 0.224,
-    "cw_median_ask_out": 1.12,
-    "official_in": 2.0,
-    "official_out": 10.0,
-    "discount_vs_official_in_pct": 98.0,
-    "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.068648,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": false
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 1,
-    "listings_in": 62,
-    "price_tiers_in": 18,
-    "rail_active_providers": 74
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 98.25%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
-    "alias": "gpt-6-sol",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 98.25,
-    "recent_traffic_observed": true
-   },
-   "context_window": 272000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.7172,
-   "system_prompt_handling": "developer_message",
-   "preferred_endpoint": "/v1/responses",
-   "required_instructions_value": "You are a helpful assistant.",
-   "caveats": [
-    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent.",
-    "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
    "frontier_rank": 3,
@@ -2696,23 +2697,23 @@
    "variant": "agent",
    "enabled": true,
    "price": {
-    "min_ask_in": 0.006,
-    "min_ask_out": 0.036,
-    "blended_min_ask_3to1": 0.0135,
+    "min_ask_in": 0.02,
+    "min_ask_out": 0.12,
+    "blended_min_ask_3to1": 0.045,
     "cw_median_ask_in": 0.292,
     "cw_median_ask_out": 1.752,
     "official_in": 2.0,
     "official_out": 12.0,
-    "discount_vs_official_in_pct": 99.7,
-    "discount_vs_official_out_pct": 99.7,
-    "last_trade_rate": 0.106383,
+    "discount_vs_official_in_pct": 99.0,
+    "discount_vs_official_out_pct": 99.0,
+    "last_trade_rate": 0.119171,
     "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": true
+    "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 1,
-    "listings_in": 300,
-    "price_tiers_in": 29,
+    "sellers_at_min_ask_in": 3,
+    "listings_in": 306,
+    "price_tiers_in": 34,
     "rail_active_providers": 1873
    },
    "health": {
@@ -2732,13 +2733,12 @@
    "context_window": 1000000,
    "max_output_tokens": 65536,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.0809,
+   "cache_hit_rate_24h": 0.0822,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
    "caveats": [
-    "route variant 'agent' (same model family, different upstream id)",
-    "only 1 seller at the cheapest ask; served price may be higher"
+    "route variant 'agent' (same model family, different upstream id)"
    ],
    "is_astra_owner_route": false,
    "frontier_rank": 4,
@@ -2767,34 +2767,33 @@
     "official_out": 12.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.068836,
+    "last_trade_rate": 0.140663,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36210,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36372,
     "price_tiers_in": 36,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
-    "status": "healthy",
+    "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 99.84%)",
-     "rail_state=operational"
+     "model alias_state=degraded (24h 99.83%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "gemini-3.1-pro",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 99.84,
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 99.83,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 65536,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.1653,
+   "cache_hit_rate_24h": 0.1654,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -2828,13 +2827,13 @@
     "official_out": 15.0,
     "discount_vs_official_in_pct": 99.9,
     "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.033223,
+    "last_trade_rate": 0.243902,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 191,
-    "listings_in": 1781,
+    "sellers_at_min_ask_in": 190,
+    "listings_in": 1786,
     "price_tiers_in": 47,
     "rail_active_providers": 1873
    },
@@ -2842,20 +2841,20 @@
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 98.43%)",
+     "model alias operational (24h 98.44%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.78,
     "alias": "claude-sonnet-4.6",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 98.43,
+    "alias_availability_24h_pct": 98.44,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 64000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.7554,
+   "cache_hit_rate_24h": 0.7553,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -2893,22 +2892,22 @@
    },
    "sellers": {
     "sellers_at_min_ask_in": 4,
-    "listings_in": 21,
-    "price_tiers_in": 9,
-    "rail_active_providers": 26
+    "listings_in": 22,
+    "price_tiers_in": 10,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 98.43%)",
+     "model alias operational (24h 98.44%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-sonnet-4.6",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 98.43,
+    "alias_availability_24h_pct": 98.44,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -2948,34 +2947,34 @@
     "official_out": 25.0,
     "discount_vs_official_in_pct": 99.9,
     "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.009268,
+    "last_trade_rate": 0.15625,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
     "sellers_at_min_ask_in": 196,
-    "listings_in": 1820,
+    "listings_in": 1825,
     "price_tiers_in": 45,
     "rail_active_providers": 1873
    },
    "health": {
     "status": "healthy",
-    "confidence": "medium",
+    "confidence": "low",
     "reasons": [
-     "model alias operational (24h 100.0%)",
+     "model alias low_traffic, 24h availability 100.0%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.78,
     "alias": "claude-opus-4.6",
-    "alias_state": "operational",
+    "alias_state": "low_traffic",
     "alias_availability_24h_pct": 100.0,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.2812,
+   "cache_hit_rate_24h": 0.2816,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3009,34 +3008,34 @@
     "official_out": 25.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.122563,
+    "last_trade_rate": 0.028817,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 13056,
-    "listings_in": 36447,
+    "sellers_at_min_ask_in": 13001,
+    "listings_in": 36609,
     "price_tiers_in": 38,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
-    "confidence": "medium",
+    "confidence": "low",
     "reasons": [
-     "model alias operational (24h 100.0%)",
+     "model alias low_traffic, 24h availability 100.0%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "claude-opus-4.6",
-    "alias_state": "operational",
+    "alias_state": "low_traffic",
     "alias_availability_24h_pct": 100.0,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.3365,
+   "cache_hit_rate_24h": 0.3359,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3064,8 +3063,8 @@
     "min_ask_in": 1.225,
     "min_ask_out": 6.125,
     "blended_min_ask_3to1": 2.45,
-    "cw_median_ask_in": 1.245,
-    "cw_median_ask_out": 6.225,
+    "cw_median_ask_in": 1.25,
+    "cw_median_ask_out": 6.25,
     "official_in": 5.0,
     "official_out": 25.0,
     "discount_vs_official_in_pct": 75.5,
@@ -3075,22 +3074,22 @@
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 4,
-    "listings_in": 24,
-    "price_tiers_in": 10,
-    "rail_active_providers": 26
+    "sellers_at_min_ask_in": 5,
+    "listings_in": 25,
+    "price_tiers_in": 11,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "healthy",
-    "confidence": "medium",
+    "confidence": "low",
     "reasons": [
-     "model alias operational (24h 100.0%)",
+     "model alias low_traffic, 24h availability 100.0%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-opus-4.6",
-    "alias_state": "operational",
+    "alias_state": "low_traffic",
     "alias_availability_24h_pct": 100.0,
     "recent_traffic_observed": false
    },
@@ -3145,20 +3144,20 @@
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 99.81%",
+     "model alias low_traffic, 24h availability 99.8%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.11,
+    "rail_availability_24h_pct": 97.13,
     "alias": "qwen3.8-max",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 99.81,
+    "alias_availability_24h_pct": 99.8,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 131072,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.6561,
+   "cache_hit_rate_24h": 0.6482,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3190,15 +3189,15 @@
     "official_out": 6.0,
     "discount_vs_official_in_pct": 99.5,
     "discount_vs_official_out_pct": 99.5,
-    "last_trade_rate": 0.001541,
+    "last_trade_rate": 0.00171,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 8258,
-    "listings_in": 12103,
+    "sellers_at_min_ask_in": 8250,
+    "listings_in": 12095,
     "price_tiers_in": 10,
-    "rail_active_providers": 16920
+    "rail_active_providers": 16919
    },
    "health": {
     "status": "healthy",
@@ -3208,7 +3207,7 @@
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
+    "rail_availability_24h_pct": 98.95,
     "alias": "qwen3.8-max-0902",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.96,
@@ -3217,7 +3216,7 @@
    "context_window": 1000000,
    "max_output_tokens": 131072,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.7858,
+   "cache_hit_rate_24h": 0.7874,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3251,7 +3250,7 @@
     "official_out": 6.0,
     "discount_vs_official_in_pct": 99.2,
     "discount_vs_official_out_pct": 99.2,
-    "last_trade_rate": 0.050761,
+    "last_trade_rate": 0.089286,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -3259,26 +3258,26 @@
     "sellers_at_min_ask_in": 4,
     "listings_in": 2703,
     "price_tiers_in": 7,
-    "rail_active_providers": 16920
+    "rail_active_providers": 16919
    },
    "health": {
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 99.81%",
+     "model alias low_traffic, 24h availability 99.8%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
+    "rail_availability_24h_pct": 98.95,
     "alias": "qwen3.8-max",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 99.81,
+    "alias_availability_24h_pct": 99.8,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 131072,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.6754,
+   "cache_hit_rate_24h": 0.6796,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3324,14 +3323,14 @@
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 99.81%",
+     "model alias low_traffic, 24h availability 99.8%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "qwen3.8-max",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 99.81,
+    "alias_availability_24h_pct": 99.8,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -3379,20 +3378,20 @@
     "sellers_at_min_ask_in": 1,
     "listings_in": 5,
     "price_tiers_in": 4,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias low_traffic, 24h availability 99.81%"
+     "model alias low_traffic, 24h availability 99.8%",
+     "rail_state=operational"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "qwen3.8-max",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 99.81,
+    "alias_availability_24h_pct": 99.8,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -3432,15 +3431,15 @@
     "official_out": 6.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.12459,
+    "last_trade_rate": 0.125561,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36210,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36372,
     "price_tiers_in": 36,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
@@ -3501,17 +3500,17 @@
     "sellers_at_min_ask_in": 89,
     "listings_in": 95,
     "price_tiers_in": 6,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias low_traffic, 24h availability 100.0%"
+     "model alias low_traffic, 24h availability 100.0%",
+     "rail_state=operational"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "grok-4.6",
     "alias_state": "low_traffic",
     "alias_availability_24h_pct": 100.0,
@@ -3611,7 +3610,7 @@
     "official_out": 4.4,
     "discount_vs_official_in_pct": 99.9,
     "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.00019,
+    "last_trade_rate": 0.001588,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -3629,7 +3628,7 @@
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.11,
+    "rail_availability_24h_pct": 97.13,
     "alias": "glm-5.3",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.93,
@@ -3638,7 +3637,7 @@
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8483,
+   "cache_hit_rate_24h": 0.85,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3670,7 +3669,7 @@
     "official_out": 4.4,
     "discount_vs_official_in_pct": 99.9,
     "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.000388,
+    "last_trade_rate": 0.00015,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -3697,7 +3696,7 @@
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.9316,
+   "cache_hit_rate_24h": 0.9313,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3729,15 +3728,15 @@
     "official_out": 4.4,
     "discount_vs_official_in_pct": 98.0,
     "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.003252,
+    "last_trade_rate": 0.003024,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 3347,
-    "listings_in": 36062,
+    "sellers_at_min_ask_in": 3339,
+    "listings_in": 36223,
     "price_tiers_in": 35,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
@@ -3756,7 +3755,7 @@
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8571,
+   "cache_hit_rate_24h": 0.8574,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3790,7 +3789,7 @@
     "official_out": 4.4,
     "discount_vs_official_in_pct": 97.2,
     "discount_vs_official_out_pct": 97.2,
-    "last_trade_rate": 0.454545,
+    "last_trade_rate": 0.006648,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
@@ -3798,7 +3797,7 @@
     "sellers_at_min_ask_in": 36,
     "listings_in": 5450,
     "price_tiers_in": 9,
-    "rail_active_providers": 16920
+    "rail_active_providers": 16919
    },
    "health": {
     "status": "healthy",
@@ -3808,7 +3807,7 @@
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
+    "rail_availability_24h_pct": 98.95,
     "alias": "glm-5.3",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.93,
@@ -3817,7 +3816,7 @@
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8538,
+   "cache_hit_rate_24h": 0.8554,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3840,24 +3839,24 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.0196,
-    "min_ask_out": 0.0616,
-    "blended_min_ask_3to1": 0.0301,
+    "min_ask_in": 0.021,
+    "min_ask_out": 0.066,
+    "blended_min_ask_3to1": 0.03225,
     "cw_median_ask_in": 0.042,
     "cw_median_ask_out": 0.132,
     "official_in": 1.4,
     "official_out": 4.4,
-    "discount_vs_official_in_pct": 98.6,
-    "discount_vs_official_out_pct": 98.6,
-    "last_trade_rate": 0.002838,
+    "discount_vs_official_in_pct": 98.5,
+    "discount_vs_official_out_pct": 98.5,
+    "last_trade_rate": 0.002786,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 6,
-    "listings_in": 8526,
-    "price_tiers_in": 25,
-    "rail_active_providers": 12815
+    "sellers_at_min_ask_in": 18,
+    "listings_in": 8519,
+    "price_tiers_in": 24,
+    "rail_active_providers": 12812
    },
    "health": {
     "status": "healthy",
@@ -3876,7 +3875,7 @@
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8702,
+   "cache_hit_rate_24h": 0.8717,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -3910,7 +3909,7 @@
     "official_out": 4.4,
     "discount_vs_official_in_pct": 81.0,
     "discount_vs_official_out_pct": 81.0,
-    "last_trade_rate": 0.033267,
+    "last_trade_rate": 0.048755,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
@@ -3918,21 +3917,21 @@
     "sellers_at_min_ask_in": 2,
     "listings_in": 8,
     "price_tiers_in": 6,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias operational (24h 99.93%)"
+     "model alias operational (24h 99.93%)",
+     "rail_state=operational"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "glm-5.3",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.93,
-    "recent_traffic_observed": false
+    "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
@@ -3969,7 +3968,7 @@
     "official_out": 4.4,
     "discount_vs_official_in_pct": 90.0,
     "discount_vs_official_out_pct": 90.0,
-    "last_trade_rate": 0.107761,
+    "last_trade_rate": 0.158218,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
@@ -3987,7 +3986,7 @@
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "glm-5.3",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.93,
@@ -4030,7 +4029,7 @@
     "official_out": 6.0,
     "discount_vs_official_in_pct": 91.0,
     "discount_vs_official_out_pct": 91.0,
-    "last_trade_rate": 0.210855,
+    "last_trade_rate": 0.277921,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
@@ -4038,20 +4037,20 @@
     "sellers_at_min_ask_in": 59,
     "listings_in": 66,
     "price_tiers_in": 7,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias low_traffic, 24h availability 96.03%"
+     "model alias low_traffic, 24h availability 95.89%",
+     "rail_state=operational"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "grok-4.5",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 96.03,
+    "alias_availability_24h_pct": 95.89,
     "recent_traffic_observed": true
    },
    "context_window": 500000,
@@ -4103,14 +4102,14 @@
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 96.03%",
+     "model alias low_traffic, 24h availability 95.89%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "grok-4.5",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 96.03,
+    "alias_availability_24h_pct": 95.89,
     "recent_traffic_observed": false
    },
    "context_window": 500000,
@@ -4162,14 +4161,14 @@
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 96.03%",
+     "model alias low_traffic, 24h availability 95.89%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "grok-4.5",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 96.03,
+    "alias_availability_24h_pct": 95.89,
     "recent_traffic_observed": false
    },
    "context_window": 500000,
@@ -4184,305 +4183,6 @@
    ],
    "is_astra_owner_route": false,
    "frontier_rank": 10,
-   "is_best_route": false
-  },
-  {
-   "route": "alicn/glm-5.2",
-   "rail": "alicn",
-   "rail_label": "Qwencloud/Alibaba CN",
-   "model_id": "glm-5.2",
-   "model_label": "GLM 5.2",
-   "model_family": "GLM 5.2",
-   "vendor": "Z.ai",
-   "line": "glm",
-   "line_class": "near_frontier",
-   "version": "5.2",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.0014,
-    "min_ask_out": 0.0044,
-    "blended_min_ask_3to1": 0.00215,
-    "cw_median_ask_in": 0.0014,
-    "cw_median_ask_out": 0.0044,
-    "official_in": 1.4,
-    "official_out": 4.4,
-    "discount_vs_official_in_pct": 99.9,
-    "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.000149,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": true
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 8,
-    "listings_in": 8,
-    "price_tiers_in": 1,
-    "rail_active_providers": 9
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 82.81%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 97.11,
-    "alias": "glm-5.2",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 82.81,
-    "recent_traffic_observed": true
-   },
-   "context_window": 1000000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.712,
-   "system_prompt_handling": "unspecified",
-   "preferred_endpoint": null,
-   "required_instructions_value": null,
-   "caveats": [],
-   "is_astra_owner_route": false,
-   "frontier_rank": 11,
-   "is_best_route": true
-  },
-  {
-   "route": "cb/glm-5.2",
-   "rail": "cb",
-   "rail_label": "CodeBuddy",
-   "model_id": "glm-5.2",
-   "model_label": "GLM 5.2",
-   "model_family": "GLM 5.2",
-   "vendor": "Z.ai",
-   "line": "glm",
-   "line_class": "near_frontier",
-   "version": "5.2",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.0294,
-    "min_ask_out": 0.0924,
-    "blended_min_ask_3to1": 0.04515,
-    "cw_median_ask_in": 0.049,
-    "cw_median_ask_out": 0.154,
-    "official_in": 1.4,
-    "official_out": 4.4,
-    "discount_vs_official_in_pct": 97.9,
-    "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 1.111111,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": true
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36012,
-    "price_tiers_in": 32,
-    "rail_active_providers": 37692
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 82.81%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 99.85,
-    "alias": "glm-5.2",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 82.81,
-    "recent_traffic_observed": false
-   },
-   "context_window": 1000000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.936,
-   "system_prompt_handling": "upstream_note",
-   "preferred_endpoint": null,
-   "required_instructions_value": null,
-   "caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "is_astra_owner_route": false,
-   "frontier_rank": 11,
-   "is_best_route": false
-  },
-  {
-   "route": "cbcn/glm-5.2",
-   "rail": "cbcn",
-   "rail_label": "CodeBuddy CN",
-   "model_id": "glm-5.2",
-   "model_label": "GLM 5.2",
-   "model_family": "GLM 5.2",
-   "vendor": "Z.ai",
-   "line": "glm",
-   "line_class": "near_frontier",
-   "version": "5.2",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.0196,
-    "min_ask_out": 0.0616,
-    "blended_min_ask_3to1": 0.0301,
-    "cw_median_ask_in": 0.042,
-    "cw_median_ask_out": 0.132,
-    "official_in": 1.4,
-    "official_out": 4.4,
-    "discount_vs_official_in_pct": 98.6,
-    "discount_vs_official_out_pct": 98.6,
-    "last_trade_rate": 0.00833,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": true
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 6,
-    "listings_in": 7780,
-    "price_tiers_in": 23,
-    "rail_active_providers": 12815
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 82.81%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 99.98,
-    "alias": "glm-5.2",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 82.81,
-    "recent_traffic_observed": false
-   },
-   "context_window": 1000000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.6926,
-   "system_prompt_handling": "upstream_note",
-   "preferred_endpoint": null,
-   "required_instructions_value": null,
-   "caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "is_astra_owner_route": false,
-   "frontier_rank": 11,
-   "is_best_route": false
-  },
-  {
-   "route": "ali/glm-5.2",
-   "rail": "ali",
-   "rail_label": "Qwencloud/Alibaba",
-   "model_id": "glm-5.2",
-   "model_label": "GLM 5.2",
-   "model_family": "GLM 5.2",
-   "vendor": "Z.ai",
-   "line": "glm",
-   "line_class": "near_frontier",
-   "version": "5.2",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.0042,
-    "min_ask_out": 0.0132,
-    "blended_min_ask_3to1": 0.00645,
-    "cw_median_ask_in": 0.007,
-    "cw_median_ask_out": 0.022,
-    "official_in": 1.4,
-    "official_out": 4.4,
-    "discount_vs_official_in_pct": 99.7,
-    "discount_vs_official_out_pct": 99.7,
-    "last_trade_rate": 0.030211,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": true
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 2,
-    "listings_in": 8073,
-    "price_tiers_in": 11,
-    "rail_active_providers": 16920
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 82.81%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
-    "alias": "glm-5.2",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 82.81,
-    "recent_traffic_observed": true
-   },
-   "context_window": 1000000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.759,
-   "system_prompt_handling": "unspecified",
-   "preferred_endpoint": null,
-   "required_instructions_value": null,
-   "caveats": [],
-   "is_astra_owner_route": false,
-   "frontier_rank": 11,
-   "is_best_route": false
-  },
-  {
-   "route": "cmc/zai-org/GLM-5.2",
-   "rail": "cmc",
-   "rail_label": "Command Code",
-   "model_id": "zai-org/GLM-5.2",
-   "model_label": null,
-   "model_family": "GLM 5.2",
-   "vendor": "Z.ai",
-   "line": "glm",
-   "line_class": "near_frontier",
-   "version": "5.2",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.2786,
-    "min_ask_out": 0.8756,
-    "blended_min_ask_3to1": 0.42785,
-    "cw_median_ask_in": 0.7,
-    "cw_median_ask_out": 2.2,
-    "official_in": 1.4,
-    "official_out": 4.4,
-    "discount_vs_official_in_pct": 80.1,
-    "discount_vs_official_out_pct": 80.1,
-    "last_trade_rate": 0.854194,
-    "min_ask_in_under_policy": false,
-    "min_ask_out_under_policy": false
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 2,
-    "listings_in": 7,
-    "price_tiers_in": 3,
-    "rail_active_providers": 8
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 82.81%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 98.63,
-    "alias": "glm-5.2",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 82.81,
-    "recent_traffic_observed": false
-   },
-   "context_window": 1000000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": null,
-   "system_prompt_handling": "unspecified",
-   "preferred_endpoint": null,
-   "required_instructions_value": null,
-   "caveats": [],
-   "is_astra_owner_route": false,
-   "frontier_rank": 11,
    "is_best_route": false
   },
   {
@@ -4541,7 +4241,7 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 12,
+   "frontier_rank": 11,
    "is_best_route": true
   },
   {
@@ -4567,33 +4267,33 @@
     "official_out": 50.0,
     "discount_vs_official_in_pct": 80.1,
     "discount_vs_official_out_pct": 80.1,
-    "last_trade_rate": 3.52381,
+    "last_trade_rate": 6.707965,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 5,
-    "listings_in": 25,
-    "price_tiers_in": 9,
-    "rail_active_providers": 26
+    "listings_in": 26,
+    "price_tiers_in": 10,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 29.43%), model-wide signal"
+     "model alias_state=major_outage (24h 29.1%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-fable-5.1",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 29.43,
+    "alias_availability_24h_pct": 29.1,
     "recent_traffic_observed": true
    },
    "context_window": null,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.4738,
+   "cache_hit_rate_24h": 0.4838,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -4601,7 +4301,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 13,
+   "frontier_rank": 12,
    "is_best_route": true
   },
   {
@@ -4627,27 +4327,27 @@
     "official_out": 50.0,
     "discount_vs_official_in_pct": 80.1,
     "discount_vs_official_out_pct": 80.1,
-    "last_trade_rate": 8.263158,
+    "last_trade_rate": 7.045455,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 5,
-    "listings_in": 25,
-    "price_tiers_in": 9,
-    "rail_active_providers": 26
+    "listings_in": 26,
+    "price_tiers_in": 10,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 34.43%), model-wide signal"
+     "model alias_state=major_outage (24h 34.41%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-fable-5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 34.43,
+    "alias_availability_24h_pct": 34.41,
     "recent_traffic_observed": true
    },
    "context_window": null,
@@ -4661,7 +4361,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 14,
+   "frontier_rank": 13,
    "is_best_route": true
   },
   {
@@ -4687,33 +4387,33 @@
     "official_out": 20.0,
     "discount_vs_official_in_pct": 80.1,
     "discount_vs_official_out_pct": 80.1,
-    "last_trade_rate": 2.666667,
+    "last_trade_rate": 1.29317,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 5,
-    "listings_in": 26,
+    "listings_in": 27,
     "price_tiers_in": 11,
-    "rail_active_providers": 26
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 71.5%), model-wide signal"
+     "model alias_state=major_outage (24h 71.14%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-opus-5.5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 71.5,
+    "alias_availability_24h_pct": 71.14,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.7954,
+   "cache_hit_rate_24h": 0.7934,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -4721,7 +4421,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 15,
+   "frontier_rank": 14,
    "is_best_route": true
   },
   {
@@ -4752,22 +4452,22 @@
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 13056,
-    "listings_in": 36754,
+    "sellers_at_min_ask_in": 13001,
+    "listings_in": 36916,
     "price_tiers_in": 38,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 4.69%), model-wide signal"
+     "model alias_state=major_outage (24h 4.59%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "claude-opus-5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 4.69,
+    "alias_availability_24h_pct": 4.59,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -4781,7 +4481,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 16,
+   "frontier_rank": 15,
    "is_best_route": true
   },
   {
@@ -4807,33 +4507,33 @@
     "official_out": 25.0,
     "discount_vs_official_in_pct": 80.1,
     "discount_vs_official_out_pct": 80.1,
-    "last_trade_rate": 0.0,
+    "last_trade_rate": 0.112122,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 5,
-    "listings_in": 25,
-    "price_tiers_in": 10,
-    "rail_active_providers": 26
+    "listings_in": 26,
+    "price_tiers_in": 11,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 4.69%), model-wide signal"
+     "model alias_state=major_outage (24h 4.59%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-opus-5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 4.69,
+    "alias_availability_24h_pct": 4.59,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.5053,
+   "cache_hit_rate_24h": 0.5153,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -4841,7 +4541,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 16,
+   "frontier_rank": 15,
    "is_best_route": false
   },
   {
@@ -4867,27 +4567,27 @@
     "official_out": 30.0,
     "discount_vs_official_in_pct": 99.1,
     "discount_vs_official_out_pct": 99.1,
-    "last_trade_rate": 0.833333,
+    "last_trade_rate": 0.211268,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 1917,
-    "listings_in": 36209,
+    "sellers_at_min_ask_in": 1926,
+    "listings_in": 36371,
     "price_tiers_in": 32,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 93.26%), model-wide signal"
+     "model alias_state=major_outage (24h 93.21%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "gpt-5.5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 93.26,
+    "alias_availability_24h_pct": 93.21,
     "recent_traffic_observed": false
    },
    "context_window": 272000,
@@ -4901,7 +4601,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 17,
+   "frontier_rank": 16,
    "is_best_route": true
   },
   {
@@ -4935,25 +4635,25 @@
     "sellers_at_min_ask_in": 1,
     "listings_in": 61,
     "price_tiers_in": 17,
-    "rail_active_providers": 74
+    "rail_active_providers": 71
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 93.26%), model-wide signal"
+     "model alias_state=major_outage (24h 93.21%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
+    "rail_availability_24h_pct": 96.8,
     "alias": "gpt-5.5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 93.26,
+    "alias_availability_24h_pct": 93.21,
     "recent_traffic_observed": true
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.319,
+   "cache_hit_rate_24h": 0.3228,
    "system_prompt_handling": "developer_message",
    "preferred_endpoint": "/v1/responses",
    "required_instructions_value": "You are a helpful assistant.",
@@ -4962,7 +4662,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 17,
+   "frontier_rank": 16,
    "is_best_route": false
   },
   {
@@ -4988,33 +4688,33 @@
     "official_out": 10.0,
     "discount_vs_official_in_pct": 75.5,
     "discount_vs_official_out_pct": 75.5,
-    "last_trade_rate": 0.064222,
+    "last_trade_rate": 0.75,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 4,
-    "listings_in": 25,
+    "sellers_at_min_ask_in": 5,
+    "listings_in": 26,
     "price_tiers_in": 10,
-    "rail_active_providers": 26
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 58.62%), model-wide signal"
+     "model alias_state=major_outage (24h 58.22%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-sonnet-5.5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 58.62,
+    "alias_availability_24h_pct": 58.22,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8099,
+   "cache_hit_rate_24h": 0.8,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5022,7 +4722,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 18,
+   "frontier_rank": 17,
    "is_best_route": true
   },
   {
@@ -5053,28 +4753,28 @@
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 4,
-    "listings_in": 25,
-    "price_tiers_in": 10,
-    "rail_active_providers": 26
+    "sellers_at_min_ask_in": 5,
+    "listings_in": 26,
+    "price_tiers_in": 11,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 40.05%), model-wide signal"
+     "model alias_state=major_outage (24h 39.92%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-opus-4.8",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 40.05,
+    "alias_availability_24h_pct": 39.92,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.3854,
+   "cache_hit_rate_24h": 0.3853,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5082,7 +4782,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 19,
+   "frontier_rank": 18,
    "is_best_route": true
   },
   {
@@ -5108,28 +4808,28 @@
     "official_out": 14.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.159574,
+    "last_trade_rate": 0.217391,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36061,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36223,
     "price_tiers_in": 33,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 96.58%",
+     "model alias low_traffic, 24h availability 96.55%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "gpt-5.3-codex",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 96.58,
+    "alias_availability_24h_pct": 96.55,
     "recent_traffic_observed": false
    },
    "context_window": 272000,
@@ -5143,7 +4843,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 20,
+   "frontier_rank": 19,
    "is_best_route": true
   },
   {
@@ -5169,34 +4869,33 @@
     "official_out": 30.0,
     "discount_vs_official_in_pct": 98.1,
     "discount_vs_official_out_pct": 98.1,
-    "last_trade_rate": 0.168717,
+    "last_trade_rate": 0.333333,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5,
-    "listings_in": 37,
-    "price_tiers_in": 17,
-    "rail_active_providers": 74
+    "sellers_at_min_ask_in": 4,
+    "listings_in": 35,
+    "price_tiers_in": 16,
+    "rail_active_providers": 71
    },
    "health": {
-    "status": "healthy",
+    "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 93.81%)",
-     "rail_state=operational"
+     "model alias_state=degraded (24h 93.74%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
+    "rail_availability_24h_pct": 96.8,
     "alias": "gpt-5.6-sol",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 93.81,
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 93.74,
     "recent_traffic_observed": true
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.62,
+   "cache_hit_rate_24h": 0.623,
    "system_prompt_handling": "developer_message",
    "preferred_endpoint": "/v1/responses",
    "required_instructions_value": "You are a helpful assistant.",
@@ -5204,7 +4903,7 @@
     "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 21,
+   "frontier_rank": 20,
    "is_best_route": true
   },
   {
@@ -5230,33 +4929,33 @@
     "official_out": 15.0,
     "discount_vs_official_in_pct": 99.1,
     "discount_vs_official_out_pct": 99.1,
-    "last_trade_rate": 0.095238,
+    "last_trade_rate": 0.0,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 1917,
-    "listings_in": 36059,
+    "sellers_at_min_ask_in": 1926,
+    "listings_in": 36221,
     "price_tiers_in": 33,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 83.72%), model-wide signal"
+     "model alias_state=major_outage (24h 83.14%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "gpt-5.4",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 83.72,
+    "alias_availability_24h_pct": 83.14,
     "recent_traffic_observed": false
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.6121,
+   "cache_hit_rate_24h": 0.6122,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5264,7 +4963,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 22,
+   "frontier_rank": 21,
    "is_best_route": true
   },
   {
@@ -5290,34 +4989,33 @@
     "official_out": 25.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.073469,
+    "last_trade_rate": 0.022222,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 13056,
-    "listings_in": 36445,
+    "sellers_at_min_ask_in": 13001,
+    "listings_in": 36607,
     "price_tiers_in": 35,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
-    "status": "healthy",
+    "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 97.74%)",
-     "rail_state=operational"
+     "model alias_state=degraded (24h 97.52%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "claude-opus-4.7",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 97.74,
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 97.52,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.4865,
+   "cache_hit_rate_24h": 0.4837,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5326,7 +5024,7 @@
     "route variant '1m' (same model family, different upstream id)"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 23,
+   "frontier_rank": 22,
    "is_best_route": true
   },
   {
@@ -5346,8 +5044,8 @@
     "min_ask_in": 1.225,
     "min_ask_out": 6.125,
     "blended_min_ask_3to1": 2.45,
-    "cw_median_ask_in": 1.245,
-    "cw_median_ask_out": 6.225,
+    "cw_median_ask_in": 1.25,
+    "cw_median_ask_out": 6.25,
     "official_in": 5.0,
     "official_out": 25.0,
     "discount_vs_official_in_pct": 75.5,
@@ -5357,23 +5055,22 @@
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 4,
-    "listings_in": 24,
-    "price_tiers_in": 10,
-    "rail_active_providers": 26
+    "sellers_at_min_ask_in": 5,
+    "listings_in": 25,
+    "price_tiers_in": 11,
+    "rail_active_providers": 27
    },
    "health": {
-    "status": "healthy",
+    "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 97.74%)",
-     "rail_state=operational"
+     "model alias_state=degraded (24h 97.52%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-opus-4.7",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 97.74,
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 97.52,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -5387,7 +5084,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 23,
+   "frontier_rank": 22,
    "is_best_route": false
   },
   {
@@ -5404,42 +5101,42 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.49,
-    "min_ask_out": 2.45,
-    "blended_min_ask_3to1": 0.98,
+    "min_ask_in": 0.398,
+    "min_ask_out": 1.99,
+    "blended_min_ask_3to1": 0.796,
     "cw_median_ask_in": 0.5,
     "cw_median_ask_out": 2.5,
     "official_in": 2.0,
     "official_out": 10.0,
-    "discount_vs_official_in_pct": 75.5,
-    "discount_vs_official_out_pct": 75.5,
-    "last_trade_rate": 0.073,
+    "discount_vs_official_in_pct": 80.1,
+    "discount_vs_official_out_pct": 80.1,
+    "last_trade_rate": 0.043775,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 4,
-    "listings_in": 25,
-    "price_tiers_in": 10,
-    "rail_active_providers": 26
+    "sellers_at_min_ask_in": 5,
+    "listings_in": 26,
+    "price_tiers_in": 11,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 77.42%), model-wide signal"
+     "model alias_state=major_outage (24h 76.99%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-sonnet-5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 77.42,
+    "alias_availability_24h_pct": 76.99,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 64000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.658,
+   "cache_hit_rate_24h": 0.6649,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5447,7 +5144,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 24,
+   "frontier_rank": 23,
    "is_best_route": true
   },
   {
@@ -5464,42 +5161,42 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.04,
-    "min_ask_out": 0.24,
-    "blended_min_ask_3to1": 0.09,
+    "min_ask_in": 0.048,
+    "min_ask_out": 0.288,
+    "blended_min_ask_3to1": 0.108,
     "cw_median_ask_in": 0.458,
     "cw_median_ask_out": 2.748,
     "official_in": 2.0,
     "official_out": 12.0,
-    "discount_vs_official_in_pct": 98.0,
-    "discount_vs_official_out_pct": 98.0,
+    "discount_vs_official_in_pct": 97.6,
+    "discount_vs_official_out_pct": 97.6,
     "last_trade_rate": 0.357143,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 1,
-    "listings_in": 62,
-    "price_tiers_in": 18,
-    "rail_active_providers": 74
+    "listings_in": 61,
+    "price_tiers_in": 17,
+    "rail_active_providers": 71
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=degraded (24h 82.79%), model-wide signal"
+     "model alias_state=major_outage (24h 82.43%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
+    "rail_availability_24h_pct": 96.8,
     "alias": "gpt-5.6-terra",
-    "alias_state": "degraded",
-    "alias_availability_24h_pct": 82.79,
+    "alias_state": "major_outage",
+    "alias_availability_24h_pct": 82.43,
     "recent_traffic_observed": true
    },
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8716,
+   "cache_hit_rate_24h": 0.8715,
    "system_prompt_handling": "developer_message",
    "preferred_endpoint": "/v1/responses",
    "required_instructions_value": "You are a helpful assistant.",
@@ -5508,7 +5205,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 25,
+   "frontier_rank": 24,
    "is_best_route": true
   },
   {
@@ -5534,7 +5231,7 @@
     "official_out": 15.0,
     "discount_vs_official_in_pct": 99.9,
     "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.206767,
+    "last_trade_rate": 0.00783,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -5548,25 +5245,25 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.11,
+    "rail_availability_24h_pct": 97.13,
     "alias": "kimi-k3",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
+    "alias_availability_24h_pct": 75.4,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": null,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.7608,
+   "cache_hit_rate_24h": 0.76,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 26,
+   "frontier_rank": 25,
    "is_best_route": true
   },
   {
@@ -5592,33 +5289,33 @@
     "official_out": 15.0,
     "discount_vs_official_in_pct": 98.0,
     "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.006362,
+    "last_trade_rate": 0.081917,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 3347,
-    "listings_in": 36655,
+    "sellers_at_min_ask_in": 3340,
+    "listings_in": 36817,
     "price_tiers_in": 35,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "kimi-k3",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
+    "alias_availability_24h_pct": 75.4,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": null,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8642,
+   "cache_hit_rate_24h": 0.8633,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5626,7 +5323,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 26,
+   "frontier_rank": 25,
    "is_best_route": false
   },
   {
@@ -5660,19 +5357,19 @@
     "sellers_at_min_ask_in": 50,
     "listings_in": 1623,
     "price_tiers_in": 5,
-    "rail_active_providers": 16920
+    "rail_active_providers": 16919
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
+    "rail_availability_24h_pct": 98.95,
     "alias": "kimi-k3",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
+    "alias_availability_24h_pct": 75.4,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -5684,7 +5381,67 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 26,
+   "frontier_rank": 25,
+   "is_best_route": false
+  },
+  {
+   "route": "cbcn/kimi-k3",
+   "rail": "cbcn",
+   "rail_label": "CodeBuddy CN",
+   "model_id": "kimi-k3",
+   "model_label": "Kimi K3",
+   "model_family": "Kimi K3",
+   "vendor": "Moonshot",
+   "line": "kimi-k",
+   "line_class": "near_frontier",
+   "version": "3",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.045,
+    "min_ask_out": 0.225,
+    "blended_min_ask_3to1": 0.09,
+    "cw_median_ask_in": 0.09,
+    "cw_median_ask_out": 0.45,
+    "official_in": 3.0,
+    "official_out": 15.0,
+    "discount_vs_official_in_pct": 98.5,
+    "discount_vs_official_out_pct": 98.5,
+    "last_trade_rate": 0.10989,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": false
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 18,
+    "listings_in": 8578,
+    "price_tiers_in": 23,
+    "rail_active_providers": 12812
+   },
+   "health": {
+    "status": "degraded",
+    "confidence": "medium",
+    "reasons": [
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 99.98,
+    "alias": "kimi-k3",
+    "alias_state": "major_outage",
+    "alias_availability_24h_pct": 75.4,
+    "recent_traffic_observed": true
+   },
+   "context_window": 1000000,
+   "max_output_tokens": null,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.7569,
+   "system_prompt_handling": "upstream_note",
+   "preferred_endpoint": null,
+   "required_instructions_value": null,
+   "caveats": [
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+   ],
+   "is_astra_owner_route": false,
+   "frontier_rank": 25,
    "is_best_route": false
   },
   {
@@ -5718,20 +5475,19 @@
     "sellers_at_min_ask_in": 11,
     "listings_in": 19,
     "price_tiers_in": 3,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "kimi-k3",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
+    "alias_availability_24h_pct": 75.4,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -5743,67 +5499,7 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 26,
-   "is_best_route": false
-  },
-  {
-   "route": "cbcn/kimi-k3",
-   "rail": "cbcn",
-   "rail_label": "CodeBuddy CN",
-   "model_id": "kimi-k3",
-   "model_label": "Kimi K3",
-   "model_family": "Kimi K3",
-   "vendor": "Moonshot",
-   "line": "kimi-k",
-   "line_class": "near_frontier",
-   "version": "3",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.042,
-    "min_ask_out": 0.21,
-    "blended_min_ask_3to1": 0.084,
-    "cw_median_ask_in": 0.09,
-    "cw_median_ask_out": 0.45,
-    "official_in": 3.0,
-    "official_out": 15.0,
-    "discount_vs_official_in_pct": 98.6,
-    "discount_vs_official_out_pct": 98.6,
-    "last_trade_rate": 0.049454,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": false
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 6,
-    "listings_in": 8580,
-    "price_tiers_in": 24,
-    "rail_active_providers": 12815
-   },
-   "health": {
-    "status": "degraded",
-    "confidence": "medium",
-    "reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 99.98,
-    "alias": "kimi-k3",
-    "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
-    "recent_traffic_observed": true
-   },
-   "context_window": 1000000,
-   "max_output_tokens": null,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.7572,
-   "system_prompt_handling": "upstream_note",
-   "preferred_endpoint": null,
-   "required_instructions_value": null,
-   "caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "is_astra_owner_route": false,
-   "frontier_rank": 26,
+   "frontier_rank": 25,
    "is_best_route": false
   },
   {
@@ -5843,13 +5539,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "kimi-k3",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
+    "alias_availability_24h_pct": 75.4,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -5861,7 +5557,7 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 26,
+   "frontier_rank": 25,
    "is_best_route": false
   },
   {
@@ -5901,13 +5597,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 75.52%), model-wide signal"
+     "model alias_state=major_outage (24h 75.4%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "kimi-k3",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 75.52,
+    "alias_availability_24h_pct": 75.4,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -5921,7 +5617,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 26,
+   "frontier_rank": 25,
    "is_best_route": false
   },
   {
@@ -5947,33 +5643,33 @@
     "official_out": 6.0,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.00788,
+    "last_trade_rate": 0.06574,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36210,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36372,
     "price_tiers_in": 36,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=degraded (24h 95.33%), model-wide signal"
+     "model alias_state=degraded (24h 95.26%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.85,
     "alias": "grok-4.7",
     "alias_state": "degraded",
-    "alias_availability_24h_pct": 95.33,
+    "alias_availability_24h_pct": 95.26,
     "recent_traffic_observed": false
    },
    "context_window": 500000,
    "max_output_tokens": null,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8255,
+   "cache_hit_rate_24h": 0.8327,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -5981,7 +5677,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 27,
+   "frontier_rank": 26,
    "is_best_route": true
   },
   {
@@ -6015,20 +5711,19 @@
     "sellers_at_min_ask_in": 95,
     "listings_in": 101,
     "price_tiers_in": 6,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias_state=degraded (24h 95.33%), model-wide signal"
+     "model alias_state=degraded (24h 95.26%), model-wide signal"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "grok-4.7",
     "alias_state": "degraded",
-    "alias_availability_24h_pct": 95.33,
+    "alias_availability_24h_pct": 95.26,
     "recent_traffic_observed": false
    },
    "context_window": 500000,
@@ -6040,7 +5735,7 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 27,
+   "frontier_rank": 26,
    "is_best_route": false
   },
   {
@@ -6080,13 +5775,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=degraded (24h 95.33%), model-wide signal"
+     "model alias_state=degraded (24h 95.26%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "grok-4.7",
     "alias_state": "degraded",
-    "alias_availability_24h_pct": 95.33,
+    "alias_availability_24h_pct": 95.26,
     "recent_traffic_observed": false
    },
    "context_window": 500000,
@@ -6098,7 +5793,7 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 27,
+   "frontier_rank": 26,
    "is_best_route": false
   },
   {
@@ -6130,21 +5825,21 @@
    },
    "sellers": {
     "sellers_at_min_ask_in": 4,
-    "listings_in": 21,
-    "price_tiers_in": 9,
-    "rail_active_providers": 26
+    "listings_in": 22,
+    "price_tiers_in": 10,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 54.21%), model-wide signal"
+     "model alias_state=major_outage (24h 53.14%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-sonnet-4.5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 54.21,
+    "alias_availability_24h_pct": 53.14,
     "recent_traffic_observed": false
    },
    "context_window": 200000,
@@ -6158,7 +5853,7 @@
     "InferHub rail note: A one-line Claude Code client header is added as the first system block. Your own system prompt follows it unchanged."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 28,
+   "frontier_rank": 27,
    "is_best_route": true
   },
   {
@@ -6175,24 +5870,24 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.0133,
-    "min_ask_out": 0.056,
-    "blended_min_ask_3to1": 0.023975,
+    "min_ask_in": 0.01425,
+    "min_ask_out": 0.06,
+    "blended_min_ask_3to1": 0.025688,
     "cw_median_ask_in": 0.0285,
     "cw_median_ask_out": 0.12,
     "official_in": 0.95,
     "official_out": 4.0,
-    "discount_vs_official_in_pct": 98.6,
-    "discount_vs_official_out_pct": 98.6,
-    "last_trade_rate": 0.011924,
+    "discount_vs_official_in_pct": 98.5,
+    "discount_vs_official_out_pct": 98.5,
+    "last_trade_rate": 0.4,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 6,
-    "listings_in": 6998,
-    "price_tiers_in": 22,
-    "rail_active_providers": 12815
+    "sellers_at_min_ask_in": 18,
+    "listings_in": 6995,
+    "price_tiers_in": 21,
+    "rail_active_providers": 12812
    },
    "health": {
     "status": "insufficient_data",
@@ -6210,7 +5905,7 @@
    "context_window": 262144,
    "max_output_tokens": null,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.6374,
+   "cache_hit_rate_24h": 0.6373,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -6218,7 +5913,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 29,
+   "frontier_rank": 28,
    "is_best_route": true
   },
   {
@@ -6244,7 +5939,7 @@
     "official_out": 4.0,
     "discount_vs_official_in_pct": 93.1,
     "discount_vs_official_out_pct": 93.1,
-    "last_trade_rate": 0.227273,
+    "last_trade_rate": 0.357143,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
@@ -6252,25 +5947,25 @@
     "sellers_at_min_ask_in": 7,
     "listings_in": 2117,
     "price_tiers_in": 5,
-    "rail_active_providers": 16920
+    "rail_active_providers": 16919
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 94.61%), model-wide signal"
+     "model alias_state=major_outage (24h 94.26%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
+    "rail_availability_24h_pct": 98.95,
     "alias": "kimi-k2.7-code",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 94.61,
+    "alias_availability_24h_pct": 94.26,
     "recent_traffic_observed": true
    },
    "context_window": 262144,
    "max_output_tokens": null,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8861,
+   "cache_hit_rate_24h": 0.884,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -6278,7 +5973,7 @@
     "route variant 'code' (same model family, different upstream id)"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 29,
+   "frontier_rank": 28,
    "is_best_route": false
   },
   {
@@ -6318,13 +6013,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 94.61%), model-wide signal"
+     "model alias_state=major_outage (24h 94.26%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "kimi-k2.7-code",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 94.61,
+    "alias_availability_24h_pct": 94.26,
     "recent_traffic_observed": false
    },
    "context_window": 262144,
@@ -6338,7 +6033,7 @@
     "route variant 'code' (same model family, different upstream id)"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 29,
+   "frontier_rank": 28,
    "is_best_route": false
   },
   {
@@ -6378,13 +6073,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 94.61%), model-wide signal"
+     "model alias_state=major_outage (24h 94.26%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "kimi-k2.7-code",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 94.61,
+    "alias_availability_24h_pct": 94.26,
     "recent_traffic_observed": false
    },
    "context_window": 262144,
@@ -6399,7 +6094,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 29,
+   "frontier_rank": 28,
    "is_best_route": false
   },
   {
@@ -6425,7 +6120,7 @@
     "official_out": 1.98,
     "discount_vs_official_in_pct": 99.9,
     "discount_vs_official_out_pct": 99.9,
-    "last_trade_rate": 0.108696,
+    "last_trade_rate": 0.002037,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -6439,19 +6134,19 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 87.4%), model-wide signal"
+     "model alias_state=major_outage (24h 87.19%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.11,
+    "rail_availability_24h_pct": 97.13,
     "alias": "deepseek-v4-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 87.4,
+    "alias_availability_24h_pct": 87.19,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 393216,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8567,
+   "cache_hit_rate_24h": 0.862,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -6459,7 +6154,7 @@
     "route variant '0813' (same model family, different upstream id)"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 30,
+   "frontier_rank": 29,
    "is_best_route": true
   },
   {
@@ -6476,42 +6171,42 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.00924,
-    "min_ask_out": 0.02772,
-    "blended_min_ask_3to1": 0.01386,
+    "min_ask_in": 0.0099,
+    "min_ask_out": 0.0297,
+    "blended_min_ask_3to1": 0.01485,
     "cw_median_ask_in": 0.0198,
     "cw_median_ask_out": 0.0594,
     "official_in": 0.66,
     "official_out": 1.98,
-    "discount_vs_official_in_pct": 98.6,
-    "discount_vs_official_out_pct": 98.6,
-    "last_trade_rate": 0.131579,
+    "discount_vs_official_in_pct": 98.5,
+    "discount_vs_official_out_pct": 98.5,
+    "last_trade_rate": 0.007515,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 6,
-    "listings_in": 8592,
-    "price_tiers_in": 26,
-    "rail_active_providers": 12815
+    "sellers_at_min_ask_in": 18,
+    "listings_in": 8589,
+    "price_tiers_in": 25,
+    "rail_active_providers": 12812
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 87.4%), model-wide signal"
+     "model alias_state=major_outage (24h 87.19%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.98,
     "alias": "deepseek-v4-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 87.4,
+    "alias_availability_24h_pct": 87.19,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 393216,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8645,
+   "cache_hit_rate_24h": 0.8641,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -6519,7 +6214,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 30,
+   "frontier_rank": 29,
    "is_best_route": false
   },
   {
@@ -6545,7 +6240,7 @@
     "official_out": 1.98,
     "discount_vs_official_in_pct": 98.0,
     "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.002627,
+    "last_trade_rate": 0.021231,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -6553,25 +6248,25 @@
     "sellers_at_min_ask_in": 1,
     "listings_in": 2833,
     "price_tiers_in": 9,
-    "rail_active_providers": 16920
+    "rail_active_providers": 16919
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 87.4%), model-wide signal"
+     "model alias_state=major_outage (24h 87.19%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 98.96,
+    "rail_availability_24h_pct": 98.95,
     "alias": "deepseek-v4-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 87.4,
+    "alias_availability_24h_pct": 87.19,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 393216,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.8837,
+   "cache_hit_rate_24h": 0.8828,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -6580,7 +6275,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 30,
+   "frontier_rank": 29,
    "is_best_route": false
   },
   {
@@ -6620,13 +6315,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 87.4%), model-wide signal"
+     "model alias_state=major_outage (24h 87.19%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "deepseek-v4-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 87.4,
+    "alias_availability_24h_pct": 87.19,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -6640,7 +6335,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 30,
+   "frontier_rank": 29,
    "is_best_route": false
   },
   {
@@ -6674,21 +6369,20 @@
     "sellers_at_min_ask_in": 1,
     "listings_in": 1,
     "price_tiers_in": 1,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias_state=major_outage (24h 87.4%), model-wide signal"
+     "model alias_state=major_outage (24h 87.19%), model-wide signal"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "deepseek-v4-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 87.4,
-    "recent_traffic_observed": true
+    "alias_availability_24h_pct": 87.19,
+    "recent_traffic_observed": false
    },
    "context_window": 1000000,
    "max_output_tokens": 393216,
@@ -6701,7 +6395,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 30,
+   "frontier_rank": 29,
    "is_best_route": false
   },
   {
@@ -6735,17 +6429,16 @@
     "sellers_at_min_ask_in": 1,
     "listings_in": 6,
     "price_tiers_in": 5,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "insufficient_data",
     "confidence": "low",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
      "model alias low_traffic with no 24h availability"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "qwen3.7-max",
     "alias_state": "low_traffic",
     "alias_availability_24h_pct": null,
@@ -6762,7 +6455,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 31,
+   "frontier_rank": 30,
    "is_best_route": true
   },
   {
@@ -6779,42 +6472,42 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.0133,
-    "min_ask_out": 0.056,
-    "blended_min_ask_3to1": 0.023975,
+    "min_ask_in": 0.01425,
+    "min_ask_out": 0.06,
+    "blended_min_ask_3to1": 0.025688,
     "cw_median_ask_in": 0.0285,
     "cw_median_ask_out": 0.12,
     "official_in": 0.95,
     "official_out": 4.0,
-    "discount_vs_official_in_pct": 98.6,
-    "discount_vs_official_out_pct": 98.6,
-    "last_trade_rate": 0.006867,
+    "discount_vs_official_in_pct": 98.5,
+    "discount_vs_official_out_pct": 98.5,
+    "last_trade_rate": 1.0,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 6,
-    "listings_in": 6826,
-    "price_tiers_in": 19,
-    "rail_active_providers": 12815
+    "sellers_at_min_ask_in": 18,
+    "listings_in": 6823,
+    "price_tiers_in": 18,
+    "rail_active_providers": 12812
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 88.73%), model-wide signal"
+     "model alias_state=major_outage (24h 88.28%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.98,
     "alias": "kimi-k2.6",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 88.73,
+    "alias_availability_24h_pct": 88.28,
     "recent_traffic_observed": true
    },
    "context_window": 262144,
    "max_output_tokens": null,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.6389,
+   "cache_hit_rate_24h": 0.6392,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -6822,7 +6515,7 @@
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 32,
+   "frontier_rank": 31,
    "is_best_route": true
   },
   {
@@ -6862,13 +6555,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 88.73%), model-wide signal"
+     "model alias_state=major_outage (24h 88.28%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "kimi-k2.6",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 88.73,
+    "alias_availability_24h_pct": 88.28,
     "recent_traffic_observed": false
    },
    "context_window": 262144,
@@ -6880,7 +6573,7 @@
    "required_instructions_value": null,
    "caveats": [],
    "is_astra_owner_route": false,
-   "frontier_rank": 32,
+   "frontier_rank": 31,
    "is_best_route": false
   },
   {
@@ -6920,13 +6613,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 88.73%), model-wide signal"
+     "model alias_state=major_outage (24h 88.28%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "kimi-k2.6",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 88.73,
+    "alias_availability_24h_pct": 88.28,
     "recent_traffic_observed": false
    },
    "context_window": 262144,
@@ -6940,7 +6633,7 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
-   "frontier_rank": 32,
+   "frontier_rank": 31,
    "is_best_route": false
   },
   {
@@ -7001,8 +6694,302 @@
     "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
+   "frontier_rank": 32,
+   "is_best_route": true
+  },
+  {
+   "route": "alicn/glm-5.2",
+   "rail": "alicn",
+   "rail_label": "Qwencloud/Alibaba CN",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "line": "glm",
+   "line_class": "near_frontier",
+   "version": "5.2",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.0014,
+    "min_ask_out": 0.0044,
+    "blended_min_ask_3to1": 0.00215,
+    "cw_median_ask_in": 0.0014,
+    "cw_median_ask_out": 0.0044,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "discount_vs_official_in_pct": 99.9,
+    "discount_vs_official_out_pct": 99.9,
+    "last_trade_rate": 0.036101,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": true
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 8,
+    "listings_in": 8,
+    "price_tiers_in": 1,
+    "rail_active_providers": 9
+   },
+   "health": {
+    "status": "degraded",
+    "confidence": "medium",
+    "reasons": [
+     "model alias_state=degraded (24h 83.35%), model-wide signal"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 97.13,
+    "alias": "glm-5.2",
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 83.35,
+    "recent_traffic_observed": true
+   },
+   "context_window": 1000000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.7155,
+   "system_prompt_handling": "unspecified",
+   "preferred_endpoint": null,
+   "required_instructions_value": null,
+   "caveats": [],
+   "is_astra_owner_route": false,
    "frontier_rank": 33,
    "is_best_route": true
+  },
+  {
+   "route": "cb/glm-5.2",
+   "rail": "cb",
+   "rail_label": "CodeBuddy",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "line": "glm",
+   "line_class": "near_frontier",
+   "version": "5.2",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.0294,
+    "min_ask_out": 0.0924,
+    "blended_min_ask_3to1": 0.04515,
+    "cw_median_ask_in": 0.049,
+    "cw_median_ask_out": 0.154,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "discount_vs_official_in_pct": 97.9,
+    "discount_vs_official_out_pct": 97.9,
+    "last_trade_rate": 0.086957,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": true
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36174,
+    "price_tiers_in": 32,
+    "rail_active_providers": 37856
+   },
+   "health": {
+    "status": "degraded",
+    "confidence": "medium",
+    "reasons": [
+     "model alias_state=degraded (24h 83.35%), model-wide signal"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 99.85,
+    "alias": "glm-5.2",
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 83.35,
+    "recent_traffic_observed": false
+   },
+   "context_window": 1000000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.936,
+   "system_prompt_handling": "upstream_note",
+   "preferred_endpoint": null,
+   "required_instructions_value": null,
+   "caveats": [
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+   ],
+   "is_astra_owner_route": false,
+   "frontier_rank": 33,
+   "is_best_route": false
+  },
+  {
+   "route": "cbcn/glm-5.2",
+   "rail": "cbcn",
+   "rail_label": "CodeBuddy CN",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "line": "glm",
+   "line_class": "near_frontier",
+   "version": "5.2",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.021,
+    "min_ask_out": 0.066,
+    "blended_min_ask_3to1": 0.03225,
+    "cw_median_ask_in": 0.042,
+    "cw_median_ask_out": 0.132,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "discount_vs_official_in_pct": 98.5,
+    "discount_vs_official_out_pct": 98.5,
+    "last_trade_rate": 0.024451,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": true
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 18,
+    "listings_in": 7776,
+    "price_tiers_in": 22,
+    "rail_active_providers": 12812
+   },
+   "health": {
+    "status": "degraded",
+    "confidence": "medium",
+    "reasons": [
+     "model alias_state=degraded (24h 83.35%), model-wide signal"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 99.98,
+    "alias": "glm-5.2",
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 83.35,
+    "recent_traffic_observed": false
+   },
+   "context_window": 1000000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.6909,
+   "system_prompt_handling": "upstream_note",
+   "preferred_endpoint": null,
+   "required_instructions_value": null,
+   "caveats": [
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+   ],
+   "is_astra_owner_route": false,
+   "frontier_rank": 33,
+   "is_best_route": false
+  },
+  {
+   "route": "ali/glm-5.2",
+   "rail": "ali",
+   "rail_label": "Qwencloud/Alibaba",
+   "model_id": "glm-5.2",
+   "model_label": "GLM 5.2",
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "line": "glm",
+   "line_class": "near_frontier",
+   "version": "5.2",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.0042,
+    "min_ask_out": 0.0132,
+    "blended_min_ask_3to1": 0.00645,
+    "cw_median_ask_in": 0.007,
+    "cw_median_ask_out": 0.022,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "discount_vs_official_in_pct": 99.7,
+    "discount_vs_official_out_pct": 99.7,
+    "last_trade_rate": 0.04878,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": true
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 2,
+    "listings_in": 8073,
+    "price_tiers_in": 11,
+    "rail_active_providers": 16919
+   },
+   "health": {
+    "status": "degraded",
+    "confidence": "medium",
+    "reasons": [
+     "model alias_state=degraded (24h 83.35%), model-wide signal"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 98.95,
+    "alias": "glm-5.2",
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 83.35,
+    "recent_traffic_observed": true
+   },
+   "context_window": 1000000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.7601,
+   "system_prompt_handling": "unspecified",
+   "preferred_endpoint": null,
+   "required_instructions_value": null,
+   "caveats": [],
+   "is_astra_owner_route": false,
+   "frontier_rank": 33,
+   "is_best_route": false
+  },
+  {
+   "route": "cmc/zai-org/GLM-5.2",
+   "rail": "cmc",
+   "rail_label": "Command Code",
+   "model_id": "zai-org/GLM-5.2",
+   "model_label": null,
+   "model_family": "GLM 5.2",
+   "vendor": "Z.ai",
+   "line": "glm",
+   "line_class": "near_frontier",
+   "version": "5.2",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.2786,
+    "min_ask_out": 0.8756,
+    "blended_min_ask_3to1": 0.42785,
+    "cw_median_ask_in": 0.7,
+    "cw_median_ask_out": 2.2,
+    "official_in": 1.4,
+    "official_out": 4.4,
+    "discount_vs_official_in_pct": 80.1,
+    "discount_vs_official_out_pct": 80.1,
+    "last_trade_rate": 0.854194,
+    "min_ask_in_under_policy": false,
+    "min_ask_out_under_policy": false
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 2,
+    "listings_in": 7,
+    "price_tiers_in": 3,
+    "rail_active_providers": 8
+   },
+   "health": {
+    "status": "degraded",
+    "confidence": "medium",
+    "reasons": [
+     "model alias_state=degraded (24h 83.35%), model-wide signal"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 98.63,
+    "alias": "glm-5.2",
+    "alias_state": "degraded",
+    "alias_availability_24h_pct": 83.35,
+    "recent_traffic_observed": false
+   },
+   "context_window": 1000000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": null,
+   "system_prompt_handling": "unspecified",
+   "preferred_endpoint": null,
+   "required_instructions_value": null,
+   "caveats": [],
+   "is_astra_owner_route": false,
+   "frontier_rank": 33,
+   "is_best_route": false
   },
   {
    "route": "ocg/mimo-v2.6-pro",
@@ -7027,7 +7014,7 @@
     "official_out": 0.87,
     "discount_vs_official_in_pct": 90.0,
     "discount_vs_official_out_pct": 90.0,
-    "last_trade_rate": 0.00451,
+    "last_trade_rate": 0.010876,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -7041,19 +7028,19 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 62.82%), model-wide signal"
+     "model alias_state=major_outage (24h 62.17%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "mimo-v2.6-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 62.82,
+    "alias_availability_24h_pct": 62.17,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 131072,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.9413,
+   "cache_hit_rate_24h": 0.9424,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -7101,13 +7088,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 62.82%), model-wide signal"
+     "model alias_state=major_outage (24h 62.17%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "mimo-v2.6-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 62.82,
+    "alias_availability_24h_pct": 62.17,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -7155,20 +7142,19 @@
     "sellers_at_min_ask_in": 1,
     "listings_in": 8,
     "price_tiers_in": 6,
-    "rail_active_providers": 150
+    "rail_active_providers": 149
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias_state=major_outage (24h 62.82%), model-wide signal"
+     "model alias_state=major_outage (24h 62.17%), model-wide signal"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "mimo-v2.6-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 62.82,
+    "alias_availability_24h_pct": 62.17,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -7222,13 +7208,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 9.08%), model-wide signal"
+     "model alias_state=major_outage (24h 9.09%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "mimo-v2.5-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 9.08,
+    "alias_availability_24h_pct": 9.09,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -7259,37 +7245,36 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.1479,
-    "min_ask_out": 0.2958,
-    "blended_min_ask_3to1": 0.184875,
-    "cw_median_ask_in": 0.1479,
-    "cw_median_ask_out": 0.2958,
+    "min_ask_in": 0.17052,
+    "min_ask_out": 0.34104,
+    "blended_min_ask_3to1": 0.21315,
+    "cw_median_ask_in": 0.174,
+    "cw_median_ask_out": 0.348,
     "official_in": 1.74,
     "official_out": 3.48,
-    "discount_vs_official_in_pct": 91.5,
-    "discount_vs_official_out_pct": 91.5,
+    "discount_vs_official_in_pct": 90.2,
+    "discount_vs_official_out_pct": 90.2,
     "last_trade_rate": 0.16996,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
-    "sellers_at_min_ask_in": 40,
-    "listings_in": 55,
-    "price_tiers_in": 9,
-    "rail_active_providers": 150
+    "sellers_at_min_ask_in": 2,
+    "listings_in": 15,
+    "price_tiers_in": 8,
+    "rail_active_providers": 149
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias_state=major_outage (24h 9.08%), model-wide signal"
+     "model alias_state=major_outage (24h 9.09%), model-wide signal"
     ],
-    "rail_state": "low_traffic",
-    "rail_availability_24h_pct": 92.38,
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 92.41,
     "alias": "mimo-v2.5-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 9.08,
+    "alias_availability_24h_pct": 9.09,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -7327,7 +7312,7 @@
     "official_out": 0.87,
     "discount_vs_official_in_pct": 84.2,
     "discount_vs_official_out_pct": 84.2,
-    "last_trade_rate": 0.032895,
+    "last_trade_rate": 0.085165,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
@@ -7341,13 +7326,13 @@
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 9.08%), model-wide signal"
+     "model alias_state=major_outage (24h 9.09%), model-wide signal"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 98.63,
     "alias": "mimo-v2.5-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 9.08,
+    "alias_availability_24h_pct": 9.09,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
@@ -7402,13 +7387,13 @@
     "confidence": "medium",
     "reasons": [
      "rail_state=low_traffic (unrecognised, ignored)",
-     "model alias_state=major_outage (24h 9.08%), model-wide signal"
+     "model alias_state=major_outage (24h 9.09%), model-wide signal"
     ],
     "rail_state": "low_traffic",
     "rail_availability_24h_pct": 100.0,
     "alias": "mimo-v2.5-pro",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 9.08,
+    "alias_availability_24h_pct": 9.09,
     "recent_traffic_observed": false
    },
    "context_window": 1000000,
@@ -7439,43 +7424,43 @@
    "variant": "high",
    "enabled": true,
    "price": {
-    "min_ask_in": 0.00225,
-    "min_ask_out": 0.01125,
-    "blended_min_ask_3to1": 0.0045,
+    "min_ask_in": 0.0015,
+    "min_ask_out": 0.0075,
+    "blended_min_ask_3to1": 0.003,
     "cw_median_ask_in": 0.015,
     "cw_median_ask_out": 0.075,
     "official_in": 0.75,
     "official_out": 3.75,
-    "discount_vs_official_in_pct": 99.7,
-    "discount_vs_official_out_pct": 99.7,
-    "last_trade_rate": 0.00018,
+    "discount_vs_official_in_pct": 99.8,
+    "discount_vs_official_out_pct": 99.8,
+    "last_trade_rate": 0.002472,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 52,
-    "listings_in": 420,
-    "price_tiers_in": 38,
+    "sellers_at_min_ask_in": 3,
+    "listings_in": 419,
+    "price_tiers_in": 39,
     "rail_active_providers": 1873
    },
    "health": {
     "status": "healthy",
     "confidence": "medium",
     "reasons": [
-     "model alias operational (24h 99.08%)",
+     "model alias operational (24h 99.07%)",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.78,
     "alias": "gemini-3.8-flash",
     "alias_state": "operational",
-    "alias_availability_24h_pct": 99.08,
+    "alias_availability_24h_pct": 99.07,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
    "max_output_tokens": 65536,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.573,
+   "cache_hit_rate_24h": 0.5737,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -7509,7 +7494,7 @@
     "official_out": 3.75,
     "discount_vs_official_in_pct": 99.8,
     "discount_vs_official_out_pct": 99.8,
-    "last_trade_rate": 0.001526,
+    "last_trade_rate": 0.001839,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -7536,7 +7521,7 @@
    "context_window": 1000000,
    "max_output_tokens": 65536,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.5538,
+   "cache_hit_rate_24h": 0.5529,
    "system_prompt_handling": "unspecified",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -7571,27 +7556,27 @@
     "official_out": 5.0,
     "discount_vs_official_in_pct": 75.5,
     "discount_vs_official_out_pct": 75.5,
-    "last_trade_rate": 0.829545,
+    "last_trade_rate": 0.74359,
     "min_ask_in_under_policy": false,
     "min_ask_out_under_policy": false
    },
    "sellers": {
     "sellers_at_min_ask_in": 4,
-    "listings_in": 21,
-    "price_tiers_in": 9,
-    "rail_active_providers": 26
+    "listings_in": 22,
+    "price_tiers_in": 10,
+    "rail_active_providers": 27
    },
    "health": {
     "status": "degraded",
     "confidence": "medium",
     "reasons": [
-     "model alias_state=major_outage (24h 26.6%), model-wide signal"
+     "model alias_state=major_outage (24h 26.26%), model-wide signal"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 97.99,
+    "rail_availability_24h_pct": 98.0,
     "alias": "claude-haiku-4.5",
     "alias_state": "major_outage",
-    "alias_availability_24h_pct": 26.6,
+    "alias_availability_24h_pct": 26.26,
     "recent_traffic_observed": true
    },
    "context_window": 200000,
@@ -7631,7 +7616,7 @@
     "official_out": 3.75,
     "discount_vs_official_in_pct": 99.8,
     "discount_vs_official_out_pct": 99.8,
-    "last_trade_rate": 0.003339,
+    "last_trade_rate": 0.00555,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
@@ -7645,14 +7630,14 @@
     "status": "healthy",
     "confidence": "low",
     "reasons": [
-     "model alias low_traffic, 24h availability 98.16%",
+     "model alias low_traffic, 24h availability 98.15%",
      "rail_state=operational"
     ],
     "rail_state": "operational",
     "rail_availability_24h_pct": 99.78,
     "alias": "gemini-3.6-flash",
     "alias_state": "low_traffic",
-    "alias_availability_24h_pct": 98.16,
+    "alias_availability_24h_pct": 98.15,
     "recent_traffic_observed": true
    },
    "context_window": 1000000,
@@ -7692,15 +7677,15 @@
     "official_out": 0.5,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.00381,
+    "last_trade_rate": 0.003531,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36059,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36221,
     "price_tiers_in": 32,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
@@ -7719,7 +7704,7 @@
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.5446,
+   "cache_hit_rate_24h": 0.5382,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
@@ -7744,24 +7729,24 @@
    "variant": null,
    "enabled": true,
    "price": {
-    "min_ask_in": 0.002,
-    "min_ask_out": 0.01,
-    "blended_min_ask_3to1": 0.004,
+    "min_ask_in": 0.0024,
+    "min_ask_out": 0.012,
+    "blended_min_ask_3to1": 0.0048,
     "cw_median_ask_in": 0.0112,
     "cw_median_ask_out": 0.056,
     "official_in": 0.1,
     "official_out": 0.5,
-    "discount_vs_official_in_pct": 98.0,
-    "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.00136,
+    "discount_vs_official_in_pct": 97.6,
+    "discount_vs_official_out_pct": 97.6,
+    "last_trade_rate": 0.000262,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
     "sellers_at_min_ask_in": 1,
-    "listings_in": 63,
+    "listings_in": 62,
     "price_tiers_in": 18,
-    "rail_active_providers": 74
+    "rail_active_providers": 71
    },
    "health": {
     "status": "healthy",
@@ -7771,7 +7756,7 @@
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
+    "rail_availability_24h_pct": 96.8,
     "alias": "gpt-6-luna",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.89,
@@ -7780,7 +7765,7 @@
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.862,
+   "cache_hit_rate_24h": 0.8618,
    "system_prompt_handling": "developer_message",
    "preferred_endpoint": "/v1/responses",
    "required_instructions_value": "You are a helpful assistant.",
@@ -7791,6 +7776,68 @@
    "is_astra_owner_route": false,
    "frontier_rank": 40,
    "is_best_route": false
+  },
+  {
+   "route": "cx/gpt-5.6-luna",
+   "rail": "cx",
+   "rail_label": "OpenAI Codex",
+   "model_id": "gpt-5.6-luna",
+   "model_label": "GPT 5.6 Luna",
+   "model_family": "GPT 5.6 Luna",
+   "vendor": "OpenAI",
+   "line": "gpt-luna",
+   "line_class": "small",
+   "version": "5.6",
+   "variant": null,
+   "enabled": true,
+   "price": {
+    "min_ask_in": 0.0038,
+    "min_ask_out": 0.0228,
+    "blended_min_ask_3to1": 0.00855,
+    "cw_median_ask_in": 0.0224,
+    "cw_median_ask_out": 0.1344,
+    "official_in": 0.2,
+    "official_out": 1.2,
+    "discount_vs_official_in_pct": 98.1,
+    "discount_vs_official_out_pct": 98.1,
+    "last_trade_rate": 0.357143,
+    "min_ask_in_under_policy": true,
+    "min_ask_out_under_policy": true
+   },
+   "sellers": {
+    "sellers_at_min_ask_in": 1,
+    "listings_in": 61,
+    "price_tiers_in": 19,
+    "rail_active_providers": 71
+   },
+   "health": {
+    "status": "healthy",
+    "confidence": "medium",
+    "reasons": [
+     "model alias operational (24h 99.93%)",
+     "rail_state=operational"
+    ],
+    "rail_state": "operational",
+    "rail_availability_24h_pct": 96.8,
+    "alias": "gpt-5.6-luna",
+    "alias_state": "operational",
+    "alias_availability_24h_pct": 99.93,
+    "recent_traffic_observed": true
+   },
+   "context_window": 272000,
+   "max_output_tokens": 128000,
+   "supports_cache": true,
+   "cache_hit_rate_24h": 0.6892,
+   "system_prompt_handling": "developer_message",
+   "preferred_endpoint": "/v1/responses",
+   "required_instructions_value": "You are a helpful assistant.",
+   "caveats": [
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent.",
+    "only 1 seller at the cheapest ask; served price may be higher"
+   ],
+   "is_astra_owner_route": false,
+   "frontier_rank": 41,
+   "is_best_route": true
   },
   {
    "route": "cb/gpt-5.6-luna",
@@ -7815,15 +7862,15 @@
     "official_out": 1.2,
     "discount_vs_official_in_pct": 97.9,
     "discount_vs_official_out_pct": 97.9,
-    "last_trade_rate": 0.007764,
+    "last_trade_rate": 0.008864,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": true
    },
    "sellers": {
-    "sellers_at_min_ask_in": 5401,
-    "listings_in": 36059,
+    "sellers_at_min_ask_in": 5325,
+    "listings_in": 36221,
     "price_tiers_in": 32,
-    "rail_active_providers": 37692
+    "rail_active_providers": 37856
    },
    "health": {
     "status": "healthy",
@@ -7842,74 +7889,12 @@
    "context_window": 272000,
    "max_output_tokens": 128000,
    "supports_cache": true,
-   "cache_hit_rate_24h": 0.689,
+   "cache_hit_rate_24h": 0.6896,
    "system_prompt_handling": "upstream_note",
    "preferred_endpoint": null,
    "required_instructions_value": null,
    "caveats": [
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "is_astra_owner_route": false,
-   "frontier_rank": 41,
-   "is_best_route": true
-  },
-  {
-   "route": "cx/gpt-5.6-luna",
-   "rail": "cx",
-   "rail_label": "OpenAI Codex",
-   "model_id": "gpt-5.6-luna",
-   "model_label": "GPT 5.6 Luna",
-   "model_family": "GPT 5.6 Luna",
-   "vendor": "OpenAI",
-   "line": "gpt-luna",
-   "line_class": "small",
-   "version": "5.6",
-   "variant": null,
-   "enabled": true,
-   "price": {
-    "min_ask_in": 0.004,
-    "min_ask_out": 0.024,
-    "blended_min_ask_3to1": 0.009,
-    "cw_median_ask_in": 0.0224,
-    "cw_median_ask_out": 0.1344,
-    "official_in": 0.2,
-    "official_out": 1.2,
-    "discount_vs_official_in_pct": 98.0,
-    "discount_vs_official_out_pct": 98.0,
-    "last_trade_rate": 0.000627,
-    "min_ask_in_under_policy": true,
-    "min_ask_out_under_policy": true
-   },
-   "sellers": {
-    "sellers_at_min_ask_in": 1,
-    "listings_in": 62,
-    "price_tiers_in": 19,
-    "rail_active_providers": 74
-   },
-   "health": {
-    "status": "healthy",
-    "confidence": "medium",
-    "reasons": [
-     "model alias operational (24h 99.93%)",
-     "rail_state=operational"
-    ],
-    "rail_state": "operational",
-    "rail_availability_24h_pct": 96.81,
-    "alias": "gpt-5.6-luna",
-    "alias_state": "operational",
-    "alias_availability_24h_pct": 99.93,
-    "recent_traffic_observed": true
-   },
-   "context_window": 272000,
-   "max_output_tokens": 128000,
-   "supports_cache": true,
-   "cache_hit_rate_24h": 0.6889,
-   "system_prompt_handling": "developer_message",
-   "preferred_endpoint": "/v1/responses",
-   "required_instructions_value": "You are a helpful assistant.",
-   "caveats": [
-    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent.",
-    "only 1 seller at the cheapest ask; served price may be higher"
    ],
    "is_astra_owner_route": false,
    "frontier_rank": 41,
@@ -7938,7 +7923,7 @@
     "official_out": 1.2,
     "discount_vs_official_in_pct": 90.0,
     "discount_vs_official_out_pct": 90.0,
-    "last_trade_rate": 0.769231,
+    "last_trade_rate": 0.357143,
     "min_ask_in_under_policy": true,
     "min_ask_out_under_policy": false
    },
@@ -7956,7 +7941,7 @@
      "rail_state=operational"
     ],
     "rail_state": "operational",
-    "rail_availability_24h_pct": 99.5,
+    "rail_availability_24h_pct": 99.52,
     "alias": "gpt-5.6-luna",
     "alias_state": "operational",
     "alias_availability_24h_pct": 99.93,
