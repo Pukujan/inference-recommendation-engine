@@ -4,14 +4,14 @@ version: 1
 project: inference-recommendation-engine
 status: in_progress
 active_task: IRE-0011
-updated_at: 2026-10-04T18:10:00Z
+updated_at: 2026-10-05T23:13:14Z
 ---
 
 <!-- continuity:current {"active_task":"IRE-0011","active_task_file":"tasks/TASK-IRE-0011-acs-hotload-stack.md","protocol_version":"0.1.0-draft","schema":"project-continuity.current.v1"} -->
 
 ## State
 
-IRE-0011 (issue #71, parent #70) is active: IRE is moving onto the current ACS hot-load stack (PCM 0.6.0, CGM 0.5.12, OIO 0.1.0, ACS multi-agent-hotload 0.1.0) before the public onboarding work in #70.
+IRE-0011 (issue #71, parent #70) is active: IRE is moving onto the current ACS hot-load stack (PCM 0.7.0, CGM 0.5.12, OIO 0.1.0, ACS multi-agent-hotload 0.2.0) through release train `current`, before the public onboarding work in #70.
 
 IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008's copyable Astra owner and Kilo background-staff setup merged in PR #34 and issue #33 is closed. IRE-0009's Codex receipt importer merged in PR #37. Issue #36 is the closeout record.
 
@@ -27,6 +27,7 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 - IRE-0005 PR #25 passed all local gates: static checks, 26 Node tests, public-surface scan, 41 operational tests, and package dry run. Both required GitHub CI checks passed. The PowerShell parser and CLI flag checks passed; no model was called.
 - Static checks pass: ESLint, Ruff lint/format, and mypy on six operational Python modules with untyped definitions disallowed.
 - Required local gates pass: Node tests (26), public-surface scan, operational contract tests (41), package dry run, locked installs, and `git diff --check`.
+- IRE-0011 stack pins follow release train `current` (PCM 0.7.0 `851bcf7`, CGM 0.5.12 `62340f3`, OIO 0.1.0 `a4bba77`, ACS 0.2.0 `25be219`). The pinned validators pass against this checkout: `continuity validate` VALID, CGM `validate_content_system` and `verify_adopter_content` VALID, `check_manifest.py` OK (agrees with train `current`, four components), and ACS `hotload_check` OK. ACS is pinned one commit past the train's own ACS entry (`589b0a9`) because that entry's `stack-mesh.json` still requires the previous PCM/CGM and fails its own check.
 
 ## Current checkpoint
 

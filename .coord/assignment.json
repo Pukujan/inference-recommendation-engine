@@ -1,8 +1,8 @@
 {
   "schema_version": "0.1.0",
   "project": "Inference Recommendation Engine ACS adopter",
-  "recorded_at": "2026-10-04T18:10:00Z",
-  "notes": "ACS multi-agent-hotload adopter state. Live join/continue order wins; the seed list is a hint only. FULL PCM (4e23854, CLI 0.6.0) + FULL CGM 0.5.12 (6831f91e, eight modules) + OIO 0.1.0 are pinned. Boss lease is minutes (default 30, range 15-120); the watchdog is agent-less and liveness-only. The decision-boss seat is vacant until the first live continuer claims it.",
+  "recorded_at": "2026-10-05T23:13:14Z",
+  "notes": "ACS multi-agent-hotload adopter state. Live join/continue order wins; the seed list is a hint only. FULL PCM (851bcf7, CLI 0.7.0) + FULL CGM 0.5.12 (62340f3, eight modules) + OIO 0.1.0 (a4bba77) are pinned to release train `current`. ACS is pinned at 25be219, whose stack-mesh.json matches the train's certified PCM/CGM/OIO; the train's own ACS entry (589b0a9) still names the previous PCM/CGM and fails its own hotload_check. Boss lease is minutes (default 30, range 15-120); the watchdog is agent-less and liveness-only. The decision-boss seat is vacant until the first live continuer claims it.",
   "role_fill": {
     "mode": "join_continue_order",
     "seed_is_hint_only": true,
@@ -54,12 +54,13 @@
       "repo": "https://github.com/Pukujan/agent-custom-setup",
       "module": "modules/coordination/multi-agent-hotload/v0.1.0",
       "version": "0.1.0",
-      "revision": "38f8f52e8d210db3ce258bf911ebb560c6e0fe4c"
+      "revision": "25be219bb7341addba8849a8ffb6dba8695ff17d",
+      "notes": "ACS repo release 0.2.0. Pinned one commit past the train's own ACS entry (589b0a9) because 589b0a9's stack-mesh.json still requires the previous PCM 197f7ba / CGM b487b48 and so fails its own hotload_check; 25be219's mesh matches the train's certified PCM/CGM/OIO."
     },
     "pcm": {
       "repo": "https://github.com/Pukujan/project-continuity-modules",
-      "revision": "4e2385474b4af9249ca009cbdcb38c4498932475",
-      "cli_version": "0.6.0",
+      "revision": "851bcf72eb618e6fe4f49c3f0b8e26fefb90410f",
+      "cli_version": "0.7.0",
       "protocol": "0.1.0-draft",
       "role": "full_stack",
       "required_features": [
@@ -76,7 +77,7 @@
     },
     "cgm": {
       "repo": "https://github.com/Pukujan/content-generation-modules",
-      "revision": "6831f91e165b62d719c05eb492f7375fa932b560",
+      "revision": "62340f3de702f6d2a7d97b9e16465b98360976a3",
       "version": "0.5.12",
       "role": "full_stack",
       "modules": [
@@ -120,6 +121,13 @@
         "contract": "docs/writing-routing.json + docs/ACS_VERIFY.md; application=must_load; acs_prompt_inject after VALID"
       },
       "notes": "FULL CGM 0.5.12 required for ACS and all hotloader adopters. Eight modules including human-output-naming. Not HSW+writing-direction only. Validate with scripts/validate_content_system.py (full adapter); then apply acs_prompt_inject."
+    },
+    "oio": {
+      "repo": "https://github.com/Pukujan/observational-issue-ops",
+      "revision": "a4bba77b770e5674d1124383cd0d26704236963d",
+      "version": "0.1.0",
+      "role": "observational_issue_ops",
+      "notes": "OIO 0.1.0 issue-log ontology, form and triage. The .oio/ managed files are byte-identical between the previously installed commit (2dace20) and this one; only the pin moves. OIO's installer needs descriptor-relative no-follow filesystem calls that Windows lacks, so it runs in CI (Linux) and refuses on Windows by design."
     }
   },
   "ticket_links": {
