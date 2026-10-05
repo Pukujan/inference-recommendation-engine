@@ -9,6 +9,10 @@ dist/
 reports/
 local/
 .ire/
+# The ACS hot-load lock is this checkout's own install record (timestamp plus
+# locally verified checkouts). It is not a forward pin, so it stays untracked;
+# the shared pins live in .coord/assignment.json and stack-manifest.json.
+.coord/hotload.lock.json
 __pycache__/
 .mypy_cache/
 .ruff_cache/
