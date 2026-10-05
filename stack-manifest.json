@@ -1,25 +1,12 @@
 {
   "schema_version": "agent-stack-train.stack-manifest.v1",
   "adopter": "inference-recommendation-engine",
-  "release_train": "2026-10-01",
-  "source": "https://github.com/Pukujan/agent-stack-train/blob/main/stack-releases.json",
+  "release_train": "current",
+  "source": "https://raw.githubusercontent.com/Pukujan/agent-stack-train/main/stack-releases.json",
   "pins": {
-    "observational-issue-ops": {
-      "version": "0.1.0"
-    },
-    "project-continuity-modules": {
-      "version": "0.6.0",
-      "commit": "4e2385474b4af9249ca009cbdcb38c4498932475",
-      "cli": "0.6.0"
-    },
-    "content-generation-modules": {
-      "version": "0.5.12",
-      "commit": "6831f91e165b62d719c05eb492f7375fa932b560",
-      "modules": 8
-    },
-    "agent-custom-setup": {
-      "module": "multi-agent-hotload",
-      "version": "0.1.0"
-    }
+    "observational-issue-ops": {},
+    "project-continuity-modules": {},
+    "content-generation-modules": {},
+    "agent-custom-setup": {}
   }
 }
