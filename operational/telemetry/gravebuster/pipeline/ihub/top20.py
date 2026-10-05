@@ -57,7 +57,9 @@ OUT_JSON = "research_model_top20_recommendations.json"
 GENERATOR = "operational/telemetry/gravebuster/pipeline/ihub/top20.py"
 TOP_N = 20
 
-# Byte-compatible with the 2026-09-22 file: same names, same order. Do not reorder or rename.
+# The first 21 names are byte-compatible with the 2026-09-22 file: same names, same order.
+# Do not reorder or rename those. Two ask columns were appended on 2026-10-05 (issue #94) so
+# consumers can show the cheap, well-supplied ask instead of only the supply-weighted blend.
 CSV_COLUMNS = [
     "recommendation_rank", "model_family", "vendor", "recommendation_eligible", "gate_reasons",
     "tier", "capability_score_100", "release_date", "recency_days", "priced_provider_count",
@@ -65,6 +67,7 @@ CSV_COLUMNS = [
     "public_availability_7d_pct", "supply_weighted_median_cost_usdc_per_1m",
     "price_utility_score_100", "price_regime", "reliability_weight_boost", "reliability_score_100",
     "performance_evidence_status", "shortlist_score_100", "model_ids",
+    "best_route_min_ask_in_usdc_per_1m", "best_route_min_ask_out_usdc_per_1m",
 ]  # fmt: skip
 
 # Supply weighting: a port of src/supply.mjs DEFAULT_SUPPLY_POLICY (policy.example.json).
@@ -89,6 +92,21 @@ METHOD: dict[str, Any] = {
     "reliability_weight_boost": "0.15 when price_regime is near_free, else 0",
     "recency_tau_days": 90,
     "shortlist_weights": {
+        "price_utility": 0.21,
+        "reliability": 0.24,
+        "catalog_availability": 0.18,
+        "price_supply_availability": 0.12,
+        "capability": 0.13,
+        "recency": 0.08,
+        "boost_points_per_unit": 20.0,
+    },
+    "shortlist_calibration": "The weights were fitted (non-negative least squares) to the "
+    "2026-09-22 list's own component columns and reproduced its shortlist_score_100 within about "
+    "1 point (RMSE 0.5). On 2026-10-05 (issue #94) we moved weight off price_utility and recency "
+    "and onto reliability and catalog availability, so a well-supplied, reachable model outranks a "
+    "cheap one that few providers carry. The old fitted weights stay in legacy_shortlist_weights "
+    "and the calibration test still checks the component formulas against the 2026-09-22 list.",
+    "legacy_shortlist_weights": {
         "price_utility": 0.265,
         "reliability": 0.21,
         "catalog_availability": 0.14,
@@ -97,10 +115,12 @@ METHOD: dict[str, Any] = {
         "recency": 0.14,
         "boost_points_per_unit": 20.0,
     },
-    "shortlist_calibration": "weights fitted (non-negative least squares) to the 2026-09-22 "
-    "list's own component columns; they reproduce its shortlist_score_100 within about 1 point "
-    "(RMSE 0.5). The component formulas themselves are reconstructions, so live scores are not "
-    "comparable point for point with the old list.",
+    "price_columns": "Two prices per family, both USD per 1M tokens. "
+    "supply_weighted_median_cost_usdc_per_1m is the supply-weighted blended (0.4 in / 0.6 out) "
+    "cost across the whole live ladder: an average seller's cost, not the cheapest. "
+    "best_route_min_ask_in/out_usdc_per_1m is the cheapest listed ask at the best route, the same "
+    "basis the launcher's free-below price policy uses, so it is the number to show when the "
+    "question is 'what does the cheapest well-supplied seller charge'.",
     "gates": {
         "insufficient_provider_breadth": "priced_provider_count < 2",
         "catalog_availability_below_minimum": "catalog_availability_score_100 < 55",
@@ -243,8 +263,8 @@ def recency_score(days: int | None) -> float:
     return 0.0 if days is None else 100.0 * math.exp(-max(0, days) / METHOD["recency_tau_days"])
 
 
-def shortlist_score(c: dict[str, float]) -> float:
-    w = METHOD["shortlist_weights"]
+def shortlist_score(c: dict[str, float], weights: dict[str, float] | None = None) -> float:
+    w = weights or METHOD["shortlist_weights"]
     return (
         w["price_utility"] * c["price_utility"]
         + w["reliability"] * c["reliability"]
@@ -441,6 +461,8 @@ def build(
                 "listings_total": sum(r["listings_in"] for r in lv),
                 "public_availability_7d_pct": avail7,
                 "supply_weighted_median_cost_usdc_per_1m": cost,
+                "best_route_min_ask_in_usdc_per_1m": best["min_ask_in"],
+                "best_route_min_ask_out_usdc_per_1m": best["min_ask_out"],
                 "price_utility_score_100": util,
                 "price_regime": regime,
                 "reliability_weight_boost": boost,
@@ -545,7 +567,10 @@ def build(
             "Each row is a hypothesis, not a fact. Capability, tier and release date are carried "
             "over from the 2026-09-22 list (benchmark inputs lost; low confidence). Prices, "
             "provider breadth, supply depth and 7-day availability are live InferHub data at "
-            "generated_at; listed asks are USD per 1M tokens and the served price can be higher."
+            "generated_at; listed asks are USD per 1M tokens and the served price can be higher. "
+            "best_route_min_ask_in/out_usdc_per_1m is the cheapest ask at the best route; "
+            "supply_weighted_median_cost_usdc_per_1m is the supply-weighted blended (0.4 in / 0.6 "
+            "out) cost of an average seller, so the two answer different questions."
         ),
         "generated_at": meta["generated_at"],
         "code_commit": meta.get("code_commit"),
@@ -602,6 +627,8 @@ def to_csv(doc: dict[str, Any]) -> bytes:
                 r["performance_evidence_status"],
                 fmt(r["shortlist_score_100"], 4),
                 "; ".join(x["route"] for x in r["routes"]),
+                fmt(r["best_route_min_ask_in_usdc_per_1m"], 6),
+                fmt(r["best_route_min_ask_out_usdc_per_1m"], 6),
             ]
         )
     return buf.getvalue().encode("utf-8")
