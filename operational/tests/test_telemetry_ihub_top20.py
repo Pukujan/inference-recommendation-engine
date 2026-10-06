@@ -90,7 +90,18 @@ PRIOR = {
 }  # fmt: skip
 
 
-def synthetic() -> dict[str, Any]:
+def open_lic(name: str, vendor: str = "Open V") -> dict[str, Any]:
+    return {"vendor": vendor, "open_weight": True, "licence": "MIT",
+            "licence_url": "https://example.invalid/LICENSE",
+            "weights_url": "https://example.invalid/weights"}  # fmt: skip
+
+
+# The synthetic families are stand-ins, so the tests supply their own verified licence map
+# instead of the committed model_licences.v1.json, which only lists real families.
+LICENCES = {n: open_lic(n) for n in ("Cheap One", "Pricey", "Lonely", "mystery-1")}
+
+
+def synthetic(licences: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
     cat = [
         rail(
             "aa",
@@ -104,7 +115,14 @@ def synthetic() -> dict[str, Any]:
         rail("bb", [mdl("cheap-one", 0.006), mdl("pricey", 0.6), mdl("mystery-1", 0.004)]),
         rail("cc", [mdl("cheap-one", 0.007)], enabled=False),
     ]
-    return T.build(cat, status(["aa", "bb", "cc"]), {"models": []}, PRIOR, META)
+    return T.build(
+        cat,
+        status(["aa", "bb", "cc"]),
+        {"models": []},
+        PRIOR,
+        META,
+        licences=LICENCES if licences is None else licences,
+    )
 
 
 class FormatTests(unittest.TestCase):
@@ -179,7 +197,7 @@ class BuildTests(unittest.TestCase):
     def test_model_wide_outage_gates_every_route(self) -> None:
         cat = [rail("aa", [mdl("cheap-one", 0.005)]), rail("bb", [mdl("cheap-one", 0.006)])]
         doc = T.build(cat, status(["aa", "bb"], {"cheap-one": "major_outage"}),
-                      {"models": []}, PRIOR, META)  # fmt: skip
+                      {"models": []}, PRIOR, META, licences=LICENCES)  # fmt: skip
         self.assertIn("not_routing_eligible", doc["entries"][0]["gate_reasons"])
 
     def test_same_ask_prefers_deeper_supply(self) -> None:
@@ -189,8 +207,32 @@ class BuildTests(unittest.TestCase):
             rail("aa", [mdl("cheap-one", 0.005, n=3)]),
             rail("bb", [mdl("cheap-one", 0.005, n=500)]),
         ]
-        doc = T.build(cat, status(["aa", "bb"]), {"models": []}, PRIOR, META)
+        doc = T.build(cat, status(["aa", "bb"]), {"models": []}, PRIOR, META, licences=LICENCES)
         self.assertEqual(doc["entries"][0]["best_route"], "bb/cheap-one")
+
+    def test_open_weight_gate_refuses_closed_and_unlisted_families(self) -> None:
+        # A family missing from the licence map is not eligible (issue #94); so is a closed
+        # family even if someone marked it open in the map.
+        self.assertIsNotNone(T.L.open_licence("Cheap One", LICENCES))
+        self.assertIsNone(T.L.open_licence("Unlisted Family", LICENCES))
+        self.assertIsNone(
+            T.L.open_licence("GPT 5.6 Luna", {"GPT 5.6 Luna": open_lic("GPT 5.6 Luna", "OpenAI")})
+        )
+        self.assertIsNone(
+            T.L.open_licence("GLM 5.3", {"GLM 5.3": dict(open_lic("GLM 5.3"), open_weight=None)})
+        )
+        self.assertIsNone(T.L.open_licence("GLM 5.3", {"GLM 5.3": {k: v for k, v in open_lic("GLM 5.3").items()
+                                                               if k != "weights_url"}}))  # fmt: skip
+
+    def test_unlisted_family_is_gated_in_the_list(self) -> None:
+        lic = {k: v for k, v in LICENCES.items() if k != "Cheap One"}
+        by = {e["model_family"]: e for e in synthetic(lic)["entries"]}
+        self.assertFalse(by["Cheap One"]["recommendation_eligible"])
+        self.assertIn("open_weight_unverified", by["Cheap One"]["gate_reasons"])
+        # The gated row still appears (ranked), so the list stays a complete Top 20.
+        self.assertTrue(by["Cheap One"]["recommendation_rank"] >= 1)
+        # A family with a verified licence keeps its eligibility.
+        self.assertNotIn("open_weight_unverified", by["Pricey"]["gate_reasons"])
 
     def test_deterministic(self) -> None:
         self.assertEqual(T.to_csv(synthetic()), T.to_csv(synthetic()))

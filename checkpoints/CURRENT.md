@@ -3,15 +3,17 @@ kind: current
 version: 1
 project: inference-recommendation-engine
 status: in_progress
-active_task: IRE-0011
-updated_at: 2026-10-05T23:13:14Z
+active_task: IRE-0012
+updated_at: 2026-10-06T02:20:02Z
 ---
 
-<!-- continuity:current {"active_task":"IRE-0011","active_task_file":"tasks/TASK-IRE-0011-acs-hotload-stack.md","protocol_version":"0.1.0-draft","schema":"project-continuity.current.v1"} -->
+<!-- continuity:current {"active_task":"IRE-0012","active_task_file":"tasks/TASK-IRE-0012-open-weight-eligibility.md","protocol_version":"0.1.0-draft","schema":"project-continuity.current.v1"} -->
 
 ## State
 
-IRE-0011 (issue #71, parent #70) is active: IRE is moving onto the current ACS hot-load stack (PCM 0.7.0, CGM 0.5.12, OIO 0.1.0, ACS multi-agent-hotload 0.2.0) through release train `current`, before the public onboarding work in #70.
+IRE-0012 (issue #94) is active: the open-weight rule becomes one shared check (`licences.py`), `top20.py` gates every listed family with `open_weight_unverified` when the licence map does not verify it, and the committed Top 20 is regenerated so no closed or unlisted family is `recommendation_eligible`.
+
+IRE-0011 (issue #71, parent #70) moved IRE onto the current ACS hot-load stack (PCM 0.7.0, CGM 0.5.12, OIO 0.1.0, ACS multi-agent-hotload 0.2.0) through release train `current`; its pin checkpoint merged in PR #95 (`075e252`) and the validators pass in CI. Closing #71 is the remaining closeout.
 
 IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's API setup guide and verified closeout merged in PRs #22 and #23; issue #21 is closed. IRE-0005's runner and policy merged in PR #25; closeout PR #26 is merged and issue #24 is closed. IRE-0006's BYOK CLI runbook merged in PR #28 and issue #27 is closed. IRE-0007 tracks the blind BYOK agent benchmark in issue #29; its documentation and price-preference correction is merged. IRE-0008's copyable Astra owner and Kilo background-staff setup merged in PR #34 and issue #33 is closed. IRE-0009's Codex receipt importer merged in PR #37. Issue #36 is the closeout record.
 
@@ -28,11 +30,12 @@ IRE-0003 static-quality checks are merged and issue #15 is closed. IRE-0004's AP
 - Static checks pass: ESLint, Ruff lint/format, and mypy on six operational Python modules with untyped definitions disallowed.
 - Required local gates pass: Node tests (26), public-surface scan, operational contract tests (41), package dry run, locked installs, and `git diff --check`.
 - IRE-0011 stack pins follow release train `current` (PCM 0.7.0 `851bcf7`, CGM 0.5.12 `62340f3`, OIO 0.1.0 `a4bba77`, ACS 0.2.0 `25be219`). The pinned validators pass against this checkout: `continuity validate` VALID, CGM `validate_content_system` and `verify_adopter_content` VALID, `check_manifest.py` OK (agrees with train `current`, four components), and ACS `hotload_check` OK. ACS is pinned one commit past the train's own ACS entry (`589b0a9`) because that entry's `stack-mesh.json` still requires the previous PCM/CGM and fails its own check.
+- IRE-0011's pin checkpoint merged in PR #95 as `075e252`, and the stack validators run in the required `test` check.
 
 ## Current checkpoint
 
-IRE-0010 checkpoint 1 merged in PR #42 at `2c45e74be95be9241fb2489abd195462af5a0450` and is deployed on the collector host from `main`. Checkpoint 2 merged in PR #44 at `b891a7da89286a78baaec56c3037f2bcb9f48e88`: provider errors (HTTP status, provider code such as 11133, request id) from Astra receipts land on the launcher root span (#40 M0.6 context). Checkpoint 3 merged in PR #45 at `62a409cc6cba2cc6f69d505d19360ce887ebb07e` and is deployed: P4 incident detectors, the versioned signature catalog `ire-incident-signatures/v1`, and experiment manifest loading for the #40 M0.5 matrix. Checkpoint 4 merged in PR #48 at `ae2d6b9d55424779d830197ccb85e259cadba40c` and is deployed; it stops double counting a fast provider rejection as an early launcher exit. Checkpoint 5 runs the detectors over the Kilo marts added in PR #47. IRE-0009 remains merged in PR #37; the blinded benchmark remains open under issue #29.
+IRE-0012 checkpoint 1 (issue #94) adds `ihub/licences.py` as the single open-weight check, points `feed.py` at it, adds the `open_weight_unverified` gate to `top20.py`, adds the gate tests, and regenerates the committed Top 20. Before the change, the 2026-10-05 committed list marked GPT 5.6 Luna `recommendation_eligible = true`; after it, the family is gated.
 
 ## Next
 
-Merge IRE-0010 checkpoint 5 and deploy it from `main`. Then P5 (evidence, provenance and hypothesis records). Issue #29 benchmark work continues afterwards.
+Merge the IRE-0012 checkpoint PR once CI `test` passes, then refresh the launcher picker tables (`top20-builtin.csv`, `defaults.json`) from the corrected lists. Later checkpoints under #94: shortlist rebalancing, a launcher freshness guard, and the utility tier.
