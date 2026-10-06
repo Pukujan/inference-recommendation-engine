@@ -9,9 +9,13 @@ feed that agents, dependent repos and the design-bakery page can fetch with one 
     feed/v2/schema.json            JSON Schema for today.json and days/*.json
     feed/v1/...                    the same open-weight data in the old v1 shape (deprecated)
 
-The public feed only carries open-weight model families. ``model_licences.v1.json`` maps each
-family to its licence and weights URL; a family that isn't listed there with open_weight true is
-left out, so an unknown family never reaches the feed. The lists in ``lists/`` are not changed.
+The two text tiers (cheap, strongest_open) carry open-weight model families only.
+``model_licences.v1.json`` maps each family to its licence and weights URL; a family that isn't
+listed there with open_weight true is left out, so an unknown family never reaches those tiers.
+The optional utility tier (image and multimodal families, from ``utility.py``) records the
+open-weight verdict per entry instead: a family with an unverified licence is listed with
+``open_weight`` null and ``recommended`` false, and closed families are excluded entirely. The
+lists in ``lists/`` are not changed by this module.
 
 It is published to the orphan branch ``data/ire-feed`` (no CI, no PRs, no noise on ``main``),
 the same pattern as ``data/inferhub-price-snapshots``. Stable URL:
@@ -74,6 +78,8 @@ STALE_AFTER_HOURS = 36
 TOP20_JSON = "research_model_top20_recommendations.json"
 TOP20_CSV = "research_model_top20_recommendations.csv"
 FRONTIER_JSON = "research_model_frontier_recommendations.json"
+UTILITY_JSON = "research_model_utility_recommendations.json"
+UTILITY_CSV = "research_model_utility_recommendations.csv"
 
 # Anything that looks like a credential or an auth header. Kept broad on purpose: a false
 # positive blocks one publish; a false negative leaks a key.
@@ -194,12 +200,47 @@ def _frontier_entry(m: dict[str, Any]) -> dict[str, Any]:
 
 
 NOTICE = (
-    "Read-only daily picks from IRE, open-weight models only. Every row is a hypothesis: prices "
-    "are the lowest listed ask in USD per 1M tokens at as_of (the served price can be higher), "
-    "health is InferHub's public, platform-wide status, and capability is a low-confidence prior. "
-    "Each entry names its licence and where the weights are published. Bring your own InferHub "
-    "key; this feed never contains one. Treat the feed as stale after stale_after."
+    "Read-only daily picks from IRE. The cheap and strongest_open tiers are open-weight models "
+    "only; every entry there has open_weight true and names its licence and where the weights are "
+    "published. The utility tier (image and multimodal models) records the open-weight verdict per "
+    "entry: open_weight true when a published licence and weights were verified, open_weight null "
+    "when the family is listed but its licence is unverified (such a row is never recommended). No "
+    "closed-weight family appears in any tier. Prices are the lowest listed ask in USD per 1M tokens "
+    "at as_of (the served price can be higher), health is InferHub's public, platform-wide status, "
+    "and capability is a low-confidence prior. Bring your own InferHub key; this feed never contains "
+    "one. Treat the feed as stale after stale_after."
 )
+
+
+def _utility_entry(e: dict[str, Any]) -> dict[str, Any]:
+    """A utility-tier entry: keeps the open_weight verdict (true or null) and licence if verified."""
+    ow = e.get("open_weight")
+    caveats = []
+    if ow is not True:
+        caveats.append("licence unverified: no published weights were checked for this family")
+    return {
+        "rank": e["recommendation_rank"],
+        "model_family": e["model_family"],
+        "vendor": e.get("vendor"),
+        "utility_kind": e.get("utility_kind"),
+        "recommended": bool(e["recommended"]),
+        "gate_reasons": list(e.get("gate_reasons") or []),
+        "best_route": e["best_route"],
+        "price_usd_per_mtok": {
+            "input": e.get("best_route_min_ask_in"),
+            "output": e.get("best_route_min_ask_out"),
+            "basis": "best route lowest listed ask at as_of",
+        },
+        "health": {
+            "status": e.get("best_route_health"),
+            "confidence": None,
+            "reasons": list(e.get("best_route_health_reasons") or []),
+        },
+        "routes": list(e.get("routes") or []),
+        "open_weight": ow,
+        "licence": e.get("licence"),
+        "caveats": caveats,
+    }
 
 
 def _open_only(entries: list[dict[str, Any]], licences: dict[str, dict[str, Any]]) -> list[dict]:
@@ -220,12 +261,47 @@ def build_feed(
     code_commit: str | None,
     generated_at: str,
     licences: dict[str, dict[str, Any]] | None = None,
+    utility: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """feed/v2 today.json from the two list documents (pure). Open-weight families only."""
+    """feed/v2 today.json from the list documents (pure).
+
+    The two text tiers carry verified open-weight families only. The optional utility tier
+    records the open-weight verdict per entry, so a licence-unverified utility family can be
+    listed (with open_weight null and recommended false) without weakening the text tiers.
+    """
     lic = load_licences() if licences is None else licences
     oldest = min(_parse(top20["generated_at"]), _parse(frontier["generated_at"]))
     picks = [m for m in frontier["models"] if m.get("recommendation_status") == "recommended"]
     snap = (top20.get("provenance") or {}).get("snapshot_sha256")
+    tiers: dict[str, Any] = {
+        "cheap": {
+            "list": "top20",
+            "as_of": top20["generated_at"],
+            "snapshot_sha256": snap,
+            "description": "Open-weight models from IRE's cheap Top 20, ranked; gated rows "
+            "stay visible with their gate_reasons, recommended marks the usable ones.",
+            "entries": _open_only([_cheap_entry(e) for e in top20["entries"]], lic),
+        },
+        "strongest_open": {
+            "list": "frontier",
+            "as_of": frontier["generated_at"],
+            "snapshot_sha256": (frontier.get("provenance") or {}).get("snapshot_sha256"),
+            "description": "The strongest recommended open-weight models, capability first, "
+            "each with its cheapest healthy route.",
+            "entries": _open_only([_frontier_entry(m) for m in picks], lic),
+        },
+    }
+    if utility is not None:
+        oldest = min(oldest, _parse(utility["generated_at"]))
+        tiers["utility"] = {
+            "list": "utility",
+            "as_of": utility["generated_at"],
+            "snapshot_sha256": (utility.get("provenance") or {}).get("snapshot_sha256"),
+            "description": "Image-generation and multimodal families, ranked on availability and "
+            "price. open_weight is the verdict for the family: true (verified licence and weights) "
+            "or null (listed, licence unverified, never recommended). No closed family is listed.",
+            "entries": [_utility_entry(e) for e in utility["entries"]],
+        }
     return {
         "schema_version": SCHEMA_VERSION_V2,
         "schema_url": RAW_BASE + "feed/v2/schema.json",
@@ -240,24 +316,7 @@ def build_feed(
         "licences_url": SOURCE_REPO
         + "/blob/main/operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
         "notice": NOTICE,
-        "tiers": {
-            "cheap": {
-                "list": "top20",
-                "as_of": top20["generated_at"],
-                "snapshot_sha256": snap,
-                "description": "Open-weight models from IRE's cheap Top 20, ranked; gated rows "
-                "stay visible with their gate_reasons, recommended marks the usable ones.",
-                "entries": _open_only([_cheap_entry(e) for e in top20["entries"]], lic),
-            },
-            "strongest_open": {
-                "list": "frontier",
-                "as_of": frontier["generated_at"],
-                "snapshot_sha256": (frontier.get("provenance") or {}).get("snapshot_sha256"),
-                "description": "The strongest recommended open-weight models, capability first, "
-                "each with its cheapest healthy route.",
-                "entries": _open_only([_frontier_entry(m) for m in picks], lic),
-            },
-        },
+        "tiers": tiers,
     }
 
 
@@ -290,13 +349,18 @@ def _walk_keys(node: Any, path: str = "") -> list[str]:
 
 
 def open_weight_problems(doc: Any, licences: dict[str, dict[str, Any]] | None = None) -> list[str]:
-    """Reasons a feed document is not fit to publish (empty list = fine)."""
+    """Reasons the two text tiers are not fit to publish (empty list = fine).
+
+    The utility tier is checked by ``utility_problems``: it may carry an unverified family, which
+    this function would reject, so it is skipped here."""
     lic = load_licences() if licences is None else licences
     probs = [f"forbidden price-comparison field {p}" for p in _walk_keys(doc)]
     tiers = doc.get("tiers") if isinstance(doc, dict) else None
     if not isinstance(tiers, dict):
         return probs
     for tname, tier in tiers.items():
+        if tname == "utility":
+            continue
         for e in (tier or {}).get("entries") or []:
             fam = str(e.get("model_family"))
             where = f"tiers.{tname} {fam!r}"
@@ -308,6 +372,47 @@ def open_weight_problems(doc: Any, licences: dict[str, dict[str, Any]] | None = 
                 probs.append(f"{where}: open_weight is not true")
             if open_licence(fam, lic) is None:
                 probs.append(f"{where}: no verified open-weight licence in model_licences.v1.json")
+    return probs
+
+
+def utility_problems(doc: Any, licences: dict[str, dict[str, Any]] | None = None) -> list[str]:
+    """Reasons the optional utility tier is not fit to publish (empty list = fine).
+
+    The utility tier may list a licence-unverified family, but only with ``open_weight`` null,
+    ``recommended`` false, the ``open_weight_unverified`` gate and no licence record. A closed
+    family or an entry claiming verification without one is refused."""
+    lic = load_licences() if licences is None else licences
+    tiers = doc.get("tiers") if isinstance(doc, dict) else None
+    if not isinstance(tiers, dict):
+        return []
+    tier = tiers.get("utility")
+    if tier is None:
+        return []
+    probs: list[str] = []
+    for e in (tier or {}).get("entries") or []:
+        fam = str(e.get("model_family"))
+        where = f"tiers.utility {fam!r}"
+        names = [fam, str(e.get("vendor") or ""), str(e.get("best_route") or "")]
+        names += [str(r) for r in e.get("routes") or []]
+        if any(CLOSED_FAMILY_RX.search(n) for n in names):
+            probs.append(f"{where}: closed model family, vendor or route")
+        ow = e.get("open_weight")
+        if ow is False:
+            probs.append(f"{where}: closed-weight (open_weight false) must not be listed")
+        elif ow is None:
+            if e.get("recommended") is not False:
+                probs.append(f"{where}: unverified licence must have recommended false")
+            if "open_weight_unverified" not in (e.get("gate_reasons") or []):
+                probs.append(f"{where}: unverified licence missing the open_weight_unverified gate")
+            if e.get("licence"):
+                probs.append(f"{where}: unverified licence must not carry a licence record")
+        elif ow is True:
+            if open_licence(fam, lic) is None:
+                probs.append(f"{where}: open_weight true without a verified licence")
+        else:
+            probs.append(f"{where}: open_weight must be true, false or null")
+        if e.get("recommended") is True and ow is not True:
+            probs.append(f"{where}: recommended true without a verified open-weight licence")
     return probs
 
 
@@ -364,6 +469,7 @@ def check_tree(root: str) -> list[str]:
                     hits.append(f"{rel}: not valid JSON")
                     continue
                 hits += [f"{rel}: {p_}" for p_ in open_weight_problems(doc)]
+                hits += [f"{rel}: {p_}" for p_ in utility_problems(doc)]
     return hits
 
 
@@ -373,7 +479,9 @@ def _read(path: str) -> bytes:
         return fh.read()
 
 
-def load_sources(lists_dir: str = LISTS_DIR) -> tuple[dict[str, Any], dict[str, Any], dict]:
+def load_sources(
+    lists_dir: str = LISTS_DIR,
+) -> tuple[dict[str, Any], dict[str, Any], dict | None, dict]:
     t_json, f_json = (
         _read(os.path.join(lists_dir, TOP20_JSON)),
         _read(os.path.join(lists_dir, FRONTIER_JSON)),
@@ -393,7 +501,18 @@ def load_sources(lists_dir: str = LISTS_DIR) -> tuple[dict[str, Any], dict[str, 
             "sha256": _sha(_read(LICENCES_SRC)),
         },
     }
-    return json.loads(t_json), json.loads(f_json), sources
+    # The utility list is optional: a checkout without it still builds the two text tiers.
+    utility: dict | None = None
+    u_json_path = os.path.join(lists_dir, UTILITY_JSON)
+    if os.path.exists(u_json_path):
+        u_json = _read(u_json_path)
+        utility = json.loads(u_json)
+        sources["utility"] = {
+            "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/" + UTILITY_CSV,
+            "sha256": _sha(_read(os.path.join(lists_dir, UTILITY_CSV))),
+            "sidecar_sha256": _sha(u_json),
+        }
+    return json.loads(t_json), json.loads(f_json), utility, sources
 
 
 def _git_head() -> str | None:
@@ -426,10 +545,15 @@ def _version_files(out_root: str, version: str, doc: dict, schema_src: str) -> d
 
 def write_feed(out_root: str, code_commit: str | None, lists_dir: str = LISTS_DIR) -> dict:
     """Write feed/v2 (and the deprecated v1 mirror) under ``out_root``; returns the v2 doc."""
-    top20, frontier, sources = load_sources(lists_dir)
-    today = build_feed(top20, frontier, sources, code_commit, _iso_now())
+    top20, frontier, utility, sources = load_sources(lists_dir)
+    today = build_feed(top20, frontier, sources, code_commit, _iso_now(), utility=utility)
     v1 = to_v1(today)
-    problems = open_weight_problems(today) + open_weight_problems(v1)
+    problems = (
+        open_weight_problems(today)
+        + utility_problems(today)
+        + open_weight_problems(v1)
+        + utility_problems(v1)
+    )
     if problems:
         raise RuntimeError("open-weight guard refused the feed: " + "; ".join(problems))
     files = _version_files(out_root, "v2", today, SCHEMA_V2_SRC)

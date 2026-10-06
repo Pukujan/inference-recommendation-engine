@@ -309,9 +309,15 @@ def _family_index(prior: dict[str, Any]) -> tuple[dict[str, str], dict[str, str]
 
 # ---------------------------------------------------------------- assembly
 def collect_routes(
-    catalog: list[dict[str, Any]], status: dict[str, Any], prior: dict[str, Any]
+    catalog: list[dict[str, Any]],
+    status: dict[str, Any],
+    prior: dict[str, Any],
+    text_only: bool = True,
 ) -> list[dict[str, Any]]:
-    """Every live text route with ladders, health and its family (prior or unscored)."""
+    """Every live route with ladders, health and its family (prior or unscored).
+
+    ``text_only`` keeps the Top 20 to text models (the default). The utility builder passes
+    False so image and multimodal routes are collected too."""
     rails, aliases, _ = F._status_maps(status)
     by_route, by_seg = _family_index(prior)
     out = []
@@ -320,7 +326,7 @@ def collect_routes(
         rail_ok = bool(rail.get("enabled")) and not rail.get("upstreamDisabled")
         rst = rails.get(pre) or {}
         for m in rail.get("models") or []:
-            if (m.get("outputModality") or "text") != "text":
+            if text_only and (m.get("outputModality") or "text") != "text":
                 continue
             mid = m["upstreamModelId"]
             rid = f"{pre}/{mid}"

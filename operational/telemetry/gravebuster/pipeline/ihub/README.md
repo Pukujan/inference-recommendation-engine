@@ -90,8 +90,15 @@ sidecar `research_model_top20_recommendations.json` (per-row confidence, best ro
 gate reasons, provenance) and the `top20` entry of `manifest.lists`. Capability, tier and release date
 come from `top20_prior.v1.json` (carried over from the 2026-09-22 list, low confidence); everything else
 is live. The daily shortlist file is still the old verbatim copy.
-Refresh both lists from one fetch:
-`python frontier.py --raw-dir DIR --fetch --env-file F && python top20.py --raw-dir DIR`.
+Utility list (IRE #94): `utility.py --raw-dir DIR` reuses the same three GET bodies for the image
+and multimodal families the text-only lists skip (`top20.collect_routes` with `text_only=False`).
+Admission needs both a name match (`omni`, `image`, `video`, `audio`, `tts`, `speech`, `vision`)
+and a record in `model_licences.v1.json`; the open-weight verdict is recorded per row
+(`open_weight: true` when verified, `null` when unverified with `recommended: false`), and closed
+families are excluded. It writes `lists/research_model_utility_recommendations.{csv,json}` and the
+`utility` entry of `manifest.generated_lists`, and never touches the Top 20 or the frontier list.
+Refresh all three lists from one fetch:
+`python frontier.py --raw-dir DIR --fetch --env-file F && python top20.py --raw-dir DIR && python utility.py --raw-dir DIR`.
 The GitHub Action `.github/workflows/daily-refresh.yml` does this every day at 11:10 UTC, publishes
 the feed and opens the lists PR (see `FEED.md`, IRE #84).
 First install (units are installed by `deploy.sh`, but new timers must be enabled once):

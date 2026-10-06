@@ -8,7 +8,8 @@ For coding agents and scripts that need today's model pick. Humans: read [START-
 - Schema (JSON Schema 2020-12): `.../data/ire-feed/feed/v2/schema.json`
 - Day history: `.../data/ire-feed/feed/v2/days/YYYY-MM-DD.json`, listed in `.../feed/v2/index.json`
 - `schema_version` is `ire-feed/v2`. Refuse any other major version. (`feed/v1/` still serves the same data in the old shape, deprecated.)
-- Open-weight models only. Every entry has `open_weight: true` and `licence` (`name`, `url`, `weights_url`). No official-price or discount fields.
+- The two text tiers (`cheap`, `strongest_open`) are open-weight models only. Every entry there has `open_weight: true` and `licence` (`name`, `url`, `weights_url`). No official-price or discount fields.
+- An optional third tier, `utility`, lists image and multimodal families (for example Qwen3.8 Omni Flash). It records the verdict per entry: `open_weight: true` with a `licence` when verified, or `open_weight: null` when the licence is unverified (then `recommended` is `false` and `gate_reasons` has `open_weight_unverified`). It is not required; if it is absent, ignore it.
 - The feed never contains a key. You need your own `INFERHUB_API_KEY`. Read it from the environment; never log it, never put it in a URL.
 - One refresh per day, run by the GitHub Action `.github/workflows/daily-refresh.yml` at 11:10 UTC and published on the orphan branch `data/ire-feed`. Cache for hours, not seconds.
 

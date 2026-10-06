@@ -27,26 +27,30 @@ CLOSED_NAMES = ("GPT", "Claude", "Gemini", "Grok", "Muse Spark", "OpenAI", "Anth
 
 
 def build(licences: dict | None = None) -> dict:
-    top20, frontier, sources = FD.load_sources()
-    return FD.build_feed(top20, frontier, sources, COMMIT, "2026-10-04T19:00:00Z", licences)
+    top20, frontier, utility, sources = FD.load_sources()
+    return FD.build_feed(
+        top20, frontier, sources, COMMIT, "2026-10-04T19:00:00Z", licences, utility
+    )
 
 
 def all_list_families() -> set[str]:
-    top20, frontier, _ = FD.load_sources()
+    top20, frontier, _utility, _ = FD.load_sources()
     return {e["model_family"] for e in top20["entries"]} | {
         m["model_family"] for m in frontier["models"]
     }
 
 
-def entries(doc: dict) -> list[dict]:
-    return [e for t in doc["tiers"].values() for e in t["entries"]]
+def entries(doc: dict, tiers: tuple[str, ...] | None = None) -> list[dict]:
+    keys = tuple(doc["tiers"]) if tiers is None else tiers
+    return [e for t in keys for e in doc["tiers"][t]["entries"]]
 
 
 class FeedShapeTests(unittest.TestCase):
     def test_feed_from_committed_lists_matches_v2_schema(self) -> None:
         doc = build()
         jsonschema.validate(doc, SCHEMA_V2, cls=V)
-        self.assertEqual(set(doc["tiers"]), {"cheap", "strongest_open"})
+        self.assertTrue({"cheap", "strongest_open"} <= set(doc["tiers"]))
+        self.assertTrue(set(doc["tiers"]) <= {"cheap", "strongest_open", "utility"})
         cheap = doc["tiers"]["cheap"]["entries"]
         self.assertEqual([e["rank"] for e in cheap], list(range(1, len(cheap) + 1)))
         self.assertTrue(0 < len(cheap) <= 20)
@@ -72,8 +76,9 @@ class FeedShapeTests(unittest.TestCase):
         self.assertEqual(doc["schema_version"], "ire-feed/v2")
         self.assertIs(doc["open_weight_only"], True)
         self.assertEqual(doc["code_commit"], COMMIT)
-        self.assertEqual(set(doc["sources"]), {"top20", "frontier", "licences"})
-        oldest = min(FD._parse(doc["tiers"][t]["as_of"]) for t in ("cheap", "strongest_open"))
+        self.assertTrue({"top20", "frontier", "licences"} <= set(doc["sources"]))
+        self.assertTrue(set(doc["sources"]) <= {"top20", "frontier", "utility", "licences"})
+        oldest = min(FD._parse(doc["tiers"][t]["as_of"]) for t in doc["tiers"])
         self.assertEqual(FD._parse(doc["stale_after"]), oldest + dt.timedelta(hours=36))
 
     def test_et_day(self) -> None:
@@ -106,13 +111,32 @@ class FeedShapeTests(unittest.TestCase):
 
 
 class OpenWeightTests(unittest.TestCase):
-    def test_every_entry_is_open_weight_with_a_licence(self) -> None:
-        for e in entries(build()):
+    def test_text_tiers_are_open_weight_with_a_licence(self) -> None:
+        for e in entries(build(), ("cheap", "strongest_open")):
             self.assertIs(e["open_weight"], True)
             rec = LICENCES["families"][e["model_family"]]
             self.assertIs(rec["open_weight"], True)
             self.assertEqual(e["licence"]["url"], rec["licence_url"])
             self.assertEqual(e["licence"]["weights_url"], rec["weights_url"])
+
+    def test_utility_tier_records_a_verdict_per_entry(self) -> None:
+        doc = build()
+        if "utility" not in doc["tiers"]:
+            self.skipTest("no committed utility list in this checkout")
+        tier = doc["tiers"]["utility"]
+        self.assertEqual(
+            [e["rank"] for e in tier["entries"]], list(range(1, len(tier["entries"]) + 1))
+        )
+        for e in tier["entries"]:
+            self.assertIn(e["open_weight"], (True, None))
+            if e["open_weight"] is None:
+                self.assertIs(e["recommended"], False)
+                self.assertIn("open_weight_unverified", e["gate_reasons"])
+                self.assertIsNone(e["licence"])
+                self.assertTrue(e["caveats"], "an unverified row must carry its caveat")
+            if e["recommended"]:
+                self.assertIs(e["open_weight"], True)
+                self.assertIsNotNone(e["licence"])
 
     def test_no_closed_family_in_public_feed(self) -> None:
         doc = build()
