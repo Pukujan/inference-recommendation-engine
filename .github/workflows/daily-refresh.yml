@@ -3,8 +3,9 @@ name: Daily refresh
 # Refreshes today's picks once a day (IRE #84). Replaces the old assistant-run routine.
 # 1. frontier.py --fetch: three GETs to InferHub (catalog with the key, status and market public)
 # 2. top20.py: the cheap Top 20 from the same bodies
-# 3. feed guard, then feed.py publish: open-weight feed -> data/ire-feed (pushed only on change)
-# 4. lists/ changes -> PR to main (branch auto/daily-lists), squash auto-merge once `test` passes
+# 3. utility.py: the image and multimodal list from the same bodies
+# 4. feed guard, then feed.py publish: open-weight feed -> data/ire-feed (pushed only on change)
+# 5. lists/ changes -> PR to main (branch auto/daily-lists), squash auto-merge once `test` passes
 #    (needs repo setting: Actions may create pull requests)
 
 on:
@@ -59,6 +60,11 @@ jobs:
           set -euo pipefail
           uv run --locked python "$IHUB/top20.py" --raw-dir "$RUNNER_TEMP/ihub-raw"
 
+      - name: Build the utility (image and multimodal) list from the same bodies
+        run: |
+          set -euo pipefail
+          uv run --locked python "$IHUB/utility.py" --raw-dir "$RUNNER_TEMP/ihub-raw"
+
       - name: Feed guard (fail on credentials, closed models or price-comparison fields)
         run: |
           set -euo pipefail
@@ -87,11 +93,12 @@ jobs:
           branch: ${{ env.LISTS_BRANCH }}
           base: main
           add-paths: ${{ env.IHUB }}/lists
-          commit-message: "lists: daily InferHub refresh (frontier + Top 20)"
-          title: "Daily lists refresh: frontier and Top 20"
+          commit-message: "lists: daily InferHub refresh (frontier, Top 20 + utility)"
+          title: "Daily lists refresh: frontier, Top 20 and utility"
           body: |
             The daily refresh (`.github/workflows/daily-refresh.yml`, IRE #84) rebuilt the frontier
-            list and the cheap Top 20 from live InferHub data.
+            list, the cheap Top 20 and the utility (image and multimodal) list from live InferHub
+            data.
 
             It changes only `${{ env.IHUB }}/lists/`. The public feed on `data/ire-feed` was already
             published from these lists in the same run.

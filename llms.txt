@@ -1,8 +1,8 @@
 # Inference Recommendation Engine (IRE)
 
-> Daily ranked model picks for people and agents using their own InferHub key. A static, versioned JSON feed names the exact route, the lowest listed price per 1M tokens, health, gate reasons and licence for a cheap tier and a strongest-open-weight tier. Open-weight models only. No key is ever in the feed; bring your own INFERHUB_API_KEY.
+> Daily ranked model picks for people and agents using their own InferHub key. A static, versioned JSON feed names the exact route, the lowest listed price per 1M tokens, health, gate reasons and licence for a cheap tier, a strongest-open-weight tier, and a utility tier for image and multimodal models. The two text tiers are open-weight only; the utility tier records the open-weight verdict per entry. No key is ever in the feed; bring your own INFERHUB_API_KEY.
 
-Feed contract: schema_version "ire-feed/v2"; refreshed once a day at 11:10 UTC by a GitHub Action; respect stale_after. Pick the first entry with recommended == true in tiers.cheap or tiers.strongest_open and send its best_route as the model name to https://api.inferhub.dev/v1 (OpenAI-compatible, Bearer key) or https://api.inferhub.dev (Anthropic-compatible, x-api-key). Every entry has open_weight: true and a licence object (name, url, weights_url).
+Feed contract: schema_version "ire-feed/v2"; refreshed once a day at 11:10 UTC by a GitHub Action; respect stale_after. Pick the first entry with recommended == true in tiers.cheap or tiers.strongest_open and send its best_route as the model name to https://api.inferhub.dev/v1 (OpenAI-compatible, Bearer key) or https://api.inferhub.dev (Anthropic-compatible, x-api-key). Every entry in tiers.cheap and tiers.strongest_open has open_weight: true and a licence object (name, url, weights_url). The optional tiers.utility (image and multimodal families) carries open_weight true with a licence, or null when the licence is unverified (then recommended is false).
 
 ## Feed
 

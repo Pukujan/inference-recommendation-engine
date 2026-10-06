@@ -2,7 +2,7 @@
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/schema.json",
  "title": "ire-feed/v2",
- "description": "IRE daily read-only recommendation feed (today.json and days/YYYY-MM-DD.json), open-weight models only. Two tiers: cheap (the open-weight rows of IRE's Top 20, gated rows included, re-ranked 1..n) and strongest_open (recommended open-weight picks only, capability first). Every entry carries open_weight: true and its licence (name, licence URL, weights URL). Prices are the best route's lowest listed ask in USD per 1M tokens at the tier's as_of; the feed carries no official-price or discount fields. Additive fields may appear within v2.",
+ "description": "IRE daily read-only recommendation feed (today.json and days/YYYY-MM-DD.json). Two text tiers carry open-weight models only: cheap (the open-weight rows of IRE's Top 20, gated rows included, re-ranked 1..n) and strongest_open (recommended open-weight picks only, capability first); every entry in those tiers carries open_weight: true and its licence (name, licence URL, weights URL). An optional third tier, utility, lists image and multimodal families and records the open-weight verdict per entry: open_weight true with a licence, or null when unverified (then recommended is false); false never appears. Prices are the best route's lowest listed ask in USD per 1M tokens at the tier's as_of; the feed carries no official-price or discount fields. Additive fields may appear within v2.",
  "type": "object",
  "required": [
   "schema_version",
@@ -97,6 +97,9 @@
     },
     "strongest_open": {
      "$ref": "#/$defs/tier"
+    },
+    "utility": {
+     "$ref": "#/$defs/utility_tier"
     }
    }
   },
@@ -322,6 +325,275 @@
      }
     }
    },
+   "propertyNames": {
+    "not": {
+     "pattern": "(?i)(official|discount)"
+    }
+   }
+  },
+  "utility_tier": {
+   "type": "object",
+   "required": [
+    "list",
+    "as_of",
+    "snapshot_sha256",
+    "entries"
+   ],
+   "properties": {
+    "list": {
+     "type": "string"
+    },
+    "as_of": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "snapshot_sha256": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "description": {
+     "type": "string"
+    },
+    "entries": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/utility_entry"
+     }
+    }
+   }
+  },
+  "utility_entry": {
+   "type": "object",
+   "required": [
+    "rank",
+    "model_family",
+    "recommended",
+    "gate_reasons",
+    "best_route",
+    "price_usd_per_mtok",
+    "health",
+    "routes",
+    "open_weight",
+    "licence"
+   ],
+   "properties": {
+    "rank": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "model_family": {
+     "type": "string",
+     "minLength": 1
+    },
+    "vendor": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "utility_kind": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "recommended": {
+     "type": "boolean"
+    },
+    "gate_reasons": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "best_route": {
+     "type": "string",
+     "pattern": "^[a-z0-9]+/.+"
+    },
+    "price_usd_per_mtok": {
+     "type": "object",
+     "required": [
+      "input",
+      "output"
+     ],
+     "properties": {
+      "input": {
+       "type": [
+        "number",
+        "null"
+       ],
+       "minimum": 0
+      },
+      "output": {
+       "type": [
+        "number",
+        "null"
+       ],
+       "minimum": 0
+      },
+      "basis": {
+       "type": "string"
+      }
+     },
+     "propertyNames": {
+      "not": {
+       "pattern": "(?i)(official|discount)"
+      }
+     }
+    },
+    "health": {
+     "type": "object",
+     "required": [
+      "status"
+     ],
+     "properties": {
+      "status": {
+       "enum": [
+        "healthy",
+        "insufficient_data",
+        "degraded",
+        "failing",
+        "unavailable",
+        null
+       ]
+      },
+      "confidence": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "reasons": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "confidence": {
+     "enum": [
+      "low",
+      "medium",
+      "high",
+      null
+     ]
+    },
+    "capability_score_100": {
+     "type": [
+      "number",
+      "null"
+     ]
+    },
+    "caveats": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "routes": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "minItems": 1
+    },
+    "open_weight": {
+     "enum": [
+      true,
+      null
+     ]
+    },
+    "licence": {
+     "type": [
+      "object",
+      "null"
+     ],
+     "required": [
+      "name",
+      "url",
+      "weights_url"
+     ],
+     "properties": {
+      "name": {
+       "type": "string",
+       "minLength": 1
+      },
+      "url": {
+       "type": "string",
+       "pattern": "^https://"
+      },
+      "weights_url": {
+       "type": "string",
+       "pattern": "^https://"
+      }
+     }
+    }
+   },
+   "allOf": [
+    {
+     "if": {
+      "properties": {
+       "open_weight": {
+        "const": null
+       }
+      },
+      "required": [
+       "open_weight"
+      ]
+     },
+     "then": {
+      "properties": {
+       "recommended": {
+        "const": false
+       },
+       "licence": {
+        "type": "null"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "open_weight": {
+        "const": true
+       }
+      },
+      "required": [
+       "open_weight"
+      ]
+     },
+     "then": {
+      "properties": {
+       "licence": {
+        "type": "object"
+       }
+      }
+     }
+    },
+    {
+     "if": {
+      "properties": {
+       "recommended": {
+        "const": true
+       }
+      },
+      "required": [
+       "recommended"
+      ]
+     },
+     "then": {
+      "properties": {
+       "open_weight": {
+        "const": true
+       }
+      }
+     }
+    }
+   ],
    "propertyNames": {
     "not": {
      "pattern": "(?i)(official|discount)"

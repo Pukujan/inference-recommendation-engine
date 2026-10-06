@@ -1,0 +1,113 @@
+{
+ "schema": "ihub-utility-recommendations/v1",
+ "hypothesis_notice": "Each row is a hypothesis, not a fact. Utility families are ranked on availability and price only, because they carry no capability or recency prior. The open_weight verdict is per row: true means a published licence and weights were verified, null means the family is listed but its licence is unverified (recommended stays false). Prices are live InferHub asks in USD per 1M tokens at generated_at; the served price can be higher.",
+ "generated_at": "2026-10-06T05:14:44Z",
+ "code_commit": "f472065714d62182a44d5592d6a0d381e97cbc05",
+ "provenance": {
+  "snapshot_sha256": "f3edcd014b6c8f148888aec9c8527312d2da906559800a252bf329072e27cfa7",
+  "sources": [
+   {
+    "endpoint": "catalog",
+    "url": "https://inferhub.dev/api/catalog",
+    "auth": "key",
+    "method": "GET",
+    "fetched_at": "2026-10-06T05:05:39Z",
+    "fetched_from": null,
+    "sha256": "b99c05b25ddb1ced3e04e4a893484f639376951707ad92b1643292f2a403167f",
+    "bytes": 111357
+   },
+   {
+    "endpoint": "status",
+    "url": "https://inferhub.dev/api/status",
+    "auth": "public",
+    "method": "GET",
+    "fetched_at": "2026-10-06T05:05:40Z",
+    "fetched_from": null,
+    "sha256": "ff4b9b0e1c838781c0a8255a239ad6b481017b3e57691bda132c63e8682a57ec",
+    "bytes": 233915
+   },
+   {
+    "endpoint": "market",
+    "url": "https://inferhub.dev/api/market",
+    "auth": "public",
+    "method": "GET",
+    "fetched_at": "2026-10-06T05:05:41Z",
+    "fetched_from": null,
+    "sha256": "873251321b7ad88185e862ce91533e8eabb127fbf646dae71dd22faedd9cfbd6",
+    "bytes": 23198
+   }
+  ],
+  "licence_map": {
+   "file": "operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
+   "sha256": "5f6a3f6672cb845e738be0948db61a347c12f94cd02dad6e47cef1019000ebc5"
+  },
+  "generator": "operational/telemetry/gravebuster/pipeline/ihub/utility.py"
+ },
+ "method": {
+  "admission": "name matches UTILITY_RX and is named in model_licences.v1.json",
+  "open_weight_verdict": "true when open_licence() verifies the family; null when the record is unverified (listed with recommended false); closed records are excluded entirely",
+  "near_free_cost_cap_usd_per_mtok": 0.1,
+  "catalog_availability": "100 * (ln(1 + providers) / ln(7)) ** 0.8, capped at 100",
+  "price_supply_availability": "percentile rank (0-100) of total live input listings among priced utility families",
+  "public_availability_7d": "InferHub /api/status availability7dPct of the best route's rail",
+  "reliability": "equal to public_availability_7d_pct (no private probes in the repo)",
+  "shortlist_weights": {
+   "price_utility": 0.25,
+   "reliability": 0.3,
+   "catalog_availability": 0.25,
+   "price_supply_availability": 0.2,
+   "capability": 0.0,
+   "recency": 0.0,
+   "boost_points_per_unit": 0.0
+  },
+  "shortlist_calibration": "Not fitted. There is no historical utility list to calibrate against, so these weights are a stated hypothesis: availability and price only.",
+  "ranking": "shortlist_score_100 desc, then supply_weighted_median_cost asc, then model_family",
+  "model_ids_order": "best route first: health status, then a supply-depth tie-break inside a 5% price band around the cheapest min ask at the same health tier, then the blended (3:1) min ask, then route id"
+ },
+ "counts": {
+  "families_considered": 69,
+  "listed": 1,
+  "recommended": 0,
+  "gated": 1,
+  "licence_unverified": 1,
+  "excluded_closed": 0,
+  "unmapped_utility": 5
+ },
+ "entries": [
+  {
+   "recommendation_rank": 1,
+   "model_family": "Qwen3.8 Omni Flash",
+   "vendor": "Alibaba/Qwen",
+   "utility_kind": "omni",
+   "open_weight": null,
+   "recommended": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "open_weight_unverified"
+   ],
+   "priced_provider_count": 2,
+   "catalog_availability_score_100": 63.3,
+   "price_supply_availability_score_100": 100.0,
+   "public_availability_7d_pct": 97.27,
+   "shortlist_score_100": 90.005,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.015703,
+   "best_route": "alicn/qwen3.8-omni-flash",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias low_traffic, 24h availability 100.0%",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.00015,
+   "best_route_min_ask_out": 0.00047,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "alicn/qwen3.8-omni-flash",
+    "ali/qwen3.8-omni-flash"
+   ],
+   "licence": null
+  }
+ ]
+}

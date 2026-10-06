@@ -9,8 +9,9 @@ orphan branch `data/ire-feed` and read with a plain GET:
 https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/today.json
 ```
 
-The feed only lists **open-weight models**: families whose weights are published for download
-under a licence we've checked. See "Open-weight only" below.
+The two text tiers only list **open-weight models**: families whose weights are published for
+download under a licence we've checked. See "Open-weight only" below. A third, optional `utility`
+tier lists image-generation and multimodal families and records the open-weight verdict per entry.
 
 | Option | Verdict | Why |
 | --- | --- | --- |
@@ -23,16 +24,19 @@ under a licence we've checked. See "Open-weight only" below.
 
 | Path on `data/ire-feed` | What it is |
 | --- | --- |
-| `feed/v2/today.json` | Today's picks: `tiers.cheap` (the open-weight rows of the Top 20, gated rows included, ranked 1..n) and `tiers.strongest_open` (the strongest recommended open-weight models) |
+| `feed/v2/today.json` | Today's picks: `tiers.cheap` (the open-weight rows of the Top 20, gated rows included, ranked 1..n), `tiers.strongest_open` (the strongest recommended open-weight models) and, when present, `tiers.utility` (image and multimodal families, ranked on availability and price) |
 | `feed/v2/days/YYYY-MM-DD.json` | The same document for each ET day. Append-only. |
 | `feed/v2/index.json` | Every day with its URL and sha256 |
 | `feed/v2/schema.json` | JSON Schema (source: `schemas/feed.v2.schema.json` here) |
 | `feed/v1/...` | Deprecated. The same open-weight data in the old shape, with `strongest_open` under the old `frontier` key, plus `deprecated` and `superseded_by`. Readers should move to v2. |
 
-Each entry has `rank`, `model_family`, `open_weight` (always `true`), `licence` (`name`, `url`,
-`weights_url`), `recommended`, `gate_reasons`, `best_route`,
+Each entry in the two text tiers has `rank`, `model_family`, `open_weight` (always `true`),
+`licence` (`name`, `url`, `weights_url`), `recommended`, `gate_reasons`, `best_route`,
 `price_usd_per_mtok.input/output` (the best route's lowest listed ask), `health.status/reasons`,
-`confidence`, `caveats` and every `routes` id, best first.
+`confidence`, `caveats` and every `routes` id, best first. A `utility` entry has the same shape
+plus `utility_kind`, but `open_weight` is the verdict for the family: `true` when a licence and
+weights were verified, `null` when the family is listed with an unverified licence (such a row is
+never `recommended`).
 
 Top-level provenance: `schema_version`, `generated_at`, `day_et`, `stale_after` (oldest list
 `as_of` + 36 h), `code_commit`, `snapshot_sha256`, `sources.*.sha256` (each input list),
@@ -57,19 +61,28 @@ into the feed only when it's listed there with `open_weight: true`. Closed, API-
 families we couldn't match to a published checkpoint are listed with `open_weight: null`. Both
 stay out. To add a family, check its weights and licence, add the record, and open a PR.
 
-This applies to the public feed only. The lists in `lists/` and `frontier.py` output are
-unchanged.
+This applies to the two text tiers. The `utility` tier (image and multimodal families, from
+`utility.py`) records the verdict per entry instead: a family is admitted only when its name names
+a non-text capability **and** it is named in `model_licences.v1.json`. A family whose record is
+`open_weight: true` and verified is listed with `open_weight: true` and may be `recommended`; a
+family whose record is unverified (`open_weight: null`) is listed with `open_weight: null`,
+`recommended: false` and the `open_weight_unverified` gate; a family marked closed
+(`open_weight: false`) is excluded entirely. No entry ever carries `open_weight: false`. The lists
+in `lists/` and `frontier.py` output are unchanged.
 
 ## Guard
 
 `feed.py check DIR` fails if a `today.json` or `days/*.json` names a closed model family or
-vendor in a model, vendor or route field, if an entry isn't marked `open_weight` or has no
-verified licence record, or if any key mentions an official price or discount. It also fails if
+vendor in a model, vendor or route field, if a text-tier entry isn't marked `open_weight` or has
+no verified licence record, if a `utility` entry claims `open_weight: true` without a verified
+licence, carries `open_weight: false`, or is `recommended` while unverified, or if any key
+mentions an official price or discount. It also fails if
 any file looks like it holds a credential: `sk-` keys, bearer
 tokens, `Authorization` or `x-api-key` headers, GitHub tokens, AWS keys, `*_API_KEY=` lines and
 private key blocks. `write_feed` and `publish` run the same scan and refuse to write or push on a
-hit. CI builds the feed from the committed lists and runs the guard on every push, and
-`operational/tests/test_telemetry_ihub_feed.py` covers the open-weight rules.
+hit. CI builds the feed from the committed lists and runs the guard on every push,
+`operational/tests/test_telemetry_ihub_feed.py` covers the open-weight rules, and
+`operational/tests/test_telemetry_ihub_utility.py` covers the utility tier's per-entry verdict.
 
 ## Refresh
 
@@ -78,7 +91,8 @@ The refresh runs as a GitHub Action, [`.github/workflows/daily-refresh.yml`](../
 from the Actions tab (`workflow_dispatch`). Each run:
 
 1. runs `frontier.py --fetch` with the `INFERHUB_API_KEY` repo secret (three GETs: `/api/catalog`
-   with the key, `/api/status` and `/api/market` public), then `top20.py` on the same bodies;
+   with the key, `/api/status` and `/api/market` public), then `top20.py` and `utility.py` on the
+   same bodies;
 2. builds the feed and runs `feed.py check`, so a closed model or a credential fails the run before
    anything is pushed;
 3. runs `feed.py publish`, which pushes to `data/ire-feed` only when the feed changed;
@@ -96,6 +110,7 @@ To run the same steps by hand:
 cd <ire checkout>/operational/telemetry/gravebuster/pipeline/ihub
 python frontier.py --raw-dir "$RAW" --fetch --env-file "$ENV_FILE"   # one GET round, frontier list
 python top20.py --raw-dir "$RAW"                                     # cheap Top 20 from the same bodies
+python utility.py --raw-dir "$RAW"                                   # image/multimodal utility list
 python feed.py publish                                               # feed -> data/ire-feed
 ```
 

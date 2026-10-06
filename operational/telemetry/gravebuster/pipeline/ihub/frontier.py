@@ -902,33 +902,36 @@ def _git_head() -> str | None:
 
 
 def update_manifest(lists_dir: str, written: dict[str, bytes], doc: dict[str, Any]) -> None:
-    """Record the generated frontier files under manifest.generated_lists (lists[] untouched)."""
+    """Record the generated frontier files under manifest.generated_lists (lists[] untouched).
+
+    Replaces only the ``frontier`` entry and keeps every other generated list, so the daily
+    frontier run does not wipe the utility list's manifest record."""
     path = os.path.join(lists_dir, "manifest.json")
     with open(path, encoding="utf-8") as fh:
         man = json.load(fh)
-    man["generated_lists"] = [
-        {
-            "list": "frontier",
-            "files": {
-                "models_csv": OUT_MODELS_CSV,
-                "routes_csv": OUT_ROUTES_CSV,
-                "json": OUT_JSON,
-            },
-            "sha256": {name: hashlib.sha256(body).hexdigest() for name, body in written.items()},
-            "schema": doc["schema"],
-            "schema_file": doc["schema_file"],
-            "generator": "operational/telemetry/gravebuster/pipeline/ihub/frontier.py",
-            "generated_at": doc["generated_at"],
-            "code_commit": doc["code_commit"],
-            "snapshot_sha256": doc["provenance"]["snapshot_sha256"],
-            "rank_column": "frontier_rank",
-            "eligible_column": "recommendation_eligible",
-            "meaning": "Frontier / expensive tier, ranked capability first with live InferHub "
-            "route prices. Separate from the cheap Top 20, which it never changes. Generated in "
-            "this repo (not a verbatim copy).",
-            "issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/67",
-        }
-    ]
+    entry = {
+        "list": "frontier",
+        "files": {
+            "models_csv": OUT_MODELS_CSV,
+            "routes_csv": OUT_ROUTES_CSV,
+            "json": OUT_JSON,
+        },
+        "sha256": {name: hashlib.sha256(body).hexdigest() for name, body in written.items()},
+        "schema": doc["schema"],
+        "schema_file": doc["schema_file"],
+        "generator": "operational/telemetry/gravebuster/pipeline/ihub/frontier.py",
+        "generated_at": doc["generated_at"],
+        "code_commit": doc["code_commit"],
+        "snapshot_sha256": doc["provenance"]["snapshot_sha256"],
+        "rank_column": "frontier_rank",
+        "eligible_column": "recommendation_eligible",
+        "meaning": "Frontier / expensive tier, ranked capability first with live InferHub "
+        "route prices. Separate from the cheap Top 20, which it never changes. Generated in "
+        "this repo (not a verbatim copy).",
+        "issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/67",
+    }
+    others = [g for g in man.get("generated_lists", []) if g.get("list") != "frontier"]
+    man["generated_lists"] = others + [entry]
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(json.dumps(man, indent=1, ensure_ascii=False) + "\n")
 
