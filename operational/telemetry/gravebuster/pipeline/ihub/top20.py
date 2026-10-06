@@ -48,6 +48,18 @@ except ImportError:  # pragma: no cover
     F = _ilu.module_from_spec(_spec)
     _spec.loader.exec_module(F)
 
+try:  # package import on the host; file import (tests, CLI) falls back to a sibling load
+    from . import licences as L
+except ImportError:  # pragma: no cover
+    import importlib.util as _ilu2
+
+    _spec2 = _ilu2.spec_from_file_location(
+        "ihub_licences", os.path.join(os.path.dirname(os.path.abspath(__file__)), "licences.py")
+    )
+    assert _spec2 and _spec2.loader
+    L = _ilu2.module_from_spec(_spec2)
+    _spec2.loader.exec_module(L)
+
 SCHEMA_ID = "ihub-top20-recommendations/v1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 LISTS_DIR = os.path.join(HERE, "lists")
@@ -405,9 +417,11 @@ def build(
     market: dict[str, Any],
     prior: dict[str, Any],
     meta: dict[str, Any],
+    licences: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Assemble the Top 20 document (pure). ``market`` is accepted for parity with frontier."""
     del market
+    licences = L.load_licences() if licences is None else licences
     as_of = dt.date.fromisoformat(meta["generated_at"][:10])
     routes = collect_routes(catalog, status, prior)
     live = [r for r in routes if r["health"]["status"] != "unavailable" and r["ladder_in"]]
@@ -505,6 +519,8 @@ def build(
             gates.append("missing_price")
         if not any(r["health"]["status"] == "healthy" for r in row["live_routes"]):
             gates.append("not_routing_eligible")
+        if L.open_licence(row["model_family"], licences) is None:
+            gates.append("open_weight_unverified")
         row["gate_reasons"] = gates
         row["recommendation_eligible"] = not gates
 

@@ -42,11 +42,26 @@ import sys
 import tempfile
 from typing import Any
 
+try:  # package import on the host; file import (tests, CLI) falls back to a sibling load
+    from .licences import CLOSED_FAMILY_RX, LICENCES_SRC, load_licences, open_licence
+except ImportError:  # pragma: no cover
+    import importlib.util as _ilu
+
+    _spec = _ilu.spec_from_file_location(
+        "ihub_licences", os.path.join(os.path.dirname(os.path.abspath(__file__)), "licences.py")
+    )
+    assert _spec and _spec.loader
+    _licences = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_licences)
+    CLOSED_FAMILY_RX = _licences.CLOSED_FAMILY_RX
+    LICENCES_SRC = _licences.LICENCES_SRC
+    load_licences = _licences.load_licences
+    open_licence = _licences.open_licence
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 LISTS_DIR = os.path.join(HERE, "lists")
 SCHEMA_SRC = os.path.join(HERE, "schemas", "feed.v1.schema.json")
 SCHEMA_V2_SRC = os.path.join(HERE, "schemas", "feed.v2.schema.json")
-LICENCES_SRC = os.path.join(HERE, "model_licences.v1.json")
 SCHEMA_VERSION = "ire-feed/v1"
 SCHEMA_VERSION_V2 = "ire-feed/v2"
 SOURCE_REPO = "https://github.com/Pukujan/inference-recommendation-engine"
@@ -74,11 +89,8 @@ SECRET_PATTERNS = [
 ]
 
 
-# Closed (non-open-weight) model families and their vendors. The public feed must never name
-# one of these in a model, vendor or route field. Matching is case-insensitive.
-CLOSED_FAMILY_RX = re.compile(
-    r"\b(?:gpt|openai|claude|anthropic|gemini|google|grok|xai|muse[ -]?spark|meta)\b", re.I
-)
+# Closed (non-open-weight) model families and their vendors, matched by CLOSED_FAMILY_RX
+# (licences.py). The public feed must never name one of these in a model, vendor or route field.
 # Price comparisons the public feed must not carry (official list price, discount vs official).
 FORBIDDEN_KEY_RX = re.compile(r"official|discount", re.I)
 
@@ -118,23 +130,6 @@ def _dump(doc: Any) -> bytes:
 
 
 # ---------------------------------------------------------------- build (pure)
-def load_licences(path: str = LICENCES_SRC) -> dict[str, dict[str, Any]]:
-    with open(path, encoding="utf-8") as fh:
-        return dict(json.load(fh)["families"])
-
-
-def open_licence(family: str, licences: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
-    """The licence record when ``family`` is verified open-weight, else None (excluded)."""
-    rec = licences.get(family)
-    if not rec or rec.get("open_weight") is not True:
-        return None
-    if not rec.get("licence") or not rec.get("licence_url") or not rec.get("weights_url"):
-        return None
-    if CLOSED_FAMILY_RX.search(family) or CLOSED_FAMILY_RX.search(str(rec.get("vendor") or "")):
-        return None
-    return rec
-
-
 def _licence_field(rec: dict[str, Any]) -> dict[str, Any]:
     return {"name": rec["licence"], "url": rec["licence_url"], "weights_url": rec["weights_url"]}
 
