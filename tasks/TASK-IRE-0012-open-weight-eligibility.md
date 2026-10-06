@@ -1,8 +1,8 @@
 # TASK-IRE-0012 — Enforce open-weight eligibility where the lists are written
 
-<!-- continuity:task {"acceptance":["`licences.py` is the single open-weight check shared by the list builders and the public feed, and `feed.py` uses it instead of its own copy","`top20.py` gates every listed family with `open_weight_unverified` when the licence map does not verify it open-weight, so no closed or unlisted family is `recommendation_eligible`","the committed `lists/` CSV and JSON carry no closed-weight family marked eligible, and their manifest hashes match the files","the existing Top 20 tests pass, including a new test that an unlisted family is gated and a verified one is not","no secrets are committed, and the launcher configs, seat chains and price policy are untouched"],"depends_on":["IRE-0011"],"goal":"Make the open-weight rule one shared check, apply it where the Top 20 list is written, and regenerate the committed lists so closed and unlisted families stop being marked eligible.","id":"IRE-0012","issue_url":"https://github.com/Pukujan/inference-recommendation-engine/issues/94","next_action":"Squash-merge the checkpoint PR once CI `test` passes, then refresh the launcher picker tables from the corrected lists.","owner":"Alex; executor agent","priority":"P0","protocol_version":"0.1.0-draft","schema":"project-continuity.task.v1","status":"active","why":"The feed already dropped closed-weight families, but the CSV and JSON the launcher reads did not. A closed model such as GPT 5.6 Luna stayed `recommendation_eligible = true` and reached the launcher picker."} -->
+<!-- continuity:task {"acceptance":["`licences.py` is the single open-weight check shared by the list builders and the public feed, and `feed.py` uses it instead of its own copy","`top20.py` gates every listed family with `open_weight_unverified` when the licence map does not verify it open-weight, so no closed or unlisted family is `recommendation_eligible`","the committed `lists/` CSV and JSON carry no closed-weight family marked eligible, and their manifest hashes match the files","the existing Top 20 tests pass, including a new test that an unlisted family is gated and a verified one is not","no secrets are committed, and the launcher configs, seat chains and price policy are untouched"],"depends_on":["IRE-0011"],"goal":"Make the open-weight rule one shared check, apply it where the Top 20 list is written, and regenerate the committed lists so closed and unlisted families stop being marked eligible.","id":"IRE-0012","issue_url":"https://github.com/Pukujan/inference-recommendation-engine/issues/94","next_action":"None. Merged in PR #98; the launcher picker tables were refreshed in the launcher's PR #85, and issue #94 is closed.","owner":"Alex; executor agent","priority":"P0","protocol_version":"0.1.0-draft","schema":"project-continuity.task.v1","status":"completed","why":"The feed already dropped closed-weight families, but the CSV and JSON the launcher reads did not. A closed model such as GPT 5.6 Luna stayed `recommendation_eligible = true` and reached the launcher picker."} -->
 
-- Status: active
+- Status: completed
 - Owner: Alex; executor agent
 - Priority: P0
 - Depends on: IRE-0011
@@ -33,11 +33,11 @@ The Top 20 a reader or a picker sees marks a family eligible only when its licen
 
 ## Acceptance criteria
 
-- [ ] `licences.py` is the single open-weight check shared by the list builders and the public feed, and `feed.py` uses it instead of its own copy
-- [ ] `top20.py` gates every listed family with `open_weight_unverified` when the licence map does not verify it open-weight, so no closed or unlisted family is `recommendation_eligible`
-- [ ] the committed `lists/` CSV and JSON carry no closed-weight family marked eligible, and their manifest hashes match the files
-- [ ] the existing Top 20 tests pass, including a new test that an unlisted family is gated and a verified one is not
-- [ ] no secrets are committed, and the launcher configs, seat chains and price policy are untouched
+- [x] `licences.py` is the single open-weight check shared by the list builders and the public feed, and `feed.py` uses it instead of its own copy
+- [x] `top20.py` gates every listed family with `open_weight_unverified` when the licence map does not verify it open-weight, so no closed or unlisted family is `recommendation_eligible`
+- [x] the committed `lists/` CSV and JSON carry no closed-weight family marked eligible, and their manifest hashes match the files
+- [x] the existing Top 20 tests pass, including a new test that an unlisted family is gated and a verified one is not
+- [x] no secrets are committed, and the launcher configs, seat chains and price policy are untouched
 
 ## Related records
 
@@ -46,7 +46,8 @@ The Top 20 a reader or a picker sees marks a family eligible only when its licen
 
 ## Checkpoint log
 
-- Checkpoint 1 (this one): adds `licences.py`, points `feed.py` at it, adds the `open_weight_unverified` gate to `top20.py`, adds the gate tests, and regenerates the committed Top 20 so no closed family is eligible.
+- Checkpoint 1 (this one): adds `licences.py`, points `feed.py` at it, adds the `open_weight_unverified` gate to `top20.py`, adds the gate tests, and regenerates the committed Top 20 so no closed family is eligible. Merged in PR #98 as `f472065` (2026-10-06).
+- Closeout: verified against the live feed on 2026-10-06 — `tiers.cheap.entries[0]` is DeepSeek V4.1 Flash on `cb/deepseek-v4.1-flash`, health `healthy`, and no committed list row is closed-weight. The launcher picker tables were refreshed in `claude-code-launcher` PR #85. Issue #94 is closed.
 
 ## Handoff
 
