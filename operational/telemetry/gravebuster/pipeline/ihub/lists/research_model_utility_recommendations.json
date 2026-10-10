@@ -1,45 +1,45 @@
 {
  "schema": "ihub-utility-recommendations/v1",
  "hypothesis_notice": "Each row is a hypothesis, not a fact. Utility families are ranked on availability and price only, because they carry no capability or recency prior. The open_weight verdict is per row: true means a published licence and weights were verified, null means the family is listed but its licence is unverified (recommended stays false). Prices are live InferHub asks in USD per 1M tokens at generated_at; the served price can be higher.",
- "generated_at": "2026-10-09T17:25:15Z",
- "code_commit": "e9e8b2636c3e460234dde315717f5a80af9aa6e9",
+ "generated_at": "2026-10-10T00:28:45Z",
+ "code_commit": "6a3375d34404dfa8bca9dec9dbd2cf579856cd46",
  "provenance": {
-  "snapshot_sha256": "87e0c7c36317e29db4ad3dfbf03b898b0a189f8359c9f84a851fcb6d910d64c6",
+  "snapshot_sha256": "78e6c79e57a33a361a5006d89a958e76abe9ed44ca97aeec77604472d1671f21",
   "sources": [
    {
     "endpoint": "catalog",
     "url": "https://inferhub.dev/api/catalog",
     "auth": "key",
     "method": "GET",
-    "fetched_at": "2026-10-09T17:25:13Z",
+    "fetched_at": "2026-10-10T00:28:38Z",
     "fetched_from": null,
-    "sha256": "75be8418ef4d87cdc8d0ba0aa250bc82fac8dc030c4cedb2642d593434946c12",
-    "bytes": 120979
+    "sha256": "e4167bba7ba1f794bea2fbbd2d74c64ce47231dfefece34637b61ddfd00ecc5b",
+    "bytes": 122478
    },
    {
     "endpoint": "status",
     "url": "https://inferhub.dev/api/status",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-10-09T17:25:14Z",
+    "fetched_at": "2026-10-10T00:28:40Z",
     "fetched_from": null,
-    "sha256": "c547905232503faa8a4bb035d84a205e50a6799486b1657ecb0512262982c507",
-    "bytes": 277510
+    "sha256": "df6cd23054e4384a0cc7a24badea374d90923b30fce1ca3ae4e49089d86922c7",
+    "bytes": 283674
    },
    {
     "endpoint": "market",
     "url": "https://inferhub.dev/api/market",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-10-09T17:25:14Z",
+    "fetched_at": "2026-10-10T00:28:40Z",
     "fetched_from": null,
-    "sha256": "38720ba9ff9d9af143fdbcbecae6a15b0c0e983195a0fb565b350a6f26e06943",
-    "bytes": 24382
+    "sha256": "c7b0a3254f0ab1798d1a17c7d7e90e76e30034dd1d8b4aa6cafb2093d2e4f282",
+    "bytes": 24190
    }
   ],
   "licence_map": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
-   "sha256": "26ab3ea4c66b30032d096be9bbe74a8de5a24891a59311b92d9714d143c16445"
+   "sha256": "5f6a3f6672cb845e738be0948db61a347c12f94cd02dad6e47cef1019000ebc5"
   },
   "generator": "operational/telemetry/gravebuster/pipeline/ihub/utility.py"
  },
@@ -62,7 +62,7 @@
   },
   "shortlist_calibration": "Not fitted. There is no historical utility list to calibrate against, so these weights are a stated hypothesis: availability and price only.",
   "ranking": "shortlist_score_100 desc, then supply_weighted_median_cost asc, then model_family",
-  "model_ids_order": "best route first: health status, then a supply-depth tie-break inside a 5% price band around the cheapest min ask at the same health tier, then the blended (3:1) min ask, then route id"
+  "model_ids_order": "best route first: health status, then supply-adjusted realized cost (capacity-weighted median ask scaled by a supply-confidence penalty read from the family's live market), then the blended (3:1) min ask, then route id"
  },
  "counts": {
   "families_considered": 85,
@@ -88,14 +88,14 @@
    "priced_provider_count": 2,
    "catalog_availability_score_100": 63.3,
    "price_supply_availability_score_100": 100.0,
-   "public_availability_7d_pct": 98.5,
-   "shortlist_score_100": 90.374,
+   "public_availability_7d_pct": 98.62,
+   "shortlist_score_100": 90.41,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.015507,
+   "supply_weighted_median_cost_usd_per_mtok": 0.015601,
    "best_route": "alicn/qwen3.8-omni-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias low_traffic, 24h availability 99.76%",
+    "model alias low_traffic, 24h availability 99.69%",
     "rail_state=operational"
    ],
    "best_route_min_ask_in": 0.00015,

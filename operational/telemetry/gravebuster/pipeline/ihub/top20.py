@@ -144,9 +144,9 @@ METHOD: dict[str, Any] = {
     },
     "ranking": "shortlist_score_100 desc, then supply_weighted_median_cost asc, then "
     "model_family; gated rows stay visible, recommendation_eligible marks the usable ones",
-    "model_ids_order": "best route first: health status, then a supply-depth tie-break inside a "
-    "5% price band around the cheapest min ask at the same health tier, then the blended (3:1) "
-    "min ask, then route id",
+    "model_ids_order": "best route first: health status, then supply-adjusted realized cost "
+    "(capacity-weighted median ask scaled by a supply-confidence penalty read from the family's "
+    "live market), then the blended (3:1) min ask, then route id",
 }
 MIN_CATALOG_AVAILABILITY = 55.0
 MIN_CAPABILITY = 20.0
@@ -379,37 +379,35 @@ def _vendor_guess(rs: list[dict[str, Any]], fprior: dict[str, Any]) -> str:
     return ""
 
 
-def _route_order(rs: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Best route first: health, then a supply-depth tie-break inside a price band around the
-    cheapest ask at the same health tier, then the exact blended (3:1) min ask, then route id.
+def _realized_ask(r: dict[str, Any]) -> float | None:
+    """Capacity-weighted median ask (blended 3:1) over the whole order book for a route."""
+    return F.blended(F.weighted_median(r["ladder_in"]), F.weighted_median(r["ladder_out"]))
 
-    This names the route a caller should actually use, from the min ask they would pay. It is
-    deliberately not the supply-weighted effective cost: that prices the whole order book and
-    can favour a rail quoting a thin ask (alicn over cb for DeepSeek V4.1 Flash), which is the
-    route-selection defect in issue #94."""
-    leader_by_status: dict[str, float] = {}
-    for r in rs:
-        a = F.blended(r["min_ask_in"], r["min_ask_out"])
-        if a is None:
-            continue
-        s = r["health"]["status"]
-        if s not in leader_by_status or a < leader_by_status[s]:
-            leader_by_status[s] = a
+
+def _route_order(rs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Best route first: health, then supply-adjusted realized cost, then the exact blended (3:1)
+    min ask, then route id.
+
+    This names the route a caller should actually use. The realized cost is the capacity-weighted
+    median ask scaled by a supply-confidence penalty (``F.supply_penalized_cost``), so a thin rail
+    quoting a phantom floor cannot win on its minimum ask while a deep rail is discounted toward
+    its honest price. It is deliberately not the minimum ask with a price band: anchoring the band
+    on the cheapest ask let a thin rail set the anchor and exclude the deep one (issues #94,
+    #110). The reference is read from this family's own priced healthy routes, so it tracks the
+    market instead of gating on a fixed seller count."""
+    ref = F.supply_reference(
+        [
+            r["listings_in"]
+            for r in rs
+            if r["health"]["status"] == "healthy" and _realized_ask(r) is not None
+        ]
+    )
 
     def key(r: dict[str, Any]) -> tuple[Any, ...]:
         a = F.blended(r["min_ask_in"], r["min_ask_out"])
-        s = r["health"]["status"]
-        ref = leader_by_status.get(s)
-        tied = ref is not None and a is not None and a <= ref * (1 + F.ROUTE_PRICE_TIE_TOL)
-        depth = (
-            sum(n for p, n in r["ladder_in"] if p == r["min_ask_in"])
-            if r["min_ask_in"] is not None
-            else 0
-        )
         return (
-            F.HEALTH_ORDER[s],
-            0 if tied else 1,
-            -depth,
+            F.HEALTH_ORDER[r["health"]["status"]],
+            F.supply_penalized_cost(_realized_ask(r), r["listings_in"], ref),
             a if a is not None else math.inf,
             r["route"],
         )
