@@ -111,8 +111,11 @@ test('malformed price shapes are unavailable rather than fatal', () => {
   assert.equal(nan.price.available, false);
   assert.equal(nan.price.rawUnits, null);
   assert.ok(nan.score >= 0 && nan.score <= 1);
+  assert.notEqual(nan.status, 'qualified');
+  assert.ok(nan.reasons.includes('unusable_price'));
   const missing = evaluateCandidate(base, policy, 'public');
   assert.equal(missing.price.available, false);
   assert.equal(missing.status, 'unknown');
   assert.ok(missing.reasons.includes('missing_price'));
+  assert.ok(!missing.reasons.includes('unusable_price'));
 });
