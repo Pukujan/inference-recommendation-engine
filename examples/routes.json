@@ -1,6 +1,8 @@
 [
   {
+    "schemaVersion": "ire-adapter-route/v1",
     "id": "example-fast-route",
+    "currency": "USD",
     "providerCount": 4,
     "routeCount": 8,
     "price": { "inputPerMillion": 0.2, "outputPerMillion": 0.8 },
@@ -18,7 +20,9 @@
     }
   },
   {
+    "schemaVersion": "ire-adapter-route/v1",
     "id": "example-cheap-route",
+    "currency": "USD",
     "providerCount": 2,
     "routeCount": 2,
     "price": { "inputPerMillion": 0.05, "outputPerMillion": 0.2 },

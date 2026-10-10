@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inference-recommendation-engine.local/schemas/adapter/v1.route.schema.json",
+  "title": "Inference Recommendation Engine adapter route record v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "currency",
+    "providerCount",
+    "routeCount",
+    "price"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "ire-adapter-route/v1"},
+    "id": {"type": "string", "minLength": 1},
+    "currency": {"const": "USD"},
+    "providerCount": {"type": "integer", "minimum": 0},
+    "routeCount": {"type": "integer", "minimum": 0},
+    "price": {
+      "type": "object",
+      "required": ["inputPerMillion", "outputPerMillion"],
+      "properties": {
+        "inputPerMillion": {"type": "number", "minimum": 0},
+        "outputPerMillion": {"type": "number", "minimum": 0},
+        "inputLadder": {"type": "array"},
+        "outputLadder": {"type": "array"},
+        "inputPricePoints": {"type": "array"},
+        "outputPricePoints": {"type": "array"}
+      }
+    },
+    "discountPct": {"type": "number", "minimum": 0, "maximum": 100},
+    "runtime": {"type": "object"},
+    "publicObservations": {
+      "type": "array",
+      "items": {"$ref": "v1.observation.schema.json"}
+    },
+    "privateObservations": {
+      "type": "array",
+      "items": {"$ref": "v1.observation.schema.json"}
+    },
+    "validAt": {"type": "string", "format": "date-time"},
+    "knownAt": {"type": "string", "format": "date-time"},
+    "sourceRevision": {
+      "type": "object",
+      "required": ["sourceId", "revision", "retrievedAt"],
+      "properties": {
+        "sourceId": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1},
+        "retrievedAt": {"type": "string", "format": "date-time"},
+        "uri": {"type": "string"}
+      }
+    }
+  },
+  "additionalProperties": true
+}

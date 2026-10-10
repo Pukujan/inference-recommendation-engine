@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inference-recommendation-engine.local/schemas/adapter/v1.observation.schema.json",
+  "title": "Inference Recommendation Engine adapter observation record v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "result",
+    "clientExcluded",
+    "validAt",
+    "knownAt"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "ire-adapter-observation/v1"},
+    "eventId": {"type": "string", "minLength": 1},
+    "result": {"enum": ["success", "failure", "timeout", "cancelled"]},
+    "clientExcluded": {"type": "boolean"},
+    "validAt": {"type": "string", "format": "date-time"},
+    "knownAt": {"type": "string", "format": "date-time"},
+    "ttftMs": {"type": "number", "minimum": 0},
+    "durationMs": {"type": "number", "minimum": 0},
+    "routingMs": {"type": "number", "minimum": 0},
+    "completionTokens": {"type": "number", "minimum": 0},
+    "costUnits": {"type": "number", "minimum": 0}
+  },
+  "additionalProperties": false
+}
