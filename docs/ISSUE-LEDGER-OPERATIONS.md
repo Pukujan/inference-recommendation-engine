@@ -164,6 +164,13 @@ uv run --locked python -B operational/scripts/issue_ledger_actions.py `
   --summary "replay and regression passed" --fix-ref commit:abc123 `
   --replay-receipt-ref sha256:replay --regression-receipt-ref sha256:regression `
   --provenance-producer verifier --policy-hash policy:issue-ledger-v1
+
+# Retire an existing issue as a duplicate of another (append-only; no merge).
+# Both issue IDs must already exist; the survivor must not itself be superseded.
+uv run --locked python -B operational/scripts/issue_ledger_actions.py `
+  --db .ire/issue-ledger/ledger.sqlite3 mark-duplicate `
+  --issue-id ISSUE-orphan --duplicate-of ISSUE-survivor `
+  --summary "same finding reported under a second fingerprint"
 ```
 
 SQLite stores events in append-only tables with a transaction per batch,
@@ -188,8 +195,16 @@ GitHub or another service.
 7. A changed provider, route, model, operation, stream mode, error class,
    configuration hash, or environment hash changes the deterministic
    fingerprint component.
-8. Similarity or embeddings can suggest a review relation but cannot merge
+8. An optional field that is absent, empty, or a placeholder (`unknown`, `n/a`,
+   `none`) folds to the same canonical absent value at ingest, so a report that
+   omits `stream_mode` and an action command that sends `stream_mode=unknown`
+   land on one issue.
+9. Similarity or embeddings can suggest a review relation but cannot merge
    issues.
+10. Two issues that are genuinely the same finding but carry different
+    fingerprints are retired with `mark-duplicate`, which appends an
+    `issue_superseded` event. The orphan becomes `SUPERSEDED`, the survivor
+    records the link, and neither is deleted or merged.
 
 ## False-positive and false-negative policy
 

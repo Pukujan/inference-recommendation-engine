@@ -95,6 +95,20 @@
     {
       "if": {"properties": {"event_type": {"const": "resolution_verified"}}},
       "then": {"required": ["evidence_refs", "provenance"]}
+    },
+    {
+      "if": {"properties": {"event_type": {"const": "issue_superseded"}}},
+      "then": {
+        "required": ["provenance"],
+        "properties": {
+          "payload": {
+            "required": ["duplicate_of"],
+            "properties": {
+              "duplicate_of": {"type": "string", "pattern": "^ISSUE-[A-Za-z0-9._:-]+$"}
+            }
+          }
+        }
+      }
     }
   ]
 }

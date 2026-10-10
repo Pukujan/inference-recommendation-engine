@@ -131,8 +131,23 @@ The fingerprint version and canonical value are stored with every issue. If
 normalization changes, a new fingerprint version is created and linked to the
 old projection; history is not silently regrouped.
 
+Optional fields (for example `stream_mode`, `model`, the configuration and
+environment hashes) may be absent in several spellings: a missing key, an
+empty value, or a placeholder such as `"unknown"`, `"n/a"`, or `"none"`. All
+of these fold to absent at ingest time (`fp-v1`) before the fingerprint is
+computed, so the same finding reported by different adapters lands in one
+issue. Required fields are never folded; their own validation still applies.
+
 String similarity, embeddings, and LLM clustering may suggest `related_to`
 links. They must not silently create `same_as` or merge two issues.
+
+Retiring a duplicate is an explicit, append-only act, never a merge. An
+authoritative verifier appends an `issue_superseded` event carrying
+`duplicate_of` (a valid issue id in the same projection). The orphan's
+lifecycle becomes `SUPERSEDED`, the survivor's `supersedes_issue_ids` gains
+the orphan's id, no occurrence is added or deleted, and the orphan is
+excluded from the recommendation export. Self-duplicates and unknown
+targets are rejected.
 
 ## False positives and false negatives
 

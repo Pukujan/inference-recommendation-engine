@@ -184,6 +184,35 @@ def report_event(
     return event
 
 
+def accepted_issue_events(
+    prefix: str, execution_id: str, recorded_at: str, error_code: str
+) -> list[dict]:
+    report = report_event(f"ILE-{prefix}-report", execution_id, recorded_at)
+    report["payload"]["observation"]["error_code"] = error_code
+    receipt = report_event(f"ILE-{prefix}-receipt", execution_id, recorded_at)
+    receipt["payload"]["observation"]["error_code"] = error_code
+    receipt["event_type"] = "evidence_attached"
+    receipt["actor"] = {"id": "system:issue-ledger-verifier", "kind": "system"}
+    receipt["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
+    receipt["payload"].update(
+        {
+            "receipt_ref": f"sha256:{prefix}",
+            "deterministic_verifier": True,
+            "verified": True,
+            "accept_for_recommendation": True,
+        }
+    )
+    return [report, receipt]
+
+
+def duplicate_issue_id(projections: list[dict], error_code: str) -> str:
+    return next(
+        projection["issue_id"]
+        for projection in projections
+        if projection["fingerprint"]["components"]["error_code"] == error_code
+    )
+
+
 class IssueLedgerContractTests(unittest.TestCase):
     def test_schemas_are_versioned_and_closed(self):
         event = load_schema("v1.event.schema.json")
@@ -317,6 +346,29 @@ class IssueLedgerContractTests(unittest.TestCase):
         changed = ledger.make_fingerprint(subject, {**observation, "stream_mode": "buffered"})
         self.assertEqual(first, second)
         self.assertNotEqual(first["value"], changed["value"])
+
+    def test_missing_and_placeholder_optional_fields_fingerprint_together(self):
+        # Issue #43: one command treated an absent stream_mode as None while
+        # another sent the literal "unknown", splitting one finding into two
+        # issues. Both spellings must fold to the same fingerprint.
+        absent = valid_report_packet()
+        absent["execution_id"] = "run-fold-absent"
+        absent["correlation_id"] = "run-fold-absent"
+        absent["subject"].pop("stream_mode")
+        absent["observation"].pop("stream_mode")
+        placeholder = valid_report_packet()
+        placeholder["execution_id"] = "run-fold-placeholder"
+        placeholder["correlation_id"] = "run-fold-placeholder"
+        placeholder["subject"]["stream_mode"] = "unknown"
+        placeholder["observation"]["stream_mode"] = "unknown"
+        placeholder["subject"]["configuration_hash"] = "n/a"
+        placeholder["observation"]["environment_hash"] = "none"
+        projections = ledger.reduce_events(
+            [ledger.make_report_event(absent), ledger.make_report_event(placeholder)]
+        )
+        self.assertEqual(len(projections), 1)
+        self.assertEqual(projections[0]["evidence_summary"]["distinct_execution_count"], 2)
+        self.assertIsNone(projections[0]["fingerprint"]["components"]["stream_mode"])
 
     def test_adapter_report_packet_gets_stable_identity(self):
         packet = valid_report_packet()
@@ -587,6 +639,175 @@ class IssueLedgerContractTests(unittest.TestCase):
         issue = ledger.reduce_events([report, receipt, fake_counterexample, fake_reopen])[0]
         self.assertEqual(issue["lifecycle"], "ACCEPTED")
         self.assertEqual(issue["evidence_summary"]["counterexample_count"], 0)
+
+
+class IssueLedgerSupersedeTests(unittest.TestCase):
+    def test_supersede_event_schema_requires_provenance_and_duplicate_of(self):
+        from jsonschema import Draft202012Validator
+        from jsonschema.exceptions import ValidationError
+
+        validator = Draft202012Validator(load_schema("v1.event.schema.json"))
+        event = valid_event()
+        event["event_type"] = "issue_superseded"
+        event["provenance"] = {"producer": "fixture-verifier", "policy_hash": "policy:test"}
+        event["payload"] = {"duplicate_of": "ISSUE-target"}
+        validator.validate(event)
+        without_duplicate_of = json.loads(json.dumps(event))
+        del without_duplicate_of["payload"]["duplicate_of"]
+        with self.assertRaises(ValidationError):
+            validator.validate(without_duplicate_of)
+        without_provenance = json.loads(json.dumps(event))
+        del without_provenance["provenance"]
+        with self.assertRaises(ValidationError):
+            validator.validate(without_provenance)
+
+    def test_mark_duplicate_retires_orphan_and_links_survivor(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log_path = Path(directory) / "ledger.sqlite3"
+            store = AppendOnlyEventStore(log_path)
+            store.append(report_event("ILE-dup-survivor", "run-dup-survivor"))
+            orphan = report_event("ILE-dup-orphan", "run-dup-orphan", "2026-09-22T12:01:00Z")
+            orphan["payload"]["observation"]["error_code"] = "truncated_stream"
+            store.append(orphan)
+            before = store.project()
+            self.assertEqual(len(before), 2)
+            self.assertEqual({issue["lifecycle"] for issue in before}, {"CANDIDATE"})
+            orphan_id = duplicate_issue_id(before, "truncated_stream")
+            survivor_id = next(
+                issue["issue_id"] for issue in before if issue["issue_id"] != orphan_id
+            )
+            self.assertEqual(
+                actions_main(
+                    [
+                        "--db",
+                        str(log_path),
+                        "mark-duplicate",
+                        "--issue-id",
+                        orphan_id,
+                        "--duplicate-of",
+                        survivor_id,
+                    ]
+                ),
+                0,
+            )
+            after = AppendOnlyEventStore(log_path).project()
+            self.assertEqual(len(after), 2)
+            by_id = {issue["issue_id"]: issue for issue in after}
+            self.assertEqual(by_id[orphan_id]["lifecycle"], "SUPERSEDED")
+            self.assertEqual(by_id[orphan_id]["relations"]["duplicate_of"], survivor_id)
+            self.assertIn(orphan_id, by_id[survivor_id]["relations"]["supersedes_issue_ids"])
+            self.assertEqual(by_id[survivor_id]["lifecycle"], "CANDIDATE")
+            # The retirement reuses the orphan's occurrence; it adds no new one.
+            self.assertEqual(len(by_id[orphan_id]["occurrences"]), len(before[0]["occurrences"]))
+
+    def test_mark_duplicate_rejects_self_and_unknown_target(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log_path = Path(directory) / "ledger.sqlite3"
+            store = AppendOnlyEventStore(log_path)
+            store.append(report_event("ILE-dup-guard", "run-dup-guard"))
+            issue_id = store.project()[0]["issue_id"]
+            self.assertNotEqual(
+                actions_main(
+                    [
+                        "--db",
+                        str(log_path),
+                        "mark-duplicate",
+                        "--issue-id",
+                        issue_id,
+                        "--duplicate-of",
+                        issue_id,
+                    ]
+                ),
+                0,
+            )
+            self.assertNotEqual(
+                actions_main(
+                    [
+                        "--db",
+                        str(log_path),
+                        "mark-duplicate",
+                        "--issue-id",
+                        issue_id,
+                        "--duplicate-of",
+                        "ISSUE-missing",
+                    ]
+                ),
+                0,
+            )
+            self.assertEqual(len(store.events()), 1)
+
+    def test_untrusted_actor_cannot_supersede(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log_path = Path(directory) / "ledger.sqlite3"
+            store = AppendOnlyEventStore(log_path)
+            store.append(report_event("ILE-dup-untrusted-a", "run-dup-untrusted-a"))
+            orphan = report_event(
+                "ILE-dup-untrusted-b", "run-dup-untrusted-b", "2026-09-22T12:01:00Z"
+            )
+            orphan["payload"]["observation"]["error_code"] = "truncated_stream"
+            store.append(orphan)
+            before = store.project()
+            orphan_id = duplicate_issue_id(before, "truncated_stream")
+            survivor_id = next(
+                issue["issue_id"] for issue in before if issue["issue_id"] != orphan_id
+            )
+            self.assertEqual(
+                actions_main(
+                    [
+                        "--db",
+                        str(log_path),
+                        "mark-duplicate",
+                        "--actor-id",
+                        "agent:pretending-verifier",
+                        "--actor-kind",
+                        "agent",
+                        "--issue-id",
+                        orphan_id,
+                        "--duplicate-of",
+                        survivor_id,
+                    ]
+                ),
+                0,
+            )
+            after = {issue["issue_id"]: issue for issue in AppendOnlyEventStore(log_path).project()}
+            self.assertEqual(after[orphan_id]["lifecycle"], "CANDIDATE")
+            self.assertIsNone(after[orphan_id]["relations"]["duplicate_of"])
+            self.assertEqual(after[survivor_id]["relations"]["supersedes_issue_ids"], [])
+
+    def test_superseded_accepted_issue_is_not_exported(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log_path = Path(directory) / "ledger.sqlite3"
+            store = AppendOnlyEventStore(log_path)
+            for event in accepted_issue_events(
+                "survivor", "run-sup-survivor", "2026-09-22T12:00:00Z", "empty_with_tokens"
+            ):
+                store.append(event)
+            for event in accepted_issue_events(
+                "orphan", "run-sup-orphan", "2026-09-22T12:00:10Z", "truncated_stream"
+            ):
+                store.append(event)
+            issues = {issue["issue_id"]: issue for issue in store.project()}
+            self.assertEqual(len(issues), 2)
+            self.assertEqual({issue["lifecycle"] for issue in issues.values()}, {"ACCEPTED"})
+            self.assertEqual(len(ledger.export_ire(list(issues.values()))["issues"]), 2)
+            orphan_id = duplicate_issue_id(list(issues.values()), "truncated_stream")
+            survivor_id = next(issue_id for issue_id in issues if issue_id != orphan_id)
+            self.assertEqual(
+                actions_main(
+                    [
+                        "--db",
+                        str(log_path),
+                        "mark-duplicate",
+                        "--issue-id",
+                        orphan_id,
+                        "--duplicate-of",
+                        survivor_id,
+                    ]
+                ),
+                0,
+            )
+            exported = ledger.export_ire(AppendOnlyEventStore(log_path).project())
+            self.assertEqual([issue["issue_id"] for issue in exported["issues"]], [survivor_id])
 
 
 class IssueLedgerStoreTests(unittest.TestCase):

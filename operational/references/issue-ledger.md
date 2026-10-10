@@ -34,7 +34,12 @@ trusted evidence verifies them.
 
 `reported_only` remains low-confidence and contributes zero to reliability.
 Stable fingerprints and idempotency keys deduplicate adapter copies; semantic
-similarity may suggest a relation but cannot merge issues.
+similarity may suggest a relation but cannot merge issues. Optional fields
+absent in one adapter and sent as `"unknown"` by another fold to the same
+canonical value before fingerprinting. When two fingerprints already exist for
+one finding, a trusted verifier retires the orphan with the append-only
+`mark-duplicate` action; the `SUPERSEDED` issue keeps its history and is
+excluded from the recommendation export.
 
 Only explicitly configured trusted verifier identities can promote evidence;
 an agent cannot self-label as a system verifier.
@@ -67,6 +72,9 @@ uv run --locked python -B operational/scripts/issue_ledger_actions.py `
   --db .ire/issue-ledger/ledger.sqlite3 start-reproduction `
   --provider provider-id --route route-id --execution-id replay-id `
   --summary "reproduction started" --recipe-ref recipe:abc
+uv run --locked python -B operational/scripts/issue_ledger_actions.py `
+  --db .ire/issue-ledger/ledger.sqlite3 mark-duplicate `
+  --issue-id ISSUE-orphan --duplicate-of ISSUE-survivor
 uv run --locked python -B operational/scripts/telemetry_to_issue_events.py `
   --telemetry telemetry/agent-events.jsonl `
   --db .ire/issue-ledger/ledger.sqlite3

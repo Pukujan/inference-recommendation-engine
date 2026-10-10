@@ -118,7 +118,7 @@ def _parser() -> argparse.ArgumentParser:
     report.add_argument("--model")
     report.add_argument("--operation", default="unknown-operation")
     report.add_argument("--workload-class", default="unspecified")
-    report.add_argument("--stream-mode", choices=["sse", "buffered", "unknown"], default="unknown")
+    report.add_argument("--stream-mode", choices=["sse", "buffered", "unknown"], default=None)
     report.add_argument("--execution-id")
     report.add_argument("--correlation-id")
     report.add_argument("--summary")

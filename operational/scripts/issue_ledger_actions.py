@@ -11,11 +11,19 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from issue_ledger import LedgerError, _hash, validate_event
+from issue_ledger import (
+    FINGERPRINT_OPTIONAL_OBSERVATION_FIELDS,
+    FINGERPRINT_OPTIONAL_SUBJECT_FIELDS,
+    LedgerError,
+    _canonicalize_fingerprint_optionals,
+    _hash,
+    validate_event,
+)
 from issue_ledger_store import DEFAULT_DB_PATH, AppendOnlyEventStore
 
 
@@ -40,7 +48,7 @@ def _subject(args: argparse.Namespace) -> dict[str, Any]:
     _optional(subject, "agent_harness", args.harness)
     _optional(subject, "configuration_hash", args.configuration_hash)
     _optional(subject, "environment_hash", args.environment_hash)
-    return subject
+    return _canonicalize_fingerprint_optionals(subject, FINGERPRINT_OPTIONAL_SUBJECT_FIELDS)
 
 
 def _observation(args: argparse.Namespace) -> dict[str, Any]:
@@ -52,7 +60,8 @@ def _observation(args: argparse.Namespace) -> dict[str, Any]:
         "configuration_hash": args.configuration_hash,
         "environment_hash": args.environment_hash,
     }
-    return {key: value for key, value in observation.items() if value is not None}
+    present = {key: value for key, value in observation.items() if value is not None}
+    return _canonicalize_fingerprint_optionals(present, FINGERPRINT_OPTIONAL_OBSERVATION_FIELDS)
 
 
 def _provenance(args: argparse.Namespace, required: bool = False) -> dict[str, str] | None:
@@ -201,6 +210,72 @@ def build_action_event(args: argparse.Namespace) -> dict[str, Any]:
     return validate_event(event)
 
 
+def _build_duplicate_event(store: AppendOnlyEventStore, args: argparse.Namespace) -> dict[str, Any]:
+    """Build an append-only event that retires one issue as a duplicate of another.
+
+    The event copies the orphan's projected subject and fingerprint so it lands
+    in the orphan's group without needing the raw observation. It reuses the
+    orphan's first occurrence identity so the retirement adds no new occurrence.
+    """
+    by_id = {projection["issue_id"]: projection for projection in store.project()}
+    orphan = by_id.get(args.issue_id)
+    if orphan is None:
+        raise LedgerError(f"issue {args.issue_id} is not in the ledger")
+    if args.duplicate_of not in by_id:
+        raise LedgerError(f"issue {args.duplicate_of} is not in the ledger")
+    if args.issue_id == args.duplicate_of:
+        raise LedgerError("an issue cannot be a duplicate of itself")
+    occurrences = orphan.get("occurrences") or []
+    if occurrences:
+        execution_id = occurrences[0]["execution_id"]
+        correlation_id = occurrences[0]["correlation_id"]
+    else:
+        execution_id = f"duplicate:{args.issue_id}"
+        correlation_id = execution_id
+    now = _now()
+    observed_at = args.observed_at or now
+    recorded_at = args.recorded_at or now
+    subject = deepcopy(orphan["subject"])
+    payload: dict[str, Any] = {
+        "summary": args.summary or f"{args.issue_id} is a duplicate of {args.duplicate_of}",
+        "classification": "operational",
+        "execution_id": execution_id,
+        "observed_at": observed_at,
+        "outcome": "unknown",
+        "subject": subject,
+        "fingerprint": deepcopy(orphan["fingerprint"]),
+        "duplicate_of": args.duplicate_of,
+        "verified": True,
+    }
+    identity = {
+        "event_type": "issue_superseded",
+        "actor": {"id": args.actor_id, "kind": args.actor_kind, "harness": args.harness},
+        "subject": subject,
+        "execution_id": execution_id,
+        "observed_at": observed_at,
+        "payload": payload,
+    }
+    event = {
+        "schema_version": "issue-ledger/v1",
+        "event_id": args.event_id or "ILE-action-" + _hash(identity).removeprefix("sha256:")[:24],
+        "event_type": "issue_superseded",
+        "recorded_at": recorded_at,
+        "valid_at": {"from": observed_at, "to": None},
+        "known_at": recorded_at,
+        "actor": {"id": args.actor_id, "kind": args.actor_kind, "harness": args.harness},
+        "correlation_id": correlation_id,
+        "idempotency_key": args.idempotency_key
+        or "action:" + _hash(identity).removeprefix("sha256:"),
+        "subject_refs": [f"{subject['provider']}:{subject['route']}"],
+        "payload": payload,
+        "provenance": {
+            "producer": args.provenance_producer,
+            "policy_hash": args.policy_hash,
+        },
+    }
+    return validate_event(event)
+
+
 def _add_common(
     parser: argparse.ArgumentParser, actor_id: str = "agent:unknown", actor_kind: str = "agent"
 ) -> None:
@@ -216,7 +291,7 @@ def _add_common(
     parser.add_argument("--model")
     parser.add_argument("--operation", default="completion")
     parser.add_argument("--workload-class", default="unspecified")
-    parser.add_argument("--stream-mode", choices=["sse", "buffered", "unknown"], default="unknown")
+    parser.add_argument("--stream-mode", choices=["sse", "buffered", "unknown"], default=None)
     parser.add_argument("--execution-id", required=True)
     parser.add_argument("--correlation-id")
     parser.add_argument("--summary", required=True)
@@ -319,6 +394,27 @@ def _parser() -> argparse.ArgumentParser:
     reopen = sub.add_parser("reopen", help="record a verifier-marked regression after resolution")
     _add_common(reopen)
     reopen.add_argument("--reopen-receipt-ref", required=True)
+
+    duplicate = sub.add_parser(
+        "mark-duplicate",
+        help="retire one existing issue as a duplicate of another (append-only)",
+    )
+    duplicate.add_argument("--actor-id", default="system:issue-ledger-verifier")
+    duplicate.add_argument(
+        "--actor-kind",
+        default="system",
+        choices=["human", "agent", "service", "importer", "system"],
+    )
+    duplicate.add_argument("--harness")
+    duplicate.add_argument("--issue-id", required=True, help="the orphan issue id to retire")
+    duplicate.add_argument("--duplicate-of", required=True, help="the surviving issue id")
+    duplicate.add_argument("--summary")
+    duplicate.add_argument("--observed-at")
+    duplicate.add_argument("--recorded-at")
+    duplicate.add_argument("--event-id")
+    duplicate.add_argument("--idempotency-key")
+    duplicate.add_argument("--provenance-producer", default="system:issue-ledger-verifier")
+    duplicate.add_argument("--policy-hash", default="policy:issue-ledger-v1")
     return parser
 
 
@@ -326,8 +422,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = _parser()
     args = parser.parse_args(argv)
     try:
-        event = build_action_event(args)
-        receipt = AppendOnlyEventStore(args.db).append(event)
+        store = AppendOnlyEventStore(args.db)
+        if args.command == "mark-duplicate":
+            event = _build_duplicate_event(store, args)
+        else:
+            event = build_action_event(args)
+        receipt = store.append(event)
     except (LedgerError, OSError) as exc:
         print(f"issue-ledger-actions: {exc}", file=sys.stderr)
         return 2
