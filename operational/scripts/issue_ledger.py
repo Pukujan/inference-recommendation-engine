@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from collections.abc import Iterable
 from copy import deepcopy
@@ -47,6 +48,7 @@ EVIDENCE_LEVELS = (
 EVIDENCE_RANK = {name: index for index, name in enumerate(EVIDENCE_LEVELS)}
 EVIDENCE_RANK.update({"reproduced": 4, "corroborated": 5, "verified": 6})
 DEFAULT_TRUSTED_VERIFIER_IDS = frozenset({"system:issue-ledger-verifier"})
+ISSUE_ID_PATTERN = re.compile(r"^ISSUE-[A-Za-z0-9._:-]+$")
 REPORT_PACKET_SCHEMA_VERSION = "issue-ledger/report/v1"
 REPORT_PACKET_FIELDS = frozenset(
     {
@@ -174,6 +176,56 @@ def _normal(value: Any) -> str | None:
     if value is None:
         return None
     return str(value).strip().lower() or None
+
+
+# Optional fingerprint fields may arrive as "missing" in several spellings; the
+# #43 defect was one command treating an absent stream_mode as None while
+# another sent the literal "unknown", splitting one finding into two issues.
+_OPTIONAL_SENTINELS = frozenset({"unknown", "n/a", "na", "none", "null", "nil"})
+
+
+def _canonical_optional(value: Any) -> Any:
+    """Fold missing-value spellings to None for optional subject/observation fields."""
+    normal = _normal(value)
+    if normal is None or normal in _OPTIONAL_SENTINELS:
+        return None
+    return value
+
+
+FINGERPRINT_OPTIONAL_SUBJECT_FIELDS = (
+    "model",
+    "stream_mode",
+    "configuration_hash",
+    "environment_hash",
+)
+FINGERPRINT_OPTIONAL_OBSERVATION_FIELDS = (
+    "failure_phase",
+    "stream_mode",
+    "error_code",
+    "finish_reason_capture_status",
+    "configuration_hash",
+    "environment_hash",
+)
+
+
+def _canonicalize_fingerprint_optionals(
+    mapping: dict[str, Any], fields: Iterable[str]
+) -> dict[str, Any]:
+    """Drop empty or placeholder optional fields so they fingerprint as absent.
+
+    Required fields are never passed here; they keep their own strict
+    validation. Meaningful values keep their original spelling.
+    """
+    result = dict(mapping)
+    for field in fields:
+        if field not in result:
+            continue
+        canonical = _canonical_optional(result[field])
+        if canonical is None:
+            result.pop(field)
+        else:
+            result[field] = canonical
+    return result
 
 
 def _reject_unknown(value: dict[str, Any], allowed: set[str] | frozenset[str], field: str) -> None:
@@ -388,6 +440,10 @@ def validate_event(event: dict[str, Any]) -> dict[str, Any]:
         _required_text(ref, f"event.subject_refs[{index}]")
     if not isinstance(event["payload"], dict):
         raise LedgerError("event.payload must be an object")
+    if event["event_type"] == "issue_superseded":
+        duplicate_of = event["payload"].get("duplicate_of")
+        if not isinstance(duplicate_of, str) or not ISSUE_ID_PATTERN.match(duplicate_of):
+            raise LedgerError("issue_superseded payload.duplicate_of must be an ISSUE- identifier")
     for field in ("correlation_id", "idempotency_key"):
         if event.get(field) is not None:
             _required_text(event[field], f"event.{field}")
@@ -456,6 +512,10 @@ def make_report_event(spec: dict[str, Any]) -> dict[str, Any]:
     observed_at = _stamp(spec.get("observed_at"), "report.observed_at")
     outcome = spec.get("outcome", "unknown")
     observation = spec.get("observation", {})
+    subject = _canonicalize_fingerprint_optionals(subject, FINGERPRINT_OPTIONAL_SUBJECT_FIELDS)
+    observation = _canonicalize_fingerprint_optionals(
+        observation, FINGERPRINT_OPTIONAL_OBSERVATION_FIELDS
+    )
     identity_material = {
         "actor": actor_id,
         "subject": subject,
@@ -755,6 +815,15 @@ def reduce_events(
             if event["event_type"] == "issue_reopened"
             and _authoritative_verifier(event, trusted_verifier_ids)
         ]
+        trusted_supersedes = [
+            event
+            for event in group_events
+            if event["event_type"] == "issue_superseded"
+            and _authoritative_verifier(event, trusted_verifier_ids)
+        ]
+        duplicate_of = (
+            trusted_supersedes[0]["payload"].get("duplicate_of") if trusted_supersedes else None
+        )
         if trusted_retractions or counterexamples:
             lifecycle = "RETRACTED" if accepted else "REJECTED"
             level = "retracted"
@@ -779,6 +848,8 @@ def reduce_events(
         else:
             lifecycle = "CANDIDATE"
             level = "reported_only"
+        if duplicate_of is not None:
+            lifecycle = "SUPERSEDED"
         timestamps = [event["recorded_at"] for event in group_events]
         observed = [occurrence["observed_at"] for occurrence in occurrence_values]
         first = group_events[0]
@@ -820,6 +891,12 @@ def reduce_events(
                 },
                 "subject": deepcopy(group["subject"]),
                 "fingerprint": deepcopy(group["fingerprint"]),
+                "relations": {
+                    "duplicate_of": duplicate_of,
+                    "related_issue_ids": [],
+                    "contradicts_issue_ids": [],
+                    "supersedes_issue_ids": [],
+                },
                 "evidence_summary": {
                     "level": level,
                     "report_count": len(report_events),
@@ -903,7 +980,29 @@ def reduce_events(
                 },
             }
         )
+    _resolve_supersede_relations(projections)
     return projections
+
+
+def _resolve_supersede_relations(projections: list[dict[str, Any]]) -> None:
+    """Validate duplicate_of targets and record the reverse supersede link.
+
+    An issue may only be marked a duplicate of another issue that exists in the
+    same projection, and never of itself. The survivor gains the retired id in
+    its supersedes_issue_ids list; nothing is deleted.
+    """
+    by_id = {projection["issue_id"]: projection for projection in projections}
+    for projection in projections:
+        duplicate_of = projection["relations"]["duplicate_of"]
+        if duplicate_of is None:
+            continue
+        if duplicate_of == projection["issue_id"]:
+            raise LedgerError("an issue cannot be a duplicate of itself")
+        survivor = by_id.get(duplicate_of)
+        if survivor is None:
+            raise LedgerError(f"duplicate_of target {duplicate_of} is not a known issue")
+        if projection["issue_id"] not in survivor["relations"]["supersedes_issue_ids"]:
+            survivor["relations"]["supersedes_issue_ids"].append(projection["issue_id"])
 
 
 def export_ire(
@@ -945,6 +1044,8 @@ def export_ire(
     selected = []
     for issue in source:
         summary = issue["evidence_summary"]
+        if issue.get("lifecycle") == "SUPERSEDED":
+            continue
         if not summary["accepted_for_recommendation"]:
             continue
         occurrences = issue.get("occurrences", [])
