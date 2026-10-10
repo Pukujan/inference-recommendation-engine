@@ -478,6 +478,10 @@ def build(
             "best_route_order": "status (healthy, insufficient_data, degraded, failing), then "
             "in live catalog + enabled, then live capacity-weighted median input ask, then list "
             "position",
+            "best_route_scope": "this catalogue is the per-route price/status view; the "
+            "picker-facing best_route in Top 20 and frontier uses a supply-adjusted rule "
+            "(frontier.supply_penalized_cost, issue #110), so the two surfaces can disagree by "
+            "design when supply depth differs",
             "reliability_adjusted_rank_order": "best route status, then static rank (top20 "
             "before daily_shortlist-only models)",
         },

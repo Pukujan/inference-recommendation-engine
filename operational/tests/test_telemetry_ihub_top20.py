@@ -101,6 +101,20 @@ def open_lic(name: str, vendor: str = "Open V") -> dict[str, Any]:
 LICENCES = {n: open_lic(n) for n in ("Cheap One", "Pricey", "Lonely", "mystery-1")}
 
 
+def troute(rid: str, min_ask: float, cw_in: float, cw_out: float, listings: int,
+           status: str = "healthy") -> dict[str, Any]:  # fmt: skip
+    """A Top 20 route dict whose weighted-median ladders reproduce the given realized asks."""
+    return {
+        "route": rid,
+        "ladder_in": [[cw_in, listings]],
+        "ladder_out": [[cw_out, listings]],
+        "listings_in": listings,
+        "min_ask_in": min_ask,
+        "min_ask_out": min_ask,
+        "health": {"status": status},
+    }
+
+
 def synthetic(licences: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
     cat = [
         rail(
@@ -201,8 +215,9 @@ class BuildTests(unittest.TestCase):
         self.assertIn("not_routing_eligible", doc["entries"][0]["gate_reasons"])
 
     def test_same_ask_prefers_deeper_supply(self) -> None:
-        # Two rails quote the same ask; the one with more sellers at it is the named best route
-        # and leads model_ids, so the launcher does not route to a thin quote (issue #94).
+        # Two rails quote the same ask and the same capacity-weighted median; the one with the
+        # deeper book is the named best route and leads model_ids, so the launcher does not route
+        # to a thin quote (issues #94, #110). The supply penalty, not a depth gate, decides it.
         cat = [
             rail("aa", [mdl("cheap-one", 0.005, n=3)]),
             rail("bb", [mdl("cheap-one", 0.005, n=500)]),
@@ -261,6 +276,74 @@ class BuildTests(unittest.TestCase):
             errs.append(s - float(r["shortlist_score_100"]))
         self.assertLess(max(abs(e) for e in errs), 1.5)
         self.assertLess(math.sqrt(sum(e * e for e in errs) / len(errs)), 0.75)
+
+
+class RouteSelectionTests(unittest.TestCase):
+    """The Top 20 route selector shares the frontier's supply-adjusted rule (issue #110)."""
+
+    def test_rule_helpers_are_single_sourced_from_frontier(self) -> None:
+        # Top 20 keeps no private copy of the rule: it calls the frontier module's helpers and
+        # constant, so the two lists can never drift apart on what "best route" means.
+        self.assertFalse(hasattr(T, "ROUTE_SUPPLY_REF"))
+        self.assertFalse(hasattr(T, "supply_penalized_cost"))
+        self.assertGreater(T.F.ROUTE_SUPPLY_REF, 0.0)
+        self.assertEqual(T.F.supply_reference([]), T.F.ROUTE_SUPPLY_REF)
+        # Same formula, same numbers, same answer as the frontier helper.
+        for supply in (1, 8, 40, 1000):
+            self.assertAlmostEqual(
+                T.F.supply_penalized_cost(0.05, supply, 40.0),
+                0.05 * (1.0 + 40.0 / supply),
+            )
+
+    def test_supply_penalty_is_continuous_and_monotone(self) -> None:
+        # Same realized ask, deeper book -> strictly lower adjusted cost, with no step anywhere.
+        costs = [T.F.supply_penalized_cost(0.05, n, 40.0) for n in (1, 2, 5, 20, 40, 1000)]
+        self.assertEqual(costs, sorted(costs, reverse=True))
+        self.assertEqual(T.F.supply_penalized_cost(None, 100, 40.0), math.inf)
+        self.assertEqual(T.F.supply_penalized_cost(0.05, 0, 40.0), math.inf)
+
+    def test_thin_phantom_floor_loses_to_deep_rail(self) -> None:
+        # Issue #110: a thin book quotes a floor far below what its sellers charge, so the minimum
+        # ask must not select it. Its capacity-weighted median is the honest price and it loses.
+        thin = troute("aa/glm", min_ask=0.00215, cw_in=0.08385, cw_out=0.4, listings=8)
+        deep = troute("bb/glm", min_ask=0.02365, cw_in=0.05375, cw_out=0.26, listings=37699)
+        fillers = [troute(f"x{i}/glm", 0.06, 0.06, 0.3, 100 * (i + 1)) for i in range(4)]
+        order = T._route_order([thin, deep, *fillers])
+        self.assertEqual([r["route"] for r in order][0], "bb/glm")
+
+    def test_health_still_outranks_price(self) -> None:
+        degraded = troute("aa/glm", 0.001, 0.001, 0.004, 50000, status="degraded")
+        healthy = troute("bb/glm", 0.5, 0.5, 2.0, 10)
+        self.assertEqual(T._route_order([degraded, healthy])[0]["route"], "bb/glm")
+
+    def test_parity_with_frontier_route_order(self) -> None:
+        # One family's numbers through both selectors: the two lists must name the same winner.
+        # The frontier reads the realized ask from the price block; Top 20 derives it from the
+        # ladders, so feeding the same capacity-weighted medians proves the shared rule agrees.
+        specs = [
+            ("aa/glm", 0.00215, 0.08385, 0.4, 8),
+            ("bb/glm", 0.02365, 0.05375, 0.26, 37699),
+            ("cc/glm", 0.04945, 0.06235, 0.3, 7848),
+            ("dd/glm", 0.06, 0.06, 0.3, 200),
+        ]
+        t_routes = [troute(*s) for s in specs]
+        f_routes = [
+            {
+                "route": rid,
+                "price": {
+                    "blended_min_ask_3to1": ask,
+                    "cw_median_ask_in": cw_in,
+                    "cw_median_ask_out": cw_out,
+                },  # fmt: skip
+                "sellers": {"listings_in": listings},
+                "health": {"status": "healthy"},
+            }
+            for rid, ask, cw_in, cw_out, listings in specs
+        ]
+        self.assertEqual(
+            T._route_order(t_routes)[0]["route"],
+            T.F.route_order(f_routes)[0]["route"],
+        )
 
 
 class CommittedListTests(unittest.TestCase):

@@ -217,10 +217,11 @@ class FrontierBuildTests(unittest.TestCase):
         m = {x["model_family"]: x for x in doc["models"]}["GPT 5.6 Terra"]
         self.assertEqual(m["best_route"], "bb/gpt-5.6-terra")
 
-    def test_cheaper_ask_outside_band_still_wins(self) -> None:
-        # Supply depth only breaks near-ties: a route well below the band is still chosen.
+    def test_cheaper_ask_with_comparable_supply_still_wins(self) -> None:
+        # The supply penalty is proportional, not a veto: at equal supply the cheaper realized
+        # ask still wins, so a genuinely cheaper route is never passed over for a dearer one.
         cat = [
-            rail("aa", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.01, 3)])]),
+            rail("aa", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.01, 900)])]),
             rail("bb", [model("gpt-5.6-terra", "GPT 5.6 Terra", (2, 12), [(0.02, 900)])]),
         ]
         st = status(["aa", "bb"], {"gpt-5.6-terra": ("operational", 99.9)})
@@ -356,6 +357,114 @@ class CommittedListTests(unittest.TestCase):
         gen = {x["list"]: x for x in man["generated_lists"]}["frontier"]
         for name, sha in gen["sha256"].items():
             self.assertEqual(hashlib.sha256((LISTS / name).read_bytes()).hexdigest(), sha)
+
+
+def _route(rid: str, min_ask: float, cw_in: float, cw_out: float, listings: int,
+           status: str = "healthy") -> dict[str, Any]:  # fmt: skip
+    """A frontier route dict with only the fields the route selector reads."""
+    return {
+        "route": rid,
+        "price": {
+            "blended_min_ask_3to1": min_ask,
+            "cw_median_ask_in": cw_in,
+            "cw_median_ask_out": cw_out,
+        },  # fmt: skip
+        "sellers": {"listings_in": listings},
+        "health": {"status": status},
+    }
+
+
+class RouteSelectionTests(unittest.TestCase):
+    """The route selector: health first, then supply-adjusted realized cost (issue #110)."""
+
+    def test_supply_reference_is_lower_quartile_with_fallback(self) -> None:
+        self.assertEqual(F.supply_reference([8, 21, 7848, 13860, 37699, 2]), 8.0)
+        self.assertEqual(F.supply_reference([100]), 100.0)
+        # No priced healthy route: the fixed fallback keeps the penalty well-defined.
+        self.assertEqual(F.supply_reference([]), F.ROUTE_SUPPLY_REF)
+        self.assertEqual(F.supply_reference([0, 0]), F.ROUTE_SUPPLY_REF)
+
+    def test_supply_penalty_is_continuous_and_monotone(self) -> None:
+        # Same realized ask, more supply -> strictly lower cost, with no step anywhere.
+        costs = [F.supply_penalized_cost(0.05, n, 40.0) for n in (1, 2, 5, 20, 40, 1000)]
+        self.assertEqual(costs, sorted(costs, reverse=True))
+        self.assertAlmostEqual(F.supply_penalized_cost(0.05, 40, 40.0), 0.1)
+        self.assertAlmostEqual(F.supply_penalized_cost(0.05, 1000, 40.0), 0.05 * 1.04)
+        # An unpriced or unsupplied route can never be selected.
+        self.assertEqual(F.supply_penalized_cost(None, 100, 40.0), float("inf"))
+        self.assertEqual(F.supply_penalized_cost(0.05, 0, 40.0), float("inf"))
+
+    def test_thin_phantom_floor_loses_to_deep_rail(self) -> None:
+        # Issue #110: a thin book quotes a phantom floor well below what its sellers charge, so the
+        # minimum ask must not select it. Its capacity-weighted median ask is the honest price, and
+        # it loses to the deep rail's.
+        thin = _route("aa/glm", min_ask=0.00215, cw_in=0.08385, cw_out=0.4, listings=8)
+        deep = _route("bb/glm", min_ask=0.02365, cw_in=0.05375, cw_out=0.26, listings=37699)
+        fillers = [_route(f"x{i}/glm", 0.06, 0.06, 0.3, 100 * (i + 1)) for i in range(4)]
+        self.assertEqual(F.best_route([thin, deep, *fillers])["route"], "bb/glm")
+
+    def test_supply_penalty_demotes_a_thin_rail_at_equal_median(self) -> None:
+        # Isolate the supply term: the thin rail's realized ask is actually lower, but its book is
+        # too shallow for that price to be trusted, so the deep rail wins on adjusted cost.
+        thin = _route("aa/glm", min_ask=0.05, cw_in=0.05, cw_out=0.2, listings=8)
+        deep = _route("bb/glm", min_ask=0.07, cw_in=0.07, cw_out=0.28, listings=1000)
+        fillers = [_route(f"x{i}/glm", 0.06, 0.06, 0.3, 100 * (i + 1)) for i in range(3)]
+        self.assertEqual(F.best_route([thin, deep, *fillers])["route"], "bb/glm")
+        # With the reference pinned low the thin rail's price is trusted and it wins again: the
+        # rule is continuous in the reference, not a supply gate.
+        self.assertEqual(F.best_route([thin, deep, *fillers], ref=1.0)["route"], "aa/glm")
+
+    def test_health_still_outranks_price(self) -> None:
+        # A healthy dearer route beats a cheaper degraded one: the penalty never crosses tiers.
+        degraded = _route("aa/glm", min_ask=0.001, cw_in=0.001, cw_out=0.004, listings=50000,
+                          status="degraded")  # fmt: skip
+        healthy = _route("bb/glm", min_ask=0.5, cw_in=0.5, cw_out=2.0, listings=10)
+        self.assertEqual(F.best_route([degraded, healthy])["route"], "bb/glm")
+
+    def test_all_thin_uses_the_fallback_reference(self) -> None:
+        # No route is priced and healthy -> the constant reference keeps selection deterministic.
+        a = _route("aa/glm", min_ask=0.01, cw_in=0.01, cw_out=0.04, listings=3,
+                   status="degraded")  # fmt: skip
+        b = _route("bb/glm", min_ask=0.02, cw_in=0.02, cw_out=0.08, listings=6,
+                   status="degraded")  # fmt: skip
+        self.assertEqual(F.supply_ref([a, b]), F.ROUTE_SUPPLY_REF)
+        self.assertEqual(F.best_route([a, b])["route"], "aa/glm")
+
+    def test_glm_5_3_thin_rail_is_not_selected(self) -> None:
+        # Issue #110, pinned GLM 5.3 inputs (2026-10-09 snapshot): alicn quotes a 0.00215 phantom
+        # floor but its capacity-weighted median is 0.08385, dearer than the deep rails. The old
+        # min-ask band named alicn; the supply-adjusted cost names the deep cb rail.
+        alicn = _route("alicn/glm-5.3", 0.00215, 0.08385, 0.4, 8)
+        zai = _route("zai/glm-5.3", 0.00215, 0.43, 2.0, 21)
+        cbcn = _route("cbcn/glm-5.3", 0.04945, 0.06235, 0.3, 7848)
+        cb = _route("cb/glm-5.3", 0.02365, 0.05375, 0.26, 37699)
+        self.assertEqual(F.best_route([alicn, zai, cbcn, cb])["route"], "cb/glm-5.3")
+
+    def test_committed_picks_are_not_dominated(self) -> None:
+        # Issue #110 acceptance guard, over every committed frontier row: no selected route is
+        # dominated, i.e. there is no healthy route in the same family that is both at least as
+        # deep and at least as cheap on realized (unpenalized) ask. The pre-fix band picked alicn
+        # (8 listings) while cbcn (466) was cheaper on the median, so this guard would have failed.
+        path = LISTS / F.OUT_JSON
+        if not path.exists():
+            self.skipTest("frontier list not generated yet")
+        doc = json.loads(path.read_text(encoding="utf-8"))
+        routes = {r["route"]: r for r in doc["routes"]}
+        for m in doc["models"]:
+            b = routes[m["best_route"]]
+            for r in (routes[rid] for rid in m["routes"]):
+                if r["route"] == b["route"] or r["health"]["status"] != "healthy":
+                    continue
+                realized_b, realized_r = F._route_realized_ask(b), F._route_realized_ask(r)
+                if realized_b is None or realized_r is None:
+                    continue
+                dominated = F._route_supply(r) >= F._route_supply(b) and realized_r <= realized_b
+                self.assertFalse(
+                    dominated,
+                    f"{m['model_family']}: {b['route']} (supply {F._route_supply(b)}, "
+                    f"realized {realized_b}) is dominated by {r['route']} "
+                    f"(supply {F._route_supply(r)}, realized {realized_r})",
+                )
 
 
 if __name__ == "__main__":

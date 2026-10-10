@@ -128,9 +128,7 @@ METHOD: dict[str, Any] = {
     "shortlist_calibration": "Not fitted. There is no historical utility list to calibrate "
     "against, so these weights are a stated hypothesis: availability and price only.",
     "ranking": "shortlist_score_100 desc, then supply_weighted_median_cost asc, then model_family",
-    "model_ids_order": "best route first: health status, then a supply-depth tie-break inside a "
-    "5% price band around the cheapest min ask at the same health tier, then the blended (3:1) "
-    "min ask, then route id",
+    "model_ids_order": T.METHOD["model_ids_order"],
 }
 MIN_CATALOG_AVAILABILITY = 55.0
 MIN_PROVIDERS = 2

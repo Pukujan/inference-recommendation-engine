@@ -49,9 +49,12 @@ OUT_ROUTES_CSV = "research_model_frontier_routes.csv"
 OUT_JSON = "research_model_frontier_recommendations.json"
 POLICY_PER_MTOK = float(os.environ.get("IHUB_POLICY_PER_MTOK", "0.10"))
 BLEND_INPUT_WEIGHT = 3  # blended ask = (3 * in + 1 * out) / 4, used only to compare routes
-# A route counts as price-tied with the cheapest ask at its own health tier when its blended ask
-# is within this fraction of it; ties are broken by supply depth at that ask (see route_order).
-ROUTE_PRICE_TIE_TOL = 0.05
+# Supply reference (sellers across the live input ladder) for the route cost penalty in
+# route_order: a route with this many sellers has its capacity-weighted median ask trusted at
+# half weight, and thinner routes are discounted toward unreliable. The reference is derived from
+# the live market (see supply_reference) so it tracks the market instead of gating on a fixed
+# count; this constant is only the fallback when a route set has no priced healthy route (#110).
+ROUTE_SUPPLY_REF = 40.0
 
 CATALOG_URL = "https://inferhub.dev/api/catalog"
 STATUS_URL = "https://inferhub.dev/api/status"
@@ -411,50 +414,89 @@ def _route_ask(r: dict[str, Any]) -> float | None:
     return r["price"]["blended_min_ask_3to1"]
 
 
-def _route_depth(r: dict[str, Any]) -> int:
-    return int(r["sellers"]["sellers_at_min_ask_in"] or 0)
+def _route_supply(r: dict[str, Any]) -> int:
+    return int(r["sellers"]["listings_in"] or 0)
 
 
-def route_order(routes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Order one family's routes: health status, then price band, then supply depth, ask, route.
+def _route_realized_ask(r: dict[str, Any]) -> float | None:
+    """Capacity-weighted median ask (blended 3:1): what the median seller actually charges.
 
-    The band is what keeps the named route honest. Two rails can quote the same min ask while
-    one backs it with thousands of sellers and the other with a handful; the deep rail is the
-    route a caller should be sent to. So a route within ROUTE_PRICE_TIE_TOL of the cheapest ask
-    at its own health tier counts as price-tied, and inside that band more sellers at the ask
-    wins. Outside the band the cheaper ask still wins, so a genuinely cheaper route is never
-    passed over for a deeper but dearer one.
+    The minimum ask is the cheapest listing, which a thin book can quote without ever serving it;
+    the capacity-weighted median integrates the whole order book, so a phantom floor cannot win.
+    """
+    return blended(r["price"].get("cw_median_ask_in"), r["price"].get("cw_median_ask_out"))
+
+
+def supply_reference(supplies: list[int]) -> float:
+    """Supply reference for the route cost penalty, from the live market.
+
+    The lower-quartile supply among the healthy priced routes passed in: a route this thin has its
+    realized ask trusted at half weight. Read from the market each build so the penalty scales with
+    what the market actually offers, rather than a fixed seller count. Falls back to
+    ``ROUTE_SUPPLY_REF`` when nothing qualifies. Shared by every route selector (issue #110).
+    """
+    vals = sorted(s for s in supplies if s > 0)
+    if not vals:
+        return ROUTE_SUPPLY_REF
+    return max(1.0, float(vals[int(0.25 * (len(vals) - 1))]))
+
+
+def supply_penalized_cost(ask: float | None, supply: int, ref: float) -> float:
+    """Realized ask discounted by supply confidence: ``ask * (1 + ref / supply)``.
+
+    Continuous in both price and supply, so a thin rail is penalized in proportion to how thin it
+    is, with no step. A route at the reference supply is trusted at half weight; deep routes
+    approach their realized ask. Shared by every route selector (issue #110).
+    """
+    if ask is None or supply <= 0:
+        return math.inf
+    return ask * (1.0 + ref / supply)
+
+
+def supply_ref(routes: list[dict[str, Any]]) -> float:
+    """``supply_reference`` over the priced healthy routes of one family's route set."""
+    return supply_reference(
+        [
+            _route_supply(r)
+            for r in routes
+            if r["health"]["status"] == "healthy" and _route_realized_ask(r) is not None
+        ]
+    )
+
+
+def _route_cost(r: dict[str, Any], ref: float) -> float:
+    return supply_penalized_cost(_route_realized_ask(r), _route_supply(r), ref)
+
+
+def route_order(routes: list[dict[str, Any]], ref: float | None = None) -> list[dict[str, Any]]:
+    """Order one family's routes: health status, then supply-adjusted realized cost, then route.
+
+    The realized cost is the capacity-weighted median ask (the price the median seller charges)
+    scaled by a supply-confidence penalty (``_route_cost``). This names the route a caller should
+    actually use: a thin book quoting a phantom floor can no longer win, because its realized ask
+    is high and its confidence is low, while a deep rail keeps its honest price (issue #110). It
+    also removes the earlier 5% price band, which moved the failure in issue #94 rather than
+    fixing it: anchoring the band on the cheapest ask let a thin rail set the anchor and exclude
+    the deep one.
     """
     if not routes:
         return []
-    leader_by_status: dict[str, float] = {}
-    for r in routes:
-        a = _route_ask(r)
-        if a is None:
-            continue
-        s = r["health"]["status"]
-        if s not in leader_by_status or a < leader_by_status[s]:
-            leader_by_status[s] = a
+    ref = supply_ref(routes) if ref is None else ref
 
     def key(r: dict[str, Any]) -> tuple[Any, ...]:
-        a = _route_ask(r)
-        s = r["health"]["status"]
-        ref = leader_by_status.get(s)
-        tied = ref is not None and a is not None and a <= ref * (1 + ROUTE_PRICE_TIE_TOL)
         return (
-            HEALTH_ORDER[s],
-            0 if tied else 1,
-            -_route_depth(r),
-            a if a is not None else math.inf,
+            HEALTH_ORDER[r["health"]["status"]],
+            _route_cost(r, ref),
+            _route_ask(r) if _route_ask(r) is not None else math.inf,
             r["route"],
         )
 
     return sorted(routes, key=key)
 
 
-def best_route(routes: list[dict[str, Any]]) -> dict[str, Any] | None:
-    """Best route for one family: best health, then the cheapest ask with a supply tie-break."""
-    return route_order(routes)[0] if routes else None
+def best_route(routes: list[dict[str, Any]], ref: float | None = None) -> dict[str, Any] | None:
+    """Best route for one family: best health, then the lowest supply-adjusted realized cost."""
+    return route_order(routes, ref)[0] if routes else None
 
 
 def build_models(routes: list[dict[str, Any]], prior: dict[str, Any]) -> list[dict[str, Any]]:
@@ -622,9 +664,9 @@ def _model_doc(m: dict[str, Any], prior: dict[str, Any]) -> dict[str, Any]:
         "evidence": {
             "generation": m["generation_evidence"],
             "best_route_health_reasons": b["health"]["reasons"],
-            "best_route_selection": "lowest health status, then the cheapest blended (3:1) live "
-            f"min ask with a supply-depth tie-break inside a {ROUTE_PRICE_TIE_TOL:.0%} price "
-            "band, then route id",
+            "best_route_selection": "lowest health status, then the lowest supply-adjusted "
+            "realized cost (capacity-weighted median ask scaled by a supply-confidence penalty "
+            "read from the family's live market), then the blended (3:1) min ask, then route id",
         },
     }
 
