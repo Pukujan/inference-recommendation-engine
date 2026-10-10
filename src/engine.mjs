@@ -119,9 +119,10 @@ function performanceComponent(runtime, policy) {
   };
 }
 
-function gate(runtime, candidate, policy, channel, availability) {
+function gate(runtime, candidate, policy, channel, availability, price) {
   const reasons = [];
   if (!candidate?.price) reasons.push('missing_price');
+  else if (!price.available) reasons.push('unusable_price');
   if (channel === 'public' && availability.score < policy.availability.acceptable) reasons.push('low_availability');
   if (channel === 'public' && Number(candidate?.providerCount ?? 0) < policy.availability.minimumProviders) reasons.push('insufficient_provider_breadth');
   if (!runtime) {
@@ -148,7 +149,7 @@ export function evaluateCandidate(input, requestedPolicy = {}, channel = 'public
   const combined = performance.available
     ? base + policy.performance.priceWeight * price.score + policy.performance.availabilityWeight * availability.score
     : policy.performance.priceWeight * price.score + policy.performance.availabilityWeight * availability.score;
-  const reasons = gate(runtime, input, policy, channel, availability);
+  const reasons = gate(runtime, input, policy, channel, availability, price);
   const status = reasons.length === 0 ? 'qualified' : (price.available && (runtime || channel === 'public') ? 'provisional' : 'unknown');
   const effectiveScore = clamp(combined);
   return {

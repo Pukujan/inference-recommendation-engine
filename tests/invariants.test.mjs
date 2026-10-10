@@ -35,3 +35,25 @@ test('confidence bound is conservative at low sample counts', () => {
   assert.ok(wilsonLowerBound(1, 1) < 1);
   assert.ok(wilsonLowerBound(100, 100) > wilsonLowerBound(1, 1));
 });
+
+test('a route whose price is unavailable is never qualified', () => {
+  const base = {
+    id: 'route',
+    providerCount: 3,
+    routeCount: 6,
+    runtime: { public: { evidenceState: 'measured', eligibleAttempts: 100, reliabilityLcb: 0.99, timeoutRate: 0, ttftP95Ms: 1, durationP95Ms: 1, throughputTokensPerSecond: 100 } }
+  };
+  const prices = [
+    undefined,
+    { inputPerMillion: NaN, outputPerMillion: 0.8 },
+    { inputPerMillion: -1, outputPerMillion: 0.8 },
+    { inputPerMillion: 0.2 },
+    { inputPerMillion: 'abc', outputPerMillion: 'abc' }
+  ];
+  for (const price of prices) {
+    const result = evaluateCandidate({ ...base, price }, defaultPolicy(), 'public');
+    assert.equal(result.price.available, false);
+    assert.notEqual(result.status, 'qualified');
+    assert.ok(result.reasons.includes('missing_price') || result.reasons.includes('unusable_price'));
+  }
+});
