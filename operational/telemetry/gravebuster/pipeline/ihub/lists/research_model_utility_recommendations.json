@@ -1,40 +1,40 @@
 {
  "schema": "ihub-utility-recommendations/v1",
  "hypothesis_notice": "Each row is a hypothesis, not a fact. Utility families are ranked on availability and price only, because they carry no capability or recency prior. The open_weight verdict is per row: true means a published licence and weights were verified, null means the family is listed but its licence is unverified (recommended stays false). Prices are live InferHub asks in USD per 1M tokens at generated_at; the served price can be higher.",
- "generated_at": "2026-10-20T15:37:53Z",
- "code_commit": "43147a84f9e564f01c4157f5ec69648855c45ac7",
+ "generated_at": "2026-10-21T15:55:25Z",
+ "code_commit": "2f6ca9ee98fb649910e21a7387dcedd049f0b4f2",
  "provenance": {
-  "snapshot_sha256": "76620b9ff298036b52c9be6b2e488f6c08243686b5c277f878d8f1fa79e08bf6",
+  "snapshot_sha256": "78bb18e4fb6fbd289dbd28c725f96eedf6f7b57a954caafcbffcc29c3176d195",
   "sources": [
    {
     "endpoint": "catalog",
     "url": "https://inferhub.dev/api/catalog",
     "auth": "key",
     "method": "GET",
-    "fetched_at": "2026-10-20T15:37:52Z",
+    "fetched_at": "2026-10-21T15:55:24Z",
     "fetched_from": null,
-    "sha256": "6f3dd7f25f36e6617eecd85b76895797ec566c4c112b8eb22923a897cf46cb9f",
-    "bytes": 151795
+    "sha256": "5ded2a801b7a6be47469c85322980145aee7061f6e12d026679c0a487f2dcd7f",
+    "bytes": 151567
    },
    {
     "endpoint": "status",
     "url": "https://inferhub.dev/api/status",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-10-20T15:37:53Z",
+    "fetched_at": "2026-10-21T15:55:24Z",
     "fetched_from": null,
-    "sha256": "295e6c3552401f23e4d3e46f6ed1b53791435f3f88cbf4836e9a80fe5c448a5b",
-    "bytes": 355371
+    "sha256": "a7b27ba09410259c3b418fec4e05bd0a8ab8a4aa289c9efd533b3abf187499fe",
+    "bytes": 345363
    },
    {
     "endpoint": "market",
     "url": "https://inferhub.dev/api/market",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-10-20T15:37:53Z",
+    "fetched_at": "2026-10-21T15:55:25Z",
     "fetched_from": null,
-    "sha256": "339d1e1f0593117af260ee473f0a4c244107cec11a711eb442b001e08334cecd",
-    "bytes": 32364
+    "sha256": "8c3d0229f77201c1f0074c6f538557a3068c42060527e42b5a5669097390066e",
+    "bytes": 31927
    }
   ],
   "licence_map": {
@@ -88,14 +88,14 @@
    "priced_provider_count": 2,
    "catalog_availability_score_100": 63.3,
    "price_supply_availability_score_100": 100.0,
-   "public_availability_7d_pct": 99.85,
-   "shortlist_score_100": 90.779,
+   "public_availability_7d_pct": 99.84,
+   "shortlist_score_100": 90.776,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.01262,
+   "supply_weighted_median_cost_usd_per_mtok": 0.009774,
    "best_route": "alicn/qwen3.8-omni-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias low_traffic, 24h availability 98.28%",
+    "model alias operational (24h 98.99%)",
     "rail_state=operational"
    ],
    "best_route_min_ask_in": 0.00015,
