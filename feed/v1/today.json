@@ -1,21 +1,21 @@
 {
  "schema_version": "ire-feed/v1",
  "schema_url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/schema.json",
- "generated_at": "2026-10-22T15:52:03Z",
- "day_et": "2026-10-22",
- "stale_after": "2026-10-24T03:52:01Z",
- "code_commit": "4ca50eaa5f505691da3b4038feeb4284fcce0b8a",
+ "generated_at": "2026-10-23T15:43:17Z",
+ "day_et": "2026-10-23",
+ "stale_after": "2026-10-25T03:43:16Z",
+ "code_commit": "8412a0533a28cee5055187247da019b142e8c76d",
  "source_repo": "https://github.com/Pukujan/inference-recommendation-engine",
- "snapshot_sha256": "fa9e8e702e022e33bdd445c2b2683980e85ae0a538830fcad3a48a5a7c9ed863",
+ "snapshot_sha256": "cd77db89fb272bc2123ceb5d908a8f6a7f84eed835b60024e7e30b631dab5d6f",
  "sources": {
   "top20": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_top20_recommendations.csv",
-   "sha256": "524dbc2950d782ce30fc5206878334502a825547e11d2dc999f1e9d1238b6fca",
-   "sidecar_sha256": "2eb977e6614028a2e9428df6ea2f7c3e70e865720bb3cd38c7332e0f34a75bf1"
+   "sha256": "727bea69bd7a8874b8bc79c202120fc8057a8293bcecc217e95e7a26609b8b62",
+   "sidecar_sha256": "3a3ecd0f90af1ed4d7c35af5fa2fb6fc1d553968c30bcef16812ffc1f5344c6e"
   },
   "frontier": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_frontier_recommendations.json",
-   "sha256": "a1536d650f6829bd9a7c69a5baa4742685165af1fe7eb5c14279455e35444ac9"
+   "sha256": "69eab98b86fe74c13868b9542b28696500c0015dae50f95b64e4d8a8aec58bcb"
   },
   "licences": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
@@ -23,8 +23,8 @@
   },
   "utility": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_utility_recommendations.csv",
-   "sha256": "82d96d270aad4e269651b501126fa8855a0e2d2a93bae2049b8b98689f855693",
-   "sidecar_sha256": "76a5e0d6ff5fc1bb3e528b5b3035ea776db0810e5b15d9296d6405a44fbcc8cf"
+   "sha256": "1edea3fac24c069fb7b7823736acbc2c5e867cc952b172f38855bfa4460f14b6",
+   "sidecar_sha256": "31463b7fb195154a3e8089968bbafed1434adacf0b06ad0e7001bc32a304f471"
   }
  },
  "open_weight_only": true,
@@ -35,8 +35,8 @@
  "tiers": {
   "cheap": {
    "list": "top20",
-   "as_of": "2026-10-22T15:52:01Z",
-   "snapshot_sha256": "fa9e8e702e022e33bdd445c2b2683980e85ae0a538830fcad3a48a5a7c9ed863",
+   "as_of": "2026-10-23T15:43:16Z",
+   "snapshot_sha256": "cd77db89fb272bc2123ceb5d908a8f6a7f84eed835b60024e7e30b631dab5d6f",
    "description": "Open-weight models from IRE's cheap Top 20, ranked; gated rows stay visible with their gate_reasons, recommended marks the usable ones.",
    "entries": [
     {
@@ -55,7 +55,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 99.57%)",
+       "model alias operational (24h 99.93%)",
        "rail_state=operational"
       ]
      },
@@ -86,65 +86,21 @@
     },
     {
      "rank": 2,
-     "model_family": "GLM 5.3",
-     "vendor": "Z.ai",
-     "recommended": true,
-     "gate_reasons": [],
-     "best_route": "alicn/glm-5.3",
-     "price_usd_per_mtok": {
-      "input": 0.0014,
-      "output": 0.0044,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "healthy",
-      "confidence": "medium",
-      "reasons": [
-       "model alias operational (24h 99.06%)",
-       "rail_state=operational"
-      ]
-     },
-     "confidence": "low",
-     "tier": "top",
-     "capability_score_100": 44.777,
-     "price_regime": "near_free",
-     "system_prompt_handling": "unspecified",
-     "preferred_endpoint": null,
-     "caveats": [],
-     "routes": [
-      "alicn/glm-5.3",
-      "ali/glm-5.3",
-      "cb/glm-5.3",
-      "cbcn/glm-5.3",
-      "zai/glm-5.3",
-      "cmc/zai-org/GLM-5.3",
-      "ocg/glm-5.3",
-      "cp/cline-pass/glm-5.3"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "GLM-5.3 License (MIT-style)",
-      "url": "https://huggingface.co/zai-org/GLM-5.3/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/zai-org/GLM-5.3"
-     }
-    },
-    {
-     "rank": 3,
      "model_family": "GLM 5.3 Flash",
      "vendor": "Z.ai",
      "recommended": true,
      "gate_reasons": [],
      "best_route": "cb/glm-5.3-flash",
      "price_usd_per_mtok": {
-      "input": 0.0012,
-      "output": 0.004,
+      "input": 0.0009,
+      "output": 0.003,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 99.57%)",
+       "model alias operational (24h 99.96%)",
        "rail_state=operational"
       ]
      },
@@ -160,10 +116,10 @@
      "routes": [
       "cb/glm-5.3-flash",
       "cbcn/glm-5.3-flash",
-      "cp/zai/glm-5.3-flash",
       "zai/glm-5.3-flash",
       "ocg/glm-5.3-flash",
-      "cp/cline-pass/glm-5.3-flash"
+      "cp/cline-pass/glm-5.3-flash",
+      "cp/zai/glm-5.3-flash"
      ],
      "open_weight": true,
      "licence": {
@@ -173,48 +129,7 @@
      }
     },
     {
-     "rank": 4,
-     "model_family": "GLM 5.2",
-     "vendor": "Z.ai",
-     "recommended": true,
-     "gate_reasons": [],
-     "best_route": "alicn/glm-5.2",
-     "price_usd_per_mtok": {
-      "input": 0.0014,
-      "output": 0.0044,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "healthy",
-      "confidence": "medium",
-      "reasons": [
-       "model alias operational (24h 96.68%)",
-       "rail_state=operational"
-      ]
-     },
-     "confidence": "low",
-     "tier": "mid",
-     "capability_score_100": 26.737,
-     "price_regime": "near_free",
-     "system_prompt_handling": "unspecified",
-     "preferred_endpoint": null,
-     "caveats": [],
-     "routes": [
-      "alicn/glm-5.2",
-      "ali/glm-5.2",
-      "cb/glm-5.2",
-      "cbcn/glm-5.2",
-      "cmc/zai-org/GLM-5.2"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "MIT",
-      "url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/zai-org/GLM-5.2"
-     }
-    },
-    {
-     "rank": 5,
+     "rank": 3,
      "model_family": "Kimi K2.7 Code",
      "vendor": "Moonshot",
      "recommended": true,
@@ -229,7 +144,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 97.25%)",
+       "model alias operational (24h 97.07%)",
        "rail_state=operational"
       ]
      },
@@ -257,7 +172,7 @@
      }
     },
     {
-     "rank": 6,
+     "rank": 4,
      "model_family": "MiniMax M3",
      "vendor": "MiniMax",
      "recommended": true,
@@ -272,7 +187,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 94.53%)",
+       "model alias operational (24h 99.03%)",
        "rail_state=operational"
       ]
      },
@@ -288,8 +203,8 @@
      "routes": [
       "cb/minimax-m3",
       "cbcn/minimax-m3",
-      "mm/MiniMax-M3",
       "mmcn/MiniMax-M3",
+      "mm/MiniMax-M3",
       "cmc/MiniMaxAI/MiniMax-M3",
       "ocg/minimax-m3",
       "cp/cline-pass/minimax-m3"
@@ -302,24 +217,67 @@
      }
     },
     {
-     "rank": 7,
-     "model_family": "DeepSeek V4 Flash",
-     "vendor": "DeepSeek",
-     "recommended": false,
-     "gate_reasons": [
-      "not_routing_eligible"
-     ],
-     "best_route": "cbcn/deepseek-v4-flash",
+     "rank": 5,
+     "model_family": "GLM 5.3",
+     "vendor": "Z.ai",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "alicn/glm-5.3",
      "price_usd_per_mtok": {
-      "input": 0.00704,
-      "output": 0.02112,
+      "input": 0.0014,
+      "output": 0.0044,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
-      "status": "degraded",
+      "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=degraded (24h 97.96%), model-wide signal"
+       "model alias operational (24h 98.49%)",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "top",
+     "capability_score_100": 44.777,
+     "price_regime": "priced",
+     "system_prompt_handling": "unspecified",
+     "preferred_endpoint": null,
+     "caveats": [],
+     "routes": [
+      "alicn/glm-5.3",
+      "ali/glm-5.3",
+      "cb/glm-5.3",
+      "cbcn/glm-5.3",
+      "zai/glm-5.3",
+      "cmc/zai-org/GLM-5.3",
+      "ocg/glm-5.3",
+      "cp/cline-pass/glm-5.3"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "GLM-5.3 License (MIT-style)",
+      "url": "https://huggingface.co/zai-org/GLM-5.3/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/zai-org/GLM-5.3"
+     }
+    },
+    {
+     "rank": 6,
+     "model_family": "DeepSeek V4 Flash",
+     "vendor": "DeepSeek",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "cbcn/deepseek-v4-flash",
+     "price_usd_per_mtok": {
+      "input": 0.00506,
+      "output": 0.01518,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "medium",
+      "reasons": [
+       "model alias operational (24h 97.93%)",
+       "rail_state=operational"
       ]
      },
      "confidence": "low",
@@ -344,49 +302,7 @@
      }
     },
     {
-     "rank": 8,
-     "model_family": "DeepSeek V4 Pro",
-     "vendor": "DeepSeek",
-     "recommended": true,
-     "gate_reasons": [],
-     "best_route": "cbcn/deepseek-v4-pro",
-     "price_usd_per_mtok": {
-      "input": 0.02112,
-      "output": 0.06336,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "healthy",
-      "confidence": "medium",
-      "reasons": [
-       "model alias operational (24h 98.19%)",
-       "rail_state=operational"
-      ]
-     },
-     "confidence": "low",
-     "tier": "upper_mid",
-     "capability_score_100": 35.997,
-     "price_regime": "near_free",
-     "system_prompt_handling": "upstream_note",
-     "preferred_endpoint": null,
-     "caveats": [
-      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-     ],
-     "routes": [
-      "cbcn/deepseek-v4-pro",
-      "cmc/deepseek/deepseek-v4-pro",
-      "ocg/deepseek-v4-pro",
-      "cp/cline-pass/deepseek-v4-pro"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "MIT",
-      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
-     }
-    },
-    {
-     "rank": 9,
+     "rank": 7,
      "model_family": "Qwen3.8 Flash",
      "vendor": "Alibaba/Qwen",
      "recommended": true,
@@ -401,7 +317,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 98.42%)",
+       "model alias operational (24h 99.75%)",
        "rail_state=operational"
       ]
      },
@@ -414,8 +330,8 @@
      "caveats": [],
      "routes": [
       "alicn/qwen3.8-flash",
-      "cmc/Qwen/Qwen3.8-Flash",
       "ali/qwen3.8-flash",
+      "cmc/Qwen/Qwen3.8-Flash",
       "ocg/qwen3.8-flash"
      ],
      "open_weight": true,
@@ -426,7 +342,7 @@
      }
     },
     {
-     "rank": 10,
+     "rank": 8,
      "model_family": "Kimi K2.6",
      "vendor": "Moonshot",
      "recommended": false,
@@ -443,9 +359,9 @@
      },
      "health": {
       "status": "healthy",
-      "confidence": "medium",
+      "confidence": "low",
       "reasons": [
-       "model alias operational (24h 99.57%)",
+       "model alias low_traffic, 24h availability 96.72%",
        "rail_state=operational"
       ]
      },
@@ -472,6 +388,89 @@
      }
     },
     {
+     "rank": 9,
+     "model_family": "GLM 5.2",
+     "vendor": "Z.ai",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "alicn/glm-5.2",
+     "price_usd_per_mtok": {
+      "input": 0.0014,
+      "output": 0.0044,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "medium",
+      "reasons": [
+       "model alias operational (24h 95.44%)",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "mid",
+     "capability_score_100": 26.737,
+     "price_regime": "priced",
+     "system_prompt_handling": "unspecified",
+     "preferred_endpoint": null,
+     "caveats": [],
+     "routes": [
+      "alicn/glm-5.2",
+      "ali/glm-5.2",
+      "cb/glm-5.2",
+      "cbcn/glm-5.2",
+      "cmc/zai-org/GLM-5.2"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "MIT",
+      "url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/zai-org/GLM-5.2"
+     }
+    },
+    {
+     "rank": 10,
+     "model_family": "DeepSeek V4 Pro",
+     "vendor": "DeepSeek",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "cbcn/deepseek-v4-pro",
+     "price_usd_per_mtok": {
+      "input": 0.01518,
+      "output": 0.04554,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "medium",
+      "reasons": [
+       "model alias operational (24h 99.06%)",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "upper_mid",
+     "capability_score_100": 35.997,
+     "price_regime": "near_free",
+     "system_prompt_handling": "upstream_note",
+     "preferred_endpoint": null,
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
+     "routes": [
+      "cbcn/deepseek-v4-pro",
+      "cmc/deepseek/deepseek-v4-pro",
+      "cp/cline-pass/deepseek-v4-pro",
+      "ocg/deepseek-v4-pro"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "MIT",
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
+     }
+    },
+    {
      "rank": 11,
      "model_family": "Qwen 3.8 Max",
      "vendor": "Alibaba/Qwen",
@@ -485,9 +484,9 @@
      },
      "health": {
       "status": "healthy",
-      "confidence": "medium",
+      "confidence": "low",
       "reasons": [
-       "model alias operational (24h 95.97%)",
+       "model alias low_traffic, 24h availability 97.98%",
        "rail_state=operational"
       ]
      },
@@ -502,8 +501,8 @@
       "alicn/qwen3.8-max",
       "ali/qwen3.8-max",
       "cmc/Qwen/Qwen3.8-Max",
-      "ocg/qwen3.8-max",
-      "cp/cline-pass/qwen3.8-max"
+      "cp/cline-pass/qwen3.8-max",
+      "ocg/qwen3.8-max"
      ],
      "open_weight": true,
      "licence": {
@@ -532,7 +531,7 @@
       "status": "healthy",
       "confidence": "low",
       "reasons": [
-       "model alias low_traffic, 24h availability 96.92%",
+       "model alias low_traffic, 24h availability 99.83%",
        "rail_state=operational"
       ]
      },
@@ -570,15 +569,15 @@
      ],
      "best_route": "cbcn/minimax-m2.7",
      "price_usd_per_mtok": {
-      "input": 0.0096,
-      "output": 0.0384,
+      "input": 0.0069,
+      "output": 0.0276,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "low",
       "reasons": [
-       "model alias low_traffic, 24h availability 98.25%",
+       "model alias low_traffic, 24h availability 98.72%",
        "rail_state=operational"
       ]
      },
@@ -593,8 +592,8 @@
      ],
      "routes": [
       "cbcn/minimax-m2.7",
-      "mm/MiniMax-M2.7",
       "mmcn/MiniMax-M2.7",
+      "mm/MiniMax-M2.7",
       "ocg/minimax-m2.7"
      ],
      "open_weight": true,
@@ -608,8 +607,8 @@
   },
   "frontier": {
    "list": "frontier",
-   "as_of": "2026-10-22T15:52:01Z",
-   "snapshot_sha256": "fa9e8e702e022e33bdd445c2b2683980e85ae0a538830fcad3a48a5a7c9ed863",
+   "as_of": "2026-10-23T15:43:16Z",
+   "snapshot_sha256": "cd77db89fb272bc2123ceb5d908a8f6a7f84eed835b60024e7e30b631dab5d6f",
    "description": "The strongest recommended open-weight models, capability first, each with its cheapest healthy route.",
    "entries": [
     {
@@ -628,7 +627,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 97.87%)",
+       "model alias operational (24h 99.16%)",
        "rail_state=operational"
       ]
      },
@@ -645,9 +644,9 @@
       "cb/kimi-k3",
       "cbcn/kimi-k3",
       "cmc/moonshotai/Kimi-K3",
-      "ocg/kimi-k3",
       "moon/kimi-k3",
-      "cp/cline-pass/kimi-k3"
+      "cp/cline-pass/kimi-k3",
+      "ocg/kimi-k3"
      ],
      "open_weight": true,
      "licence": {
@@ -670,9 +669,9 @@
      },
      "health": {
       "status": "healthy",
-      "confidence": "medium",
+      "confidence": "low",
       "reasons": [
-       "model alias operational (24h 95.97%)",
+       "model alias low_traffic, 24h availability 97.98%",
        "rail_state=operational"
       ]
      },
@@ -689,8 +688,8 @@
       "ali/qwen3.8-max-0902",
       "ali/qwen3.8-max",
       "cmc/Qwen/Qwen3.8-Max",
-      "ocg/qwen3.8-max",
-      "cp/cline-pass/qwen3.8-max"
+      "cp/cline-pass/qwen3.8-max",
+      "ocg/qwen3.8-max"
      ],
      "open_weight": true,
      "licence": {
@@ -715,7 +714,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 98.19%)",
+       "model alias operational (24h 99.06%)",
        "rail_state=operational"
       ]
      },
@@ -733,8 +732,8 @@
       "cbcn/deepseek-v4-pro",
       "ali/deepseek-v4-pro-0813",
       "cmc/deepseek/deepseek-v4-pro",
-      "ocg/deepseek-v4-pro",
-      "cp/cline-pass/deepseek-v4-pro"
+      "cp/cline-pass/deepseek-v4-pro",
+      "ocg/deepseek-v4-pro"
      ],
      "open_weight": true,
      "licence": {
@@ -759,7 +758,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 99.06%)",
+       "model alias operational (24h 98.49%)",
        "rail_state=operational"
       ]
      },
@@ -803,7 +802,7 @@
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 96.68%)",
+       "model alias operational (24h 95.44%)",
        "rail_state=operational"
       ]
      },
