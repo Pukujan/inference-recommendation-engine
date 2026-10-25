@@ -8,15 +8,15 @@
    "list": "top20",
    "file": "research_model_top20_recommendations.csv",
    "source_path": "operational/telemetry/gravebuster/pipeline/ihub/top20.py",
-   "sha256": "9c3a96661e0e7c80bcf1b2394b0cc5a4ec18e1962987170c192fce1139719128",
+   "sha256": "d1c36867de4bc8a6100a6db48fea35828192addd6e57d14cac83fd14e6f54932",
    "rank_column": "recommendation_rank",
    "eligible_column": "recommendation_eligible",
    "meaning": "Top 20 recommendation view by empirical score, regenerated in this repo from live InferHub data (top20.py); gated rows stay visible, recommendation_eligible marks rows allowed into the operational shortlist. Capability is a carried-over low-confidence prior (see the sidecar JSON).",
-   "generated_at": "2026-10-24T14:27:48Z",
-   "code_commit": "b1719fc0043ec13b2baff3b9e068db036ddd96ef",
-   "snapshot_sha256": "bd44ea73ed1572cdb920b980d7d8b5918496da01786ec39f7a4d366ce89540af",
+   "generated_at": "2026-10-25T14:55:59Z",
+   "code_commit": "2f590b4635cc3a1819cfdc110f7746c19ca2a618",
+   "snapshot_sha256": "42255196269abe66de5d948c97c5637096d815d623c5d0771c2f087a38fb8a57",
    "sidecar_json": "research_model_top20_recommendations.json",
-   "sidecar_json_sha256": "3771ab88c9aa0216602380978554c675515af9a6ec07391446f04d7d8f579522",
+   "sidecar_json_sha256": "13d0a55394feb88477cdaeb15893f34bcdf6862cdd7bebf3597c3bec61434e26",
    "schema": "ihub-top20-recommendations/v1",
    "issue": "https://github.com/Pukujan/inference-recommendation-engine/issues/76"
   },
@@ -43,16 +43,16 @@
     "json": "research_model_frontier_recommendations.json"
    },
    "sha256": {
-    "research_model_frontier_recommendations.csv": "89178d1841aaedc1c903c1400cda5cf19550a113caff0a274a2b271d9ce3fd5f",
-    "research_model_frontier_routes.csv": "cc339231b70c9eb049824fe693bf59169f254388cca82c26cf023e61ca416df8",
-    "research_model_frontier_recommendations.json": "183a9b0d03fe1093d6a6699a0dd37f123b27821d6003623b2edf21fed2f66360"
+    "research_model_frontier_recommendations.csv": "ce0d7336459391040223a5167366d2414cef811bba1b6783b653cd5d78561d51",
+    "research_model_frontier_routes.csv": "c09af77ea2a724976db30f4e938910de87ccfc002644a6f80450c4bb694d2fdf",
+    "research_model_frontier_recommendations.json": "c2cf463ced8916d211507f58f213dcf218009e196790ee8e73b5fa0754887236"
    },
    "schema": "ihub-frontier-recommendations/v1",
    "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/frontier-recommendations.v1.schema.json",
    "generator": "operational/telemetry/gravebuster/pipeline/ihub/frontier.py",
-   "generated_at": "2026-10-24T14:27:48Z",
-   "code_commit": "b1719fc0043ec13b2baff3b9e068db036ddd96ef",
-   "snapshot_sha256": "bd44ea73ed1572cdb920b980d7d8b5918496da01786ec39f7a4d366ce89540af",
+   "generated_at": "2026-10-25T14:55:59Z",
+   "code_commit": "2f590b4635cc3a1819cfdc110f7746c19ca2a618",
+   "snapshot_sha256": "42255196269abe66de5d948c97c5637096d815d623c5d0771c2f087a38fb8a57",
    "rank_column": "frontier_rank",
    "eligible_column": "recommendation_eligible",
    "meaning": "Frontier / expensive tier, ranked capability first with live InferHub route prices. Separate from the cheap Top 20, which it never changes. Generated in this repo (not a verbatim copy).",
@@ -65,14 +65,14 @@
     "json": "research_model_utility_recommendations.json"
    },
    "sha256": {
-    "research_model_utility_recommendations.csv": "3eb572f2ceed3bf159ad30423268cd2567c95f3069955cb1e659d4abf23b819f",
-    "research_model_utility_recommendations.json": "a6b2b802dcc04d814f0980f1785e81f0547139533d26ec187e2005247b47e422"
+    "research_model_utility_recommendations.csv": "ab995f050cf4adf11d7eef97f242ba851cfb95d6147d599c9dcdf9b424746b57",
+    "research_model_utility_recommendations.json": "b0899a6f26d44765dae81f17c818578f459e84c0ddf9fa4a5f61ddc4b9b7ecf9"
    },
    "schema": "ihub-utility-recommendations/v1",
    "generator": "operational/telemetry/gravebuster/pipeline/ihub/utility.py",
-   "generated_at": "2026-10-24T14:27:48Z",
-   "code_commit": "b1719fc0043ec13b2baff3b9e068db036ddd96ef",
-   "snapshot_sha256": "bd44ea73ed1572cdb920b980d7d8b5918496da01786ec39f7a4d366ce89540af",
+   "generated_at": "2026-10-25T14:56:00Z",
+   "code_commit": "2f590b4635cc3a1819cfdc110f7746c19ca2a618",
+   "snapshot_sha256": "42255196269abe66de5d948c97c5637096d815d623c5d0771c2f087a38fb8a57",
    "rank_column": "recommendation_rank",
    "eligible_column": "recommended",
    "meaning": "Utility tier: image-generation and multimodal families, ranked on availability and price. Admission is name match plus a record in model_licences.v1.json. The open_weight verdict is per row: a family with an unverified licence is listed with open_weight null and recommended false; closed families are excluded. Separate from the Top 20 and the frontier list, which it never changes.",
