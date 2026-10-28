@@ -1,13 +1,18 @@
 {
  "schema_version": "ire-feed/v1",
- "generated_at": "2026-10-27T16:30:36Z",
+ "generated_at": "2026-10-28T17:08:22Z",
  "today": {
   "url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/today.json",
-  "day_et": "2026-10-27",
-  "stale_after": "2026-10-29T04:30:35Z"
+  "day_et": "2026-10-28",
+  "stale_after": "2026-10-30T05:08:20Z"
  },
  "schema": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/schema.json",
  "days": [
+  {
+   "day_et": "2026-10-28",
+   "url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/days/2026-10-28.json",
+   "sha256": "9ac6aca8e40599f7c3448fabf8d3d74d1fcc556864bf807d20e63fe623583735"
+  },
   {
    "day_et": "2026-10-27",
    "url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v1/days/2026-10-27.json",
