@@ -24,13 +24,6 @@ except ImportError as exc:  # pragma: no cover - exercised by CLI error path
 SOURCE_ROOT = Path(__file__).resolve().parents[2]
 SOURCE_IS_ADOPTER = not (SOURCE_ROOT / "ontology/default.json").is_file() and (SOURCE_ROOT / ".oio/ontology/default.json").is_file()
 DATA_ROOT = SOURCE_ROOT / ".oio" if SOURCE_IS_ADOPTER else SOURCE_ROOT
-try:
-    OIO_VERSION = json.loads((SOURCE_ROOT / "stack-manifest.json").read_text(encoding="utf-8"))["pins"]["observational-issue-ops"]["version"]
-except (OSError, KeyError, json.JSONDecodeError):
-    try:
-        OIO_VERSION = json.loads((SOURCE_ROOT / ".oio/install-manifest.json").read_text(encoding="utf-8"))["oio_version"]
-    except (OSError, KeyError, json.JSONDecodeError):
-        OIO_VERSION = "0.1.0"
 MANIFEST_REL = ".oio/install-manifest.json"
 JOURNAL_REL = ".oio/.installer-transaction.json"
 AGENTS_START = "<!-- oio:issue-log-guidance:start -->"
@@ -50,15 +43,145 @@ PACKAGE_FILES = {
     ".github/scripts/oio_installer.py": ".github/scripts/oio_installer.py",
     ".github/scripts/oio_triage.py": ".github/scripts/oio_triage.py",
 }
-RECOVERY_ALLOWED = set(PACKAGE_FILES) | {"AGENTS.md", ".oio/ontology/project.json", MANIFEST_REL}
+# Callers for OIO's reusable close workflows, rendered with the agent-stack-train
+# commit that installed them so an adopter's close behaviour changes only when it
+# upgrades. The reusable workflows live at the root of agent-stack-train, the
+# only place GitHub runs them from; a caller from before the move names
+# Pukujan/observational-issue-ops instead and keeps working at its pinned commit.
+# The sweep's switches are repository variables, not file edits, because an
+# edited managed file blocks the next upgrade.
+OIO_REF_PLACEHOLDER = "<oio-ref>"
+# Repositories whose reusable close workflows a hand-added caller may name.
+CALLER_REPOSITORIES = ("agent-stack-train", "observational-issue-ops")
+CALLER_FILES = {
+    ".github/workflows/oio-close-on-merge.yml": (
+        "close-on-merge.yml",
+        """name: OIO close on merge
+
+# Installed by OIO's installer; rerun it from a newer agent-stack-train checkout
+# to move the pin instead of editing this file. Closes the issue logs a merged pull request
+# names with Closes, Fixes or Resolves.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  close:
+    if: github.event.pull_request.merged == true
+    uses: Pukujan/agent-stack-train/.github/workflows/close-on-merge.yml@<oio-ref>
+    with:
+      oio_ref: <oio-ref>
+    secrets:
+      CROSS_REPO_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
+""",
+    ),
+    ".github/workflows/oio-close-sweep.yml": (
+        "close-sweep.yml",
+        """name: OIO close sweep
+
+# Installed by OIO's installer; rerun it from a newer agent-stack-train checkout
+# to move the pin instead of editing this file. Settles open logs that a merged pull
+# request names but did not close, and flags open parents whose sub-issues are
+# all closed. It only reports until the repository variable
+# OIO_CLOSE_SWEEP_APPLY is `true`: read the first report and label any issue
+# that must stay open `oio:keep-open` first. Set OIO_CLOSE_SWEEP_ROLLUP to
+# `close` to close finished parents instead of labelling them.
+
+on:
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  sweep:
+    uses: Pukujan/agent-stack-train/.github/workflows/close-sweep.yml@<oio-ref>
+    with:
+      oio_ref: <oio-ref>
+      apply: ${{ vars.OIO_CLOSE_SWEEP_APPLY == 'true' }}
+      rollup: ${{ vars.OIO_CLOSE_SWEEP_ROLLUP || 'label' }}
+    secrets:
+      CROSS_REPO_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
+""",
+    ),
+}
+RECOVERY_ALLOWED = set(PACKAGE_FILES) | set(CALLER_FILES) | {"AGENTS.md", ".oio/ontology/project.json", MANIFEST_REL}
 
 
 class InstallError(Exception):
     """A safe, actionable install refusal."""
 
 
+def _detect_version(source_root: Path = SOURCE_ROOT) -> str:
+    """Report the package version without a hard-coded fallback.
+
+    Precedence: the stack-manifest pin, the installed manifest, then the
+    checked-in ``VERSION`` file. A literal in this script once said 0.2.0
+    while the package moved on, so the last resort is a refusal with an
+    actionable message rather than a number nobody updates.
+    """
+    try:
+        pinned = json.loads((source_root / "stack-manifest.json").read_text(encoding="utf-8"))["pins"]["observational-issue-ops"]["version"]
+        if pinned:
+            return str(pinned)
+    except (OSError, KeyError, TypeError, json.JSONDecodeError):
+        pass
+    try:
+        installed = json.loads((source_root / ".oio/install-manifest.json").read_text(encoding="utf-8"))["oio_version"]
+        if installed:
+            return str(installed)
+    except (OSError, KeyError, TypeError, json.JSONDecodeError):
+        pass
+    try:
+        version = (source_root / "VERSION").read_text(encoding="utf-8").strip()
+    except OSError:
+        version = ""
+    if version:
+        return version
+    raise InstallError("cannot determine the OIO package version: no stack-manifest.json pin, install manifest, or VERSION file was found")
+
+
+OIO_VERSION = _detect_version()
+
+
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _lf_bytes(data: bytes) -> bytes:
+    """Return ``data`` with CRLF and lone CR normalized to LF.
+
+    OIO's managed files are text, so their integrity contract is about content,
+    not the line-ending style of the checkout that ran the installer. Installing
+    the LF form makes a Windows (CRLF) and a Linux (LF) install byte-identical,
+    so a correct install passes its own ``--check`` gate on either platform.
+    """
+    return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
+def _matches_recorded(data: bytes, recorded_sha256: str) -> bool:
+    """Whether ``data`` matches a recorded digest, ignoring line-ending style.
+
+    The recorded digest was taken over the raw bytes of whatever checkout ran
+    the older installer (LF on Linux, CRLF on Windows), and the current file may
+    be in either style. Comparing every canonical form accepts a manifest written
+    by that older installer so an existing adopter migrates through a normal
+    re-install instead of deleting the install. A real content edit changes all
+    of these digests and is still refused.
+    """
+    normalized = _lf_bytes(data)
+    candidates = {data, normalized, normalized.replace(b"\n", b"\r\n")}
+    return any(_sha256(candidate) == recorded_sha256 for candidate in candidates)
 
 
 def _source_file(relative: str) -> Path:
@@ -71,12 +194,41 @@ def _after_parent_open(target: Path, relative: str) -> None:
     """Test hook for exercising path swaps after secure directory traversal."""
 
 
+def _is_reparse(info: os.stat_result) -> bool:
+    """Whether a stat result is a symlink or a Windows reparse point (junction)."""
+    if stat.S_ISLNK(info.st_mode):
+        return True
+    return bool(getattr(info, "st_file_attributes", 0) & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0))
+
+
+def _is_link_or_reparse(path: Path) -> bool:
+    """``Path.is_symlink`` misses Windows junctions; this also catches those."""
+    if path.is_symlink():
+        return True
+    try:
+        return _is_reparse(os.lstat(path))
+    except OSError:
+        return False
+
+
 class _TargetFS:
+    """Managed-path access, dispatched per platform.
+
+    POSIX holds descriptor-relative no-follow directory handles; Windows refuses
+    reparse points and re-verifies parent identity, since it has no ``dir_fd``.
+    """
+
+    def __new__(cls, root: Path):
+        if cls is _TargetFS:
+            return super().__new__(_WindowsTargetFS if sys.platform == "win32" else _PosixTargetFS)
+        return super().__new__(cls)
+
+
+class _PosixTargetFS(_TargetFS):
     """Descriptor-relative access that refuses symlinks at managed path components."""
 
     def __init__(self, root: Path):
-        required = {os.open, os.mkdir, os.stat, os.unlink, os.rename}
-        if not required.issubset(os.supports_dir_fd) or not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
+        if _posix_precondition():
             raise InstallError("this platform lacks descriptor-relative no-follow filesystem operations")
         self.root = root
         self.root_fd = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
@@ -192,6 +344,131 @@ class _TargetFS:
             os.fsync(parent_fd)
         finally:
             os.close(parent_fd)
+
+
+class _WindowsTargetFS(_TargetFS):
+    """Refuse reparse points and re-verify parent identity around each write.
+
+    Windows exposes no ``dir_fd`` operations, so this cannot hold a directory
+    open the way the POSIX layer does. It refuses a symlink, junction, or any
+    other reparse point at every managed path component, and re-verifies the
+    parent directory's identity immediately before and after each replacement.
+    A same-user process that swaps the parent path inside the remaining window
+    is the documented residual race (see docs/ADOPTER_INSTALL.md); a swap
+    detected at any checkpoint fails closed.
+    """
+
+    def __init__(self, root: Path):
+        info = os.lstat(root)
+        if not stat.S_ISDIR(info.st_mode) or _is_reparse(info):
+            raise InstallError(f"target root is a symlink or reparse point: {root}")
+        self.root = root
+        self._root_id = (info.st_dev, info.st_ino)
+
+    def close(self) -> None:
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        self.close()
+
+    def _parts(self, relative: str) -> tuple[str, ...]:
+        pure = PurePosixPath(relative)
+        if pure.is_absolute() or ".." in pure.parts or not pure.parts or any("\\" in part for part in pure.parts):
+            raise InstallError(f"unsafe package path: {relative!r}")
+        return pure.parts
+
+    def _check(self, path: Path) -> os.stat_result:
+        info = os.lstat(path)
+        if _is_reparse(info):
+            raise InstallError(f"refusing symlink or reparse point in managed target path: {path}")
+        return info
+
+    def _verify_root(self) -> None:
+        info = os.lstat(self.root)
+        if _is_reparse(info) or (info.st_dev, info.st_ino) != self._root_id:
+            raise InstallError("target root changed during installation")
+
+    def _parent(self, relative: str, *, create: bool = False) -> tuple[Path, str, tuple[int, int]]:
+        parts = self._parts(relative)
+        parent = self.root
+        for part in parts[:-1]:
+            parent = parent / part
+            try:
+                info = self._check(parent)
+            except FileNotFoundError:
+                if not create:
+                    raise
+                os.mkdir(parent)
+                info = self._check(parent)
+            if not stat.S_ISDIR(info.st_mode):
+                raise InstallError(f"managed target path is not a directory: {relative}")
+        info = self._check(parent)
+        return parent, parts[-1], (info.st_dev, info.st_ino)
+
+    def _verify_parent(self, parent: Path, expected: tuple[int, int]) -> None:
+        info = os.lstat(parent)
+        if _is_reparse(info) or (info.st_dev, info.st_ino) != expected:
+            raise InstallError(f"managed target path changed during installation: {parent}")
+
+    def read_bytes(self, relative: str) -> bytes | None:
+        path = self.root
+        try:
+            for part in self._parts(relative):
+                path = path / part
+                self._check(path)
+        except FileNotFoundError:
+            return None
+        if not stat.S_ISREG(os.lstat(path).st_mode):
+            raise InstallError(f"managed target path is not a regular file: {relative}")
+        return path.read_bytes()
+
+    def atomic_write(self, relative: str, data: bytes) -> None:
+        parent, leaf, parent_id = self._parent(relative, create=True)
+        temp_name = f".oio-tmp-{os.getpid()}-{os.urandom(8).hex()}"
+        temp_path = parent / temp_name
+        try:
+            _after_parent_open(self.root, relative)
+            self._verify_root()
+            self._verify_parent(parent, parent_id)
+            fd = os.open(temp_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            try:
+                with os.fdopen(fd, "wb") as handle:
+                    fd = -1
+                    handle.write(data)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+            finally:
+                if fd >= 0:
+                    os.close(fd)
+            leaf_path = parent / leaf
+            try:
+                info = os.lstat(leaf_path)
+            except FileNotFoundError:
+                pass
+            else:
+                if _is_reparse(info):
+                    raise InstallError(f"refusing symlink or reparse point in managed target path: {relative}")
+                if not stat.S_ISREG(info.st_mode):
+                    raise InstallError(f"managed target path is not a regular file: {relative}")
+            self._verify_parent(parent, parent_id)
+            os.replace(temp_path, leaf_path)
+            self._verify_parent(parent, parent_id)
+        finally:
+            try:
+                os.unlink(temp_path)
+            except FileNotFoundError:
+                pass
+
+    def unlink(self, relative: str) -> None:
+        parent, leaf, parent_id = self._parent(relative)
+        self._verify_parent(parent, parent_id)
+        leaf_path = parent / leaf
+        if _is_reparse(os.lstat(leaf_path)):
+            raise InstallError(f"refusing symlink or reparse point in managed target path: {relative}")
+        os.unlink(leaf_path)
 
 
 def _recover_transaction(target: Path, target_fs: _TargetFS) -> None:
@@ -341,7 +618,7 @@ def _safe_target(root_arg: str) -> Path:
     raw = Path(root_arg).expanduser()
     if not raw.is_absolute():
         raise InstallError("--target must be an explicit absolute path")
-    if raw.is_symlink():
+    if _is_link_or_reparse(raw):
         raise InstallError("--target cannot itself be a symlink")
     target = raw.resolve(strict=True)
     if not target.is_dir() or not ((target / ".git").is_dir() or (target / ".git").is_file()):
@@ -356,7 +633,7 @@ def _target_file(target: Path, relative: str, *, must_exist: bool = False) -> Pa
     current = target
     for part in pure.parts:
         current = current / part
-        if current.is_symlink():
+        if _is_link_or_reparse(current):
             raise InstallError(f"refusing symlink in managed target path: {relative}")
     if must_exist and not current.exists():
         raise InstallError(f"required target file is missing: {relative}")
@@ -379,7 +656,9 @@ def _managed_agents(existing: str | None, old_hash: str | None) -> tuple[str, st
         raise InstallError("AGENTS.md contains an incomplete or malformed OIO guidance marker")
     if start >= 0:
         prior = existing[start : end + len(AGENTS_END)]
-        if old_hash is None or _sha256(prior.encode()) != old_hash:
+        # The recorded hash is over the LF block; a CRLF worktree carries the same
+        # block with CRLF, so normalize before comparing to avoid a false "edited".
+        if old_hash is None or _sha256(_lf_bytes(prior.encode())) != old_hash:
             raise InstallError("the OIO-managed AGENTS.md section was edited; refusing to overwrite it")
         result = existing[:start] + new_block + existing[end + len(AGENTS_END) :]
     else:
@@ -424,6 +703,46 @@ def _current_project_file(target: Path, project_id: str, namespace: str, default
     return path, (json.dumps(template, indent=2, ensure_ascii=False) + "\n").encode()
 
 
+def _source_ref(manifest: dict | None) -> str | None:
+    """Return the full stack commit the close callers pin, or None when it is unknown.
+
+    From an agent-stack-train checkout it is that checkout's HEAD. The copy
+    installed in an adopter has no stack history, so it reuses the ref the
+    install recorded.
+    """
+    if SOURCE_IS_ADOPTER:
+        ref = (manifest or {}).get("oio_ref")
+    else:
+        try:
+            result = subprocess.run(["git", "-C", str(SOURCE_ROOT), "rev-parse", "HEAD"], capture_output=True, text=True, check=False)
+        except OSError:
+            return None
+        ref = result.stdout.strip() if result.returncode == 0 else None
+    return ref if isinstance(ref, str) and re.fullmatch(r"[0-9a-f]{40}(?:[0-9a-f]{24})?", ref) else None
+
+
+def _existing_caller(target: Path, reusable: str) -> str | None:
+    """Name an adopter workflow that already calls OIO's ``reusable`` workflow, if any.
+
+    A hand-added caller keeps working, so the installer adds none of its own
+    rather than running the same close twice.
+    """
+    workflows = target / ".github/workflows"
+    if workflows.is_symlink() or not workflows.is_dir():
+        return None
+    needles = tuple(f"{repo}/.github/workflows/{reusable}@" for repo in CALLER_REPOSITORIES)
+    for path in sorted(workflows.iterdir()):
+        if path.suffix not in {".yml", ".yaml"} or path.is_symlink() or not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if any(needle in text for needle in needles):
+                return f".github/workflows/{path.name}"
+        except OSError:
+            continue
+    return None
+
+
 def install(target_arg: str, project_id: str | None = None, check_only: bool = False) -> list[str]:
     target = _safe_target(target_arg)
     if target == SOURCE_ROOT and not (check_only and SOURCE_IS_ADOPTER):
@@ -460,12 +779,25 @@ def _install_in_target(target: Path, target_fs: _TargetFS, project_id: str | Non
         raise InstallError("installed project ontology is missing; run the installer to recover the scaffold")
     planned: dict[str, bytes] = {}
     for relative, source_relative in PACKAGE_FILES.items():
-        destination = _target_file(target, relative)
-        source = _source_file(source_relative)
-        planned[relative] = source.read_bytes()
+        planned[relative] = _lf_bytes(_source_file(source_relative).read_bytes())
+    oio_ref = _source_ref(manifest)
+    notes: list[str] = []
+    for relative, (reusable, template) in CALLER_FILES.items():
+        if relative not in old_files:
+            if SOURCE_IS_ADOPTER or oio_ref is None:
+                continue
+            caller = _existing_caller(target, reusable)
+            if caller:
+                notes.append(f"{caller} already calls OIO's {reusable}, so OIO did not add {relative}.")
+                continue
+        elif oio_ref is None:
+            raise InstallError(f"{relative} is managed, but the OIO commit it pins is unknown; run the installer from an agent-stack-train git checkout")
+        planned[relative] = template.replace(OIO_REF_PLACEHOLDER, oio_ref).encode("utf-8")
+    for relative in planned:
+        _target_file(target, relative)
         if manifest and relative in old_files:
             installed_data = target_fs.read_bytes(relative)
-            if installed_data is None or _sha256(installed_data) != old_files[relative]:
+            if installed_data is None or not _matches_recorded(installed_data, old_files[relative]):
                 raise InstallError(f"managed file changed since OIO installed it: {relative}")
         elif target_fs.read_bytes(relative) is not None:
             raise InstallError(f"unmanaged file already exists at {relative}; refusing to adopt or overwrite it")
@@ -491,13 +823,31 @@ def _install_in_target(target: Path, target_fs: _TargetFS, project_id: str | Non
         "agents_block_sha256": agents_hash,
         "project_extension": ".oio/ontology/project.json",
     }
+    if oio_ref is not None:
+        install_manifest["oio_ref"] = oio_ref
     planned[MANIFEST_REL] = (json.dumps(install_manifest, indent=2, ensure_ascii=False) + "\n").encode()
     _target_file(target, MANIFEST_REL)
     if check_only:
         if not manifest:
             raise InstallError("OIO is not installed in this repository")
-        if manifest.get("oio_version") != OIO_VERSION or any(target_fs.read_bytes(path) != data for path, data in planned.items() if path != ".oio/ontology/project.json"):
+        if manifest.get("oio_version") != OIO_VERSION:
             raise InstallError("installed OIO files differ from this pinned package; run the installer to update")
+        mismatches: list[str] = []
+        eol_only: list[str] = []
+        for path, data in planned.items():
+            if path == ".oio/ontology/project.json":
+                continue
+            installed_data = target_fs.read_bytes(path)
+            if installed_data == data:
+                continue
+            if installed_data is not None and _lf_bytes(installed_data) == _lf_bytes(data):
+                eol_only.append(path)
+            else:
+                mismatches.append(path)
+        if mismatches:
+            raise InstallError(f"installed OIO files differ from this pinned package: {', '.join(mismatches)}; run the installer to update")
+        if eol_only:
+            return [f"VALID: OIO package, project ontology, and managed files match; line endings differ at {', '.join(eol_only)} and the content is otherwise identical — rerun the installer to normalize them to LF"]
         return ["VALID: OIO package, project ontology, and managed files match"]
 
     # Journal prior bytes before the first managed write. A subsequent invocation
@@ -518,15 +868,64 @@ def _install_in_target(target: Path, target_fs: _TargetFS, project_id: str | Non
         _recover_transaction(target, target_fs)
         raise
     target_fs.unlink(JOURNAL_REL)
-    return [f"Installed OIO {OIO_VERSION} for {project_id} in {target}", "Default project priority paths 1–100 are available; replace their generic definitions with project meanings and maintain the owner account map before relying on authority-ranked triage."]
+    messages = [f"Installed OIO {OIO_VERSION} for {project_id} in {target}", "Default project priority paths 1–100 are available; replace their generic definitions with project meanings and maintain the owner account map before relying on authority-ranked triage."]
+    if ".github/workflows/oio-close-sweep.yml" in planned:
+        messages.append("The close sweep only reports until the repository variable OIO_CLOSE_SWEEP_APPLY is true; read its first report before setting it.")
+    return messages + notes
+
+
+def _posix_precondition() -> str:
+    """Why the POSIX backend cannot run here, or ``""`` when it can.
+
+    The single source of truth for the POSIX precondition: ``_PosixTargetFS``
+    refuses with it, and ``platform_support`` reports it. A caller that asks
+    ``--check-platform`` therefore cannot be told something the install would
+    then refuse.
+    """
+    required = {os.open, os.mkdir, os.stat, os.unlink, os.rename}
+    missing = sorted(f.__name__ for f in required - set(os.supports_dir_fd))
+    if missing:
+        return "os.supports_dir_fd lacks " + ", ".join(missing)
+    for flag in ("O_NOFOLLOW", "O_DIRECTORY"):
+        if not hasattr(os, flag):
+            return f"os.{flag} is unavailable"
+    return ""
+
+
+def platform_support() -> tuple[bool, str]:
+    """Whether this platform can host the installer, and the backend it uses.
+
+    Derived from the same dispatch ``_TargetFS`` performs, so a caller's probe
+    cannot claim support the install would not deliver — which is how a
+    hard-coded copy of this check went stale when Windows support landed.
+    """
+    if sys.platform == "win32":
+        return True, "Windows reparse-point backend"
+    why = _posix_precondition()
+    if why:
+        return False, why
+    return True, "descriptor-relative no-follow backend"
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", required=True, help="absolute path to one existing Git target repository")
+    parser.add_argument("--target", help="absolute path to one existing Git target repository")
     parser.add_argument("--project-id", help="owner/repository; otherwise inferred from target origin")
     parser.add_argument("--check", action="store_true", help="validate the installed files without writing")
+    parser.add_argument(
+        "--check-platform",
+        action="store_true",
+        help="report whether this platform can host the installer, then exit (no target needed)",
+    )
     args = parser.parse_args(argv)
+
+    if args.check_platform:
+        supported, backend = platform_support()
+        print(f"{'supported' if supported else 'unsupported'}: {backend}")
+        return 0 if supported else 1
+
+    if not args.target:
+        parser.error("--target is required unless --check-platform is given")
     try:
         for line in install(args.target, args.project_id, args.check):
             print(line)

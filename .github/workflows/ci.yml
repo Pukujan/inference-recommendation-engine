@@ -50,26 +50,22 @@ jobs:
             git -C "$root/$1" checkout --quiet FETCH_HEAD
           }
           fetch train agent-stack-train main
-          fetch pcm project-continuity-modules 851bcf72eb618e6fe4f49c3f0b8e26fefb90410f
-          fetch cgm content-generation-modules 62340f3de702f6d2a7d97b9e16465b98360976a3
-          fetch oio observational-issue-ops a4bba77b770e5674d1124383cd0d26704236963d
-          # ACS 25be219, not the train's own ACS entry 589b0a9: 589b0a9's
-          # stack-mesh.json still requires the previous PCM/CGM and fails its own
-          # hotload_check. 25be219's mesh matches the train's certified PCM/CGM/OIO.
-          fetch acs agent-custom-setup 25be219bb7341addba8849a8ffb6dba8695ff17d
+          # One checkout of the stack at the commit that certified 1.0.0. It holds
+          # acs/, pcm/, cgm/ and oio/, so no part is pinned separately.
+          fetch stack agent-stack-train edfe418a5463332d4509771a068e9bc991b045d7
       - name: Validate stack-manifest against the release train
         run: uv run --no-project --with jsonschema python "$STACK_ROOT/train/scripts/check_manifest.py" --manifest stack-manifest.json --train "$STACK_ROOT/train/stack-releases.json"
       - name: Validate PCM continuity files
-        run: PYTHONPATH="$STACK_ROOT/pcm/src" uv run --no-project --with jsonschema python -m continuity validate --root .
-      - name: Validate CGM 0.5.12 adapter
+        run: PYTHONPATH="$STACK_ROOT/stack/pcm/src" uv run --no-project --with jsonschema python -m continuity validate --root .
+      - name: Validate CGM adapter
         run: |
-          uv run --no-project --with jsonschema python "$STACK_ROOT/cgm/scripts/validate_content_system.py" --root "$STACK_ROOT/cgm" --adapter .content-system --project-root .
-          uv run --no-project --with jsonschema python "$STACK_ROOT/cgm/scripts/verify_adopter_content.py" --project-root .
+          uv run --no-project --with jsonschema python "$STACK_ROOT/stack/cgm/scripts/validate_content_system.py" --root "$STACK_ROOT/stack/cgm" --adapter .content-system --project-root .
+          uv run --no-project --with jsonschema python "$STACK_ROOT/stack/cgm/scripts/verify_adopter_content.py" --project-root .
       - name: Validate OIO install
-        run: uv run --no-project --with-requirements "$STACK_ROOT/oio/requirements.txt" python "$STACK_ROOT/oio/.github/scripts/oio_installer.py" --target "$GITHUB_WORKSPACE" --check
+        run: uv run --no-project --with-requirements "$STACK_ROOT/stack/oio/requirements.txt" python "$STACK_ROOT/stack/oio/.github/scripts/oio_installer.py" --target "$GITHUB_WORKSPACE" --check
       - name: Validate ACS hot-loader
         run: |
-          pack="$STACK_ROOT/acs/modules/coordination/multi-agent-hotload/v0.1.0"
-          uv run --no-project --with jsonschema python "$pack/scripts/hotload_check.py" --root "$pack" --assignment .coord/assignment.json --cgm-root "$STACK_ROOT/cgm" --adopter-root "$GITHUB_WORKSPACE"
+          pack="$STACK_ROOT/stack/acs/modules/coordination/multi-agent-hotload/v0.1.0"
+          uv run --no-project --with jsonschema python "$pack/scripts/hotload_check.py" --root "$pack" --assignment .coord/assignment.json --cgm-root "$STACK_ROOT/stack/cgm" --adopter-root "$GITHUB_WORKSPACE"
       - name: Check dev root layout (ACS dev_root_check)
-        run: uv run --no-project python "$STACK_ROOT/acs/modules/coordination/multi-agent-hotload/v0.1.0/scripts/dev_root_check.py" --dev-root "$(dirname "$GITHUB_WORKSPACE")"
+        run: uv run --no-project python "$STACK_ROOT/stack/acs/modules/coordination/multi-agent-hotload/v0.1.0/scripts/dev_root_check.py" --dev-root "$(dirname "$GITHUB_WORKSPACE")"

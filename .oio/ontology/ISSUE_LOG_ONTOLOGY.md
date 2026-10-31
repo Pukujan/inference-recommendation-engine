@@ -12,6 +12,42 @@ The machine-readable source is [`default.json`](default.json). The installer val
 
 This ontology standardizes issue-log vocabulary. It does not grant permission to implement, change another repository, or release software.
 
+## This document is the canonical issue-log shape
+
+OIO owns the **semantics and shape** of the issue log for the agent stack: the required fields, the lifecycle vocabulary, and the typed relation set defined here are the single definition that other repositories point at. A repository that needs a different issue-log shape files a change against OIO instead of restating the shape locally. Project ontologies extend this vocabulary under their own namespace; they do not redefine it. PCM's issue-log format defers to this form: PCM owns writing and record prose (voice, readability, diagrams), while the field shape and lifecycle vocabulary are defined here. (Prose voice remains owned by the narrative-authority module; execution continuity remains owned by the continuity module.)
+
+## Lifecycle: status, re-observation, and relations
+
+An issue log has a recorded lifecycle state. Status describes where the log stands in review; it is not an authorization, a queue rank, or a release decision, and a status change never erases the evidence already recorded. A log with no recorded status is **open**.
+
+| Status | Meaning |
+| --- | --- |
+| `open` | Recorded and awaiting review or action. |
+| `resolved` | The observed condition is fixed, answered, or no longer reproducible; the resolution evidence is recorded on the log. |
+| `superseded` | Another log replaces this one; the log records its superseding relation and is retained as evidence. |
+| `obsolete` | The observed condition no longer applies because the affected surface changed or was removed; no fix was made. |
+| `wontfix` | Reviewed and deliberately not acted on; the decision and its reason are recorded on the log. |
+
+**Re-observation trigger.** A settled log (`resolved`, `superseded`, `obsolete`, or `wontfix`) moves back to `open`, or is re-checked, when any of the following fires — the log records which trigger fired and when:
+
+- the same condition is observed again on the log's subject;
+- new evidence contradicts the recorded resolution, supersession, or wontfix decision;
+- the affected surface, dependency set, or product outcome named by the log changes after it settled;
+- a scheduled or incident-driven re-check of the log's recorded claims.
+
+**Relations.** A log carries typed links to other logs or tracking records, written one per line as `<relation>: <reference>`. Relations describe the log graph; they do not by themselves change either log's status, queue class, or authorization — except that recording `supersedes` or `superseded-by` settles the replaced log as `superseded`.
+
+| Relation | Meaning |
+| --- | --- |
+| `supersedes` | This log replaces the referenced log. |
+| `superseded-by` | The referenced log replaces this one. |
+| `related` | The referenced record shares subject matter, cause, or work with this log without replacing it. |
+| `duplicate-of` | The referenced log is the canonical record of the same observation; this log is retained as evidence. |
+
+`supersedes` and `superseded-by` are inverse pairs: record exactly one direction per pair of logs.
+
+The intake form carries these as the **Lifecycle Status** dropdown and the **Issue Relations** field. Triage derives its `status:*` and `relation:*` labels and its `needs-lifecycle-status` / `needs-relation-review` fail-closed labels from the status values and relation types declared in [`default.json`](default.json); it treats an unrecognized status as invalid and a line it cannot parse as a relation needing review. It never derives authority, queue class, or a release decision from either field.
+
 ## Who authored and authorized the filing
 
 Record author/source separately from permission and authenticated GitHub actor:

@@ -2,9 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "schema_version": "oio.issue-log-ontology.v1",
   "ontology_id": "oio:issue-log",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatible_project_ontology_versions": [
-    "1.0.0"
+    "1.0.0",
+    "1.1.0"
   ],
   "scope": [
     "observational",
@@ -134,6 +135,35 @@
       "normal-review": "Other complete records; use the project priority and evidence."
     }
   },
+  "lifecycle": {
+    "meaning": "The recorded state of an issue log. Status is a review-state claim recorded in the log's lifecycle field; it is not an authorization, a queue rank, or a release decision, and it never erases the evidence already recorded on the log.",
+    "default_status": "open",
+    "status_values": {
+      "open": "Recorded and awaiting review or action. A log with no recorded status is open.",
+      "resolved": "The observed condition is fixed, answered, or no longer reproducible; the resolution evidence is recorded on the log.",
+      "superseded": "Another log replaces this one; the log records its superseding relation and is retained as evidence.",
+      "obsolete": "The observed condition no longer applies because the affected surface changed or was removed; no fix was made.",
+      "wontfix": "Reviewed and deliberately not acted on; the decision and its reason are recorded on the log."
+    },
+    "re_observation_trigger": {
+      "meaning": "What moves a settled log back to open or requires it to be re-checked. A resolved, superseded, obsolete, or wontfix log reopens when any trigger fires, and the log records which trigger fired and when.",
+      "triggers": [
+        "the same condition is observed again on the log's subject",
+        "new evidence contradicts the recorded resolution, supersession, or wontfix decision",
+        "the affected surface, dependency set, or product outcome named by the log changes after it settled",
+        "a scheduled or incident-driven re-check of the log's recorded claims"
+      ]
+    }
+  },
+  "relations": {
+    "meaning": "Typed links between one issue log and other issue logs or tracking records. Relations describe the log graph; they do not by themselves change either log's status, queue class, or authorization. supersedes and superseded-by are inverse pairs: exactly one direction is recorded per pair of logs, and the superseded log's lifecycle status becomes superseded.",
+    "relation_types": {
+      "supersedes": "This log replaces the referenced log; the referenced log's lifecycle status becomes superseded.",
+      "superseded-by": "The referenced log replaces this one; this log's lifecycle status becomes superseded.",
+      "related": "The referenced record shares subject matter, cause, or work with this log without replacing it.",
+      "duplicate-of": "The referenced log is the canonical record of the same observation; this log is retained as evidence."
+    }
+  },
   "protected_rules": [
     "A project may add namespaced concepts and priority meanings but may not redefine or remove an OIO core concept.",
     "A reporter cannot self-assign account authority.",
@@ -141,7 +171,9 @@
     "Impact bands describe demonstrated consequences; likelihood, exposure, recoverability, and evidence confidence remain separate dimensions and do not produce an automatic universal score.",
     "An issue log is evidence and a proposal for review; it is not implementation or release authorization.",
     "On OIO, ACS, CGM, and PCM, an agent may prepare a local issue draft but must not submit it without explicit human direction for that destination and filing action.",
-    "Human origin claims in issue text are unverified until an authorized project account separately applies the matching OIO attestation label. Triage preserves a bot comment with the event ID and exact issue-body SHA-256; editing the body invalidates the attestation and requires it to be applied again. The state is verified-account-attestation: it proves account action, not who typed a prompt when credentials are shared, and does not authorize implementation."
+    "Human origin claims in issue text are unverified until an authorized project account separately applies the matching OIO attestation label. Triage preserves a bot comment with the event ID and exact issue-body SHA-256; editing the body invalidates the attestation and requires it to be applied again. The state is verified-account-attestation: it proves account action, not who typed a prompt when credentials are shared, and does not authorize implementation.",
+    "Lifecycle status is a recorded review state, not authorization: resolving, superseding, or closing a log never grants permission to implement or release, and a settled log stays readable as evidence.",
+    "A relation between logs never changes either log's lifecycle status by itself except that a recorded supersedes or superseded-by settles the replaced log as superseded; relations do not alter filer origin, authorization, or queue class."
   ],
   "queue_order": {
     "source_class": [

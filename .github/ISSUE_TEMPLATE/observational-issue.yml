@@ -1,5 +1,5 @@
 name: Issue Log Entry
-description: File an observational or operational issue log with ontology, priority, impact, and filer provenance.
+description: File an observational or operational issue log with ontology, priority, impact, and filer provenance. The Investigation-tier fields are for operational, incident, and failure logs.
 title: "[ISSUE]: "
 labels: ["observational-issue", "proposal"]
 body:
@@ -9,6 +9,88 @@ body:
         ### Issue Log Entry Protocol
         > OIO publishes the default issue-log ontology and intake rules. Each adopter owns its project ontology extension and issue history.
         > Read `ontology/ISSUE_LOG_ONTOLOGY.md` and the installed project ontology before filing. A filed log is evidence for review, not permission to implement or release.
+        > The Summary, Identity and Lineage, Acceptance Criteria, and Boundaries and Next Action fields form the core tier. The Investigation-tier fields (Symptoms, Hypotheses, Counter-signal, Honest Caveat, Problems vs Gaps) are for operational logs and incident/failure records; fill them when they apply, leave them blank otherwise.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Who or what is affected, the observed consequence, and what this log proposes. Fill it when the title alone does not carry the problem.
+      placeholder: "Affected surface, consequence, and proposed direction..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: identity_and_lineage
+    attributes:
+      label: Identity and Lineage
+      description: The leaf issue owning this work, its parent ancestry or none, the task ID, the primary writer, and the branch. Fill it when the log is tied to tracked work.
+      placeholder: "- Leaf issue: ...\n- Parent: none\n- Task/branch: ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What must be true for this log to resolve, with numeric thresholds marked (proposed) when untested. Fill it before work starts.
+      placeholder: "- [ ] ...\n- [ ] ... (proposed)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: boundaries_and_next_action
+    attributes:
+      label: Boundaries and Next Action
+      description: Non-goals and the one next atomic action. Fill it to keep scope bounded.
+      placeholder: "Out of scope: ...\nNext action: ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: symptoms
+    attributes:
+      label: Symptoms
+      description: Investigation tier. Numbered observed symptoms, ordered by appearance. Fill for operational, incident, or failure logs.
+      placeholder: "1. ...\n2. ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: hypotheses
+    attributes:
+      label: Hypotheses (unverified)
+      description: Investigation tier. Unverified candidate causes, each labelled (hypothesis). Required in substance for operational logs — triage adds needs-investigation-block when an operational log omits it.
+      placeholder: "- (hypothesis) ...\n  Experiment to confirm: ..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: counter_signal
+    attributes:
+      label: Counter-signal
+      description: Investigation tier. Evidence that weighs against the leading hypothesis. Fill it when one exists; write none when none does.
+      placeholder: "Evidence against the leading hypothesis, or none"
+    validations:
+      required: false
+
+  - type: textarea
+    id: honest_caveat
+    attributes:
+      label: Honest Caveat
+      description: Investigation tier. What this record does not establish and where its evidence runs out. Fill it when the record makes claims beyond direct observation.
+      placeholder: "What this record does not establish..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: problems_vs_gaps
+    attributes:
+      label: Problems vs Gaps
+      description: Investigation tier. Separate demonstrated problems (with evidence) from untested gaps (speculation). Fill it when both appear in the log.
+      placeholder: "- Problem (evidenced): ...\n- Gap (untested): ..."
+    validations:
+      required: false
 
   - type: dropdown
     id: issue_type
@@ -16,6 +98,15 @@ body:
       label: Issue Type
       description: Observational = a condition or discrepancy seen; operational = a capability currently broken or degraded. This ontology does not classify general proposals or incident-management records.
       options: ["observational", "operational"]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: lifecycle_status
+    attributes:
+      label: Lifecycle Status
+      description: The current state of this log in the OIO issue-log lifecycle. open = recorded and awaiting review; resolved = fixed, answered, or no longer reproducible, with the resolution evidence recorded; superseded = another log replaces this one, recorded as a relation; obsolete = the affected surface changed or was removed without a fix; wontfix = reviewed and deliberately not acted on, with the reason recorded. A log with no recorded status is open. Status is a review-state claim, not authorization, a queue rank, or a release decision. A settled log reopens when its condition is observed again, when new evidence contradicts its resolution or decision, when the affected surface changes, or on a scheduled re-check.
+      options: ["open", "resolved", "superseded", "obsolete", "wontfix"]
     validations:
       required: true
 
@@ -78,7 +169,7 @@ body:
     attributes:
       label: Ontology Versions Used
       description: Copy the exact OIO and project ontology versions from this repository's installed files; historical records keep their original versions.
-      placeholder: "oio=1.0.0; project=1.0.0"
+      placeholder: "oio=1.1.0; project=1.0.0"
     validations:
       required: true
 
@@ -240,7 +331,7 @@ body:
     attributes:
       label: Provenance and Context
       description: Record repository, source revision, environment, observer, date, and the default/project ontology versions used.
-      placeholder: "- Destination repository: owner/repo\n- Source revision/environment: ...\n- Ontology versions: OIO 1.0.0 / project 1.0.0"
+      placeholder: "- Destination repository: owner/repo\n- Source revision/environment: ...\n- Ontology versions: OIO 1.1.0 / project 1.0.0"
     validations:
       required: true
 
@@ -250,6 +341,15 @@ body:
       label: Reproducibility Steps and Evidence
       description: Give commands, steps, observed results, and the incident timeline when relevant.
       placeholder: "1. ...\n2. ...\nObserved result: ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: relations
+    attributes:
+      label: Issue Relations
+      description: "Typed links to other logs or records, one per line as `<relation>: <reference>`, where `<relation>` is one of supersedes, superseded-by, related, duplicate-of and `<reference>` is a repository issue reference such as owner/repo#123, #123, or a URL. supersedes and superseded-by are inverses: record exactly one direction per pair, and the replaced log's status becomes superseded. duplicate-of points at the canonical record; this log is retained as evidence. A relation never changes filer origin, authorization, or queue class. Write none when there is no link."
+      placeholder: "related: #21\nsuperseded-by: Pukujan/observational-issue-ops#52\nor none"
     validations:
       required: true
 
