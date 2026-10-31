@@ -14,7 +14,10 @@ jobs:
     concurrency:
       group: oio-issue-triage-${{ github.event.issue.number }}
       cancel-in-progress: false
-    runs-on: ubuntu-latest
+    # Set the repository variable OIO_RUNS_ON to a JSON runner, such as
+    # ["self-hosted","org-pool"], to run on your own runners. Editing this file
+    # instead blocks the next OIO upgrade.
+    runs-on: ${{ fromJSON(vars.OIO_RUNS_ON || '"ubuntu-latest"') }}
     steps:
       - uses: actions/checkout@v4
 

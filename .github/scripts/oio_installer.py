@@ -61,6 +61,8 @@ CALLER_FILES = {
 # Installed by OIO's installer; rerun it from a newer agent-stack-train checkout
 # to move the pin instead of editing this file. Closes the issue logs a merged pull request
 # names with Closes, Fixes or Resolves.
+# The repository variable OIO_RUNS_ON picks the runner, as JSON; it defaults to
+# "ubuntu-latest".
 
 on:
   pull_request:
@@ -77,6 +79,7 @@ jobs:
     uses: Pukujan/agent-stack-train/.github/workflows/close-on-merge.yml@<oio-ref>
     with:
       oio_ref: <oio-ref>
+      runs_on: ${{ vars.OIO_RUNS_ON || '"ubuntu-latest"' }}
     secrets:
       CROSS_REPO_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
 """,
@@ -92,6 +95,7 @@ jobs:
 # OIO_CLOSE_SWEEP_APPLY is `true`: read the first report and label any issue
 # that must stay open `oio:keep-open` first. Set OIO_CLOSE_SWEEP_ROLLUP to
 # `close` to close finished parents instead of labelling them.
+# OIO_RUNS_ON picks the runner, as JSON; it defaults to "ubuntu-latest".
 
 on:
   schedule:
@@ -108,6 +112,7 @@ jobs:
     uses: Pukujan/agent-stack-train/.github/workflows/close-sweep.yml@<oio-ref>
     with:
       oio_ref: <oio-ref>
+      runs_on: ${{ vars.OIO_RUNS_ON || '"ubuntu-latest"' }}
       apply: ${{ vars.OIO_CLOSE_SWEEP_APPLY == 'true' }}
       rollup: ${{ vars.OIO_CLOSE_SWEEP_ROLLUP || 'label' }}
     secrets:

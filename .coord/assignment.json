@@ -1,8 +1,8 @@
 {
   "schema_version": "0.1.0",
   "project": "Inference Recommendation Engine ACS adopter",
-  "recorded_at": "2026-10-31T17:47:47+00:00",
-  "notes": "ACS multi-agent-hotload adopter state. Live join/continue order wins; the seed list is a hint only. PCM, CGM, OIO and ACS all come from one commit of Pukujan/agent-stack-train (edfe418, stack 1.0.0): PCM CLI 0.7.0, CGM 0.5.13 with all eight modules, OIO 0.3.0, and the multi-agent-hotload module 0.1.0. stack-manifest.json follows release train `current`. Boss lease is minutes (default 30, range 15-120); the watchdog is agent-less and liveness-only. The decision-boss seat is vacant until the first live continuer claims it.",
+  "recorded_at": "2026-10-31T18:03:01+00:00",
+  "notes": "ACS multi-agent-hotload adopter state. Live join/continue order wins; the seed list is a hint only. PCM, CGM, OIO and ACS all come from one commit of Pukujan/agent-stack-train (2e32f2c, stack 1.0.1): PCM CLI 0.7.0, CGM 0.5.13 with all eight modules, OIO 0.3.0, and the multi-agent-hotload module 0.1.0. stack-manifest.json follows release train `current`. Boss lease is minutes (default 30, range 15-120); the watchdog is agent-less and liveness-only. The decision-boss seat is vacant until the first live continuer claims it.",
   "role_fill": {
     "mode": "join_continue_order",
     "seed_is_hint_only": true,
@@ -54,12 +54,12 @@
       "repo": "https://github.com/Pukujan/agent-stack-train",
       "module": "modules/coordination/multi-agent-hotload/v0.1.0",
       "version": "0.1.0",
-      "revision": "edfe418a5463332d4509771a068e9bc991b045d7",
+      "revision": "2e32f2c5ef010e784a28253e88e4aeeadf9cba5f",
       "notes": "ACS multi-agent-hotload 0.1.0, from the acs/ folder of the one agent-stack-train checkout. The revision is the agent-stack-train commit it was installed from."
     },
     "pcm": {
       "repo": "https://github.com/Pukujan/agent-stack-train",
-      "revision": "edfe418a5463332d4509771a068e9bc991b045d7",
+      "revision": "2e32f2c5ef010e784a28253e88e4aeeadf9cba5f",
       "cli_version": "0.7.0",
       "protocol": "0.1.0-draft",
       "role": "full_stack",
@@ -77,7 +77,7 @@
     },
     "cgm": {
       "repo": "https://github.com/Pukujan/agent-stack-train",
-      "revision": "edfe418a5463332d4509771a068e9bc991b045d7",
+      "revision": "2e32f2c5ef010e784a28253e88e4aeeadf9cba5f",
       "version": "0.5.13",
       "role": "full_stack",
       "modules": [
@@ -124,7 +124,7 @@
     },
     "oio": {
       "repo": "https://github.com/Pukujan/agent-stack-train",
-      "revision": "edfe418a5463332d4509771a068e9bc991b045d7",
+      "revision": "2e32f2c5ef010e784a28253e88e4aeeadf9cba5f",
       "version": "0.3.0",
       "role": "observational_issue_ops",
       "notes": "OIO 0.3.0 issue-log ontology, form and triage, plus the close-on-merge and close-sweep workflows, from the oio/ folder of the one agent-stack-train checkout. The revision is the agent-stack-train commit it was installed from. OIO's installer needs descriptor-relative no-follow filesystem calls that Windows lacks, so it runs in CI (Linux) and refuses on Windows by design."

@@ -3,6 +3,8 @@ name: OIO close on merge
 # Installed by OIO's installer; rerun it from a newer agent-stack-train checkout
 # to move the pin instead of editing this file. Closes the issue logs a merged pull request
 # names with Closes, Fixes or Resolves.
+# The repository variable OIO_RUNS_ON picks the runner, as JSON; it defaults to
+# "ubuntu-latest".
 
 on:
   pull_request:
@@ -16,8 +18,9 @@ permissions:
 jobs:
   close:
     if: github.event.pull_request.merged == true
-    uses: Pukujan/agent-stack-train/.github/workflows/close-on-merge.yml@edfe418a5463332d4509771a068e9bc991b045d7
+    uses: Pukujan/agent-stack-train/.github/workflows/close-on-merge.yml@2e32f2c5ef010e784a28253e88e4aeeadf9cba5f
     with:
-      oio_ref: edfe418a5463332d4509771a068e9bc991b045d7
+      oio_ref: 2e32f2c5ef010e784a28253e88e4aeeadf9cba5f
+      runs_on: ${{ vars.OIO_RUNS_ON || '"ubuntu-latest"' }}
     secrets:
       CROSS_REPO_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
