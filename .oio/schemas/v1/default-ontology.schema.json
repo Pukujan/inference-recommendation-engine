@@ -15,6 +15,8 @@
     "authorization",
     "priority",
     "assessment",
+    "lifecycle",
+    "relations",
     "protected_rules",
     "queue_order"
   ],
@@ -332,6 +334,123 @@
         }
       },
       "additionalProperties": false
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meaning",
+        "default_status",
+        "status_values",
+        "re_observation_trigger"
+      ],
+      "properties": {
+        "meaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "default_status": {
+          "const": "open"
+        },
+        "status_values": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "open",
+            "resolved",
+            "superseded",
+            "obsolete",
+            "wontfix"
+          ],
+          "properties": {
+            "open": {
+              "type": "string",
+              "minLength": 1
+            },
+            "resolved": {
+              "type": "string",
+              "minLength": 1
+            },
+            "superseded": {
+              "type": "string",
+              "minLength": 1
+            },
+            "obsolete": {
+              "type": "string",
+              "minLength": 1
+            },
+            "wontfix": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "re_observation_trigger": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "meaning",
+            "triggers"
+          ],
+          "properties": {
+            "meaning": {
+              "type": "string",
+              "minLength": 1
+            },
+            "triggers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "meaning",
+        "relation_types"
+      ],
+      "properties": {
+        "meaning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relation_types": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "supersedes",
+            "superseded-by",
+            "related",
+            "duplicate-of"
+          ],
+          "properties": {
+            "supersedes": {
+              "type": "string",
+              "minLength": 1
+            },
+            "superseded-by": {
+              "type": "string",
+              "minLength": 1
+            },
+            "related": {
+              "type": "string",
+              "minLength": 1
+            },
+            "duplicate-of": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
     },
     "protected_rules": {
       "type": "array",

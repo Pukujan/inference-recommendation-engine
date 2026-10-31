@@ -2,7 +2,7 @@
 
 # Human-facing work
 
-Pinned helper: content-generation-modules **0.5.12** @ `62340f3de702f6d2a7d97b9e16465b98360976a3` (all eight modules). Before human-facing README, PR, issue, commit, docs, or HTML work, load the skills named below and run `python scripts/verify_hsw_applied.py --root <cgm-checkout>` from that pin when you change writing or inject text.
+Pinned helper: content-generation-modules **0.5.13** (all eight modules), the `cgm/` folder of the one stack checkout at `~/.cache/acs/deps/agent-stack-train` (see Pinned stack below). Before human-facing README, PR, issue, commit, docs, or HTML work, load the skills named below and run `python scripts/verify_hsw_applied.py --root ~/.cache/acs/deps/agent-stack-train/cgm` when you change writing or inject text.
 
 ```
 CGM ALWAYS-ON WRITING RULE (every adopter that pins this helper)
@@ -29,21 +29,21 @@ For README, product, visual, or marketing work, load the helper's README playboo
 
 ## Pinned stack (release train `current`)
 
-IRE adopts the ACS multi-agent hot-load stack. `stack-manifest.json` follows the live train (`release_train: current`, no copied commits), and CI `test` runs every validator below.
+IRE adopts the agent stack from one repository, Pukujan/agent-stack-train, certified as 1.0.1 at `2e32f2c5ef010e784a28253e88e4aeeadf9cba5f`. The four parts used to come from four repositories. `stack-manifest.json` follows the live train (`release_train: current`, no copied commits), and CI `test` runs every validator below from that commit. Agents use one checkout, `~/.cache/acs/deps/agent-stack-train`, with folders `acs/`, `pcm/`, `cgm/` and `oio/`.
 
-- **PCM** `851bcf72eb618e6fe4f49c3f0b8e26fefb90410f` (CLI 0.7.0, protocol 0.1.0-draft): continuity files, checkpoints, PR-only changes to `main`, required CI gates. `.continuity/config.json` uses `single-checkout` mode, matching the canonical-checkout rule below.
-- **CGM** `62340f3de702f6d2a7d97b9e16465b98360976a3` (0.5.12, all eight modules). README and product entry use `writing-direction`; PRs, issues, docs and commits use `human-sounding-writing`; generated file names use `human-output-naming`.
-- **OIO** 0.1.0 (`a4bba77b770e5674d1124383cd0d26704236963d`): the observational-issue form and its triage workflow. Its managed files are unchanged from the previously installed commit, so the pin moves without a content change. OIO's installer needs descriptor-relative no-follow filesystem calls that Windows lacks, so it runs in CI (Linux) and refuses on Windows by design.
-- **ACS** `multi-agent-hotload` 0.1.0 (`25be219bb7341addba8849a8ffb6dba8695ff17d`): join-order roles, a boss lease in minutes, the claim file in `.coord/`, and an agent-less watchdog. This is the ACS repo's 0.2.0 release, pinned one commit past the train's own ACS entry (`589b0a9`) because that entry's `stack-mesh.json` still requires the previous PCM/CGM and fails its own `hotload_check`; `25be219`'s mesh matches the train's certified PCM, CGM and OIO.
+- **PCM** in `pcm/` (CLI 0.7.0, protocol 0.1.0-draft): continuity files, checkpoints, PR-only changes to `main`, required CI gates. `.continuity/config.json` uses `single-checkout` mode, matching the canonical-checkout rule below.
+- **CGM** in `cgm/` (0.5.13, all eight modules). README and product entry use `writing-direction`; PRs, issues, docs and commits use `human-sounding-writing`; generated file names use `human-output-naming`.
+- **OIO** 0.3.0 in `oio/`: the observational-issue form and its triage workflow. It also adds `oio-close-on-merge.yml`, which closes the issues a merged pull request names with Closes, Fixes or Resolves (Refs never closes), and `oio-close-sweep.yml`, a daily sweep that only reports until the repository variable `OIO_CLOSE_SWEEP_APPLY` is `true`. OIO's installer needs descriptor-relative no-follow filesystem calls that Windows lacks, so it runs in CI (Linux) and refuses on Windows by design.
+- **ACS** `multi-agent-hotload` 0.1.0 in `acs/`: join-order roles, a boss lease in minutes, the claim file in `.coord/`, and an agent-less watchdog.
 
-To check the install locally, check out those commits and run:
+To check the install locally, use the stack checkout (`<stack>` below, `~/.cache/acs/deps/agent-stack-train`, at the commit above) and run:
 
 ```bash
 continuity validate --root .
-python <cgm>/scripts/validate_content_system.py --root <cgm> --adapter .content-system --project-root .
-python <oio>/.github/scripts/oio_installer.py --target . --check
-python <train>/scripts/check_manifest.py --manifest stack-manifest.json --train <train>/stack-releases.json
-python <acs>/modules/coordination/multi-agent-hotload/v0.1.0/scripts/hotload_check.py --root <acs>/modules/coordination/multi-agent-hotload/v0.1.0 --assignment .coord/assignment.json --cgm-root <cgm> --adopter-root .
+python <stack>/cgm/scripts/validate_content_system.py --root <stack>/cgm --adapter .content-system --project-root .
+python <stack>/oio/.github/scripts/oio_installer.py --target . --check
+python <stack>/scripts/check_manifest.py --manifest stack-manifest.json --train <stack>/stack-releases.json
+python <stack>/acs/modules/coordination/multi-agent-hotload/v0.1.0/scripts/hotload_check.py --root <stack>/acs/modules/coordination/multi-agent-hotload/v0.1.0 --assignment .coord/assignment.json --cgm-root <stack>/cgm --adopter-root .
 ```
 
 ## Roles and lease
@@ -59,9 +59,9 @@ The dev root (`D:\development` on Windows, `~/development` elsewhere, or whereve
 - Don't create git worktrees, dependency or sibling clones, scratch folders, or caches in the dev root.
 - Put them in the ACS cache instead: `%LOCALAPPDATA%\acs\{deps,scratch,worktrees}` on Windows, `~/.cache/acs/{deps,scratch,worktrees}` on macOS and Linux. `ACS_CACHE_DIR` moves the cache.
 - Before you finish, push any real work to a branch and remove the worktrees and scratch folders you made. Never delete a checkout that has uncommitted, unpushed, or stashed work just to tidy up.
-- To check, run the pinned ACS script: `python <acs>/modules/coordination/multi-agent-hotload/v0.1.0/scripts/dev_root_check.py --dev-root <dev root>`. It prints JSON and exits non-zero when it finds anything other than main checkouts. `--clean` shows a fix and only acts with `--yes`.
+- To check, run the pinned ACS script: `python <stack>/acs/modules/coordination/multi-agent-hotload/v0.1.0/scripts/dev_root_check.py --dev-root <dev root>`. It prints JSON and exits non-zero when it finds anything other than main checkouts. `--clean` shows a fix and only acts with `--yes`.
 
-Paste this at session boot along with the CGM `system_block` (it comes from the ACS hotloader's `PROMPT_INJECT.md` at `25be219`):
+Paste this at session boot along with the CGM `system_block` (it comes from the ACS hotloader's `PROMPT_INJECT.md` in stack 1.0.1):
 
 ```
 Dev root hygiene (ACS): the dev root (ACS_DEV_ROOT; default D:\development on Windows, ~/development elsewhere) holds exactly one main checkout per repo. Never create git worktrees, dependency or sibling clones, scratch folders, or caches there. Put them under the ACS cache instead: %LOCALAPPDATA%\acs\{deps,scratch,worktrees} on Windows, ~/.cache/acs/{deps,scratch,worktrees} on macOS/Linux (ACS_CACHE_DIR overrides). Check with scripts/dev_root_check.py.
