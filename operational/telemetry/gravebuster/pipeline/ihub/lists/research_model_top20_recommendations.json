@@ -1,40 +1,40 @@
 {
  "schema": "ihub-top20-recommendations/v1",
  "hypothesis_notice": "Each row is a hypothesis, not a fact. Capability, tier and release date are carried over from the 2026-09-22 list (benchmark inputs lost; low confidence). Prices, provider breadth, supply depth and 7-day availability are live InferHub data at generated_at; listed asks are USD per 1M tokens and the served price can be higher. best_route_min_ask_in/out_usdc_per_1m is the cheapest ask at the best route; supply_weighted_median_cost_usdc_per_1m is the supply-weighted blended (0.4 in / 0.6 out) cost of an average seller, so the two answer different questions.",
- "generated_at": "2026-11-02T20:43:47Z",
- "code_commit": "0804ae710d411547760b1d868fcd35116f14306a",
+ "generated_at": "2026-11-03T18:23:17Z",
+ "code_commit": "23e712cf7fc3865fe463f40bc5751960176fad7a",
  "provenance": {
-  "snapshot_sha256": "f82a767660a9db794178325c03beec32d418b0c282ba57fb7fa1339f75dd6c84",
+  "snapshot_sha256": "7760361fefd31f0ee85735f28465d30edc3503f3e54da396bf10ee371268257a",
   "sources": [
    {
     "endpoint": "catalog",
     "url": "https://inferhub.dev/api/catalog",
     "auth": "key",
     "method": "GET",
-    "fetched_at": "2026-11-02T20:43:45Z",
+    "fetched_at": "2026-11-03T18:23:15Z",
     "fetched_from": null,
-    "sha256": "c8a2f83780f52c720ed6e3b1328efd9e71d97e2f2cbbfbc1698e50bc22a1f37a",
-    "bytes": 154029
+    "sha256": "5203354b38525bff7d0174765122fc1ff919004eba89547f3a1421a881679e2f",
+    "bytes": 162443
    },
    {
     "endpoint": "status",
     "url": "https://inferhub.dev/api/status",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-11-02T20:43:46Z",
+    "fetched_at": "2026-11-03T18:23:16Z",
     "fetched_from": null,
-    "sha256": "3095cfc24ac42510f055b1643948e2d430a5bc4b2c3dfde604e7cc14d7443c3f",
-    "bytes": 366233
+    "sha256": "9df85de2284cff8422dddd296eee80cd40ef0f06d5cb005031256f6cc2d7c420",
+    "bytes": 364260
    },
    {
     "endpoint": "market",
     "url": "https://inferhub.dev/api/market",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-11-02T20:43:46Z",
+    "fetched_at": "2026-11-03T18:23:17Z",
     "fetched_from": null,
-    "sha256": "12e2a272095c1cc8ceacf55016ccec96717f40c6f925e9d9936f87a2b9cb6c55",
-    "bytes": 38164
+    "sha256": "ab5927e27940b29a002f48f1691d94fca2449b222355ad1334591ab92285c53c",
+    "bytes": 38541
    }
   ],
   "capability_prior": {
@@ -88,11 +88,11 @@
   "model_ids_order": "best route first: health status, then supply-adjusted realized cost (capacity-weighted median ask scaled by a supply-confidence penalty read from the family's live market), then the blended (3:1) min ask, then route id"
  },
  "counts": {
-  "families_considered": 121,
+  "families_considered": 123,
   "listed": 20,
   "recommended": 6,
   "gated": 14,
-  "unscored_listed": 7
+  "unscored_listed": 6
  },
  "entries": [
   {
@@ -109,20 +109,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-26",
-   "recency_days": 68,
+   "recency_days": 69,
    "priced_provider_count": 5,
-   "shortlist_score_100": 84.8738,
+   "shortlist_score_100": 84.8461,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.026047,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.016214,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/glm-5.3-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.57%)",
+    "model alias operational (24h 99.62%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0045,
-   "best_route_min_ask_out": 0.015,
+   "best_route_min_ask_in": 0.006,
+   "best_route_min_ask_out": 0.02,
    "best_route_official_in": 0.15,
    "best_route_official_out": 0.5,
    "best_route_system_prompt_handling": "upstream_note",
@@ -134,8 +134,8 @@
     "cbcn/glm-5.3-flash",
     "cb/glm-5.3-flash",
     "zai/glm-5.3-flash",
-    "ocg/glm-5.3-flash",
     "cp/zai/glm-5.3-flash",
+    "ocg/glm-5.3-flash",
     "cp/cline-pass/glm-5.3-flash"
    ]
   },
@@ -143,9 +143,11 @@
    "recommendation_rank": 2,
    "model_family": "MiniMax M3",
    "vendor": "MiniMax",
-   "recommendation_eligible": true,
-   "recommendation_status": "recommended",
-   "gate_reasons": [],
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "not_routing_eligible"
+   ],
    "tier": "mid",
    "capability_score_100": 29.22,
    "capability_basis": "carried_over_prior_2026-09-22",
@@ -153,20 +155,19 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-06-01",
-   "recency_days": 154,
+   "recency_days": 155,
    "priced_provider_count": 7,
-   "shortlist_score_100": 81.6681,
+   "shortlist_score_100": 81.7727,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.06362,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.061,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/minimax-m3",
-   "best_route_health": "healthy",
+   "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias operational (24h 90.36%)",
-    "rail_state=operational"
+    "model alias_state=degraded (24h 88.65%), model-wide signal"
    ],
-   "best_route_min_ask_in": 0.009,
-   "best_route_min_ask_out": 0.036,
+   "best_route_min_ask_in": 0.0177,
+   "best_route_min_ask_out": 0.0708,
    "best_route_official_in": 0.3,
    "best_route_official_out": 1.2,
    "best_route_system_prompt_handling": "upstream_note",
@@ -176,9 +177,9 @@
    ],
    "routes": [
     "cbcn/minimax-m3",
-    "mm/MiniMax-M3",
-    "mmcn/MiniMax-M3",
     "cb/minimax-m3",
+    "mmcn/MiniMax-M3",
+    "mm/MiniMax-M3",
     "ocg/minimax-m3",
     "cmc/MiniMaxAI/MiniMax-M3",
     "cp/cline-pass/minimax-m3"
@@ -198,20 +199,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-13",
-   "recency_days": 81,
+   "recency_days": 82,
    "priced_provider_count": 4,
-   "shortlist_score_100": 81.3116,
+   "shortlist_score_100": 81.4047,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.097927,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.09224,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/deepseek-v4-pro",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 98.14%)",
+    "model alias operational (24h 98.28%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0198,
-   "best_route_min_ask_out": 0.0594,
+   "best_route_min_ask_in": 0.03894,
+   "best_route_min_ask_out": 0.11682,
    "best_route_official_in": 0.66,
    "best_route_official_out": 1.98,
    "best_route_system_prompt_handling": "upstream_note",
@@ -222,8 +223,8 @@
    "routes": [
     "cbcn/deepseek-v4-pro",
     "cmc/deepseek/deepseek-v4-pro",
-    "ocg/deepseek-v4-pro",
-    "cp/cline-pass/deepseek-v4-pro"
+    "cp/cline-pass/deepseek-v4-pro",
+    "ocg/deepseek-v4-pro"
    ]
   },
   {
@@ -242,20 +243,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-09-02",
-   "recency_days": 61,
+   "recency_days": 62,
    "priced_provider_count": 3,
-   "shortlist_score_100": 80.8559,
+   "shortlist_score_100": 80.6467,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.027902,
-   "public_availability_7d_pct": 99.88,
+   "supply_weighted_median_cost_usd_per_mtok": 0.025664,
+   "public_availability_7d_pct": 99.81,
    "best_route": "mai/muse-spark-1.3-contributor",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.95%)",
+    "model alias operational (24h 99.82%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0005,
-   "best_route_min_ask_out": 0.001,
+   "best_route_min_ask_in": 0.0007,
+   "best_route_min_ask_out": 0.0014,
    "best_route_official_in": 0.1,
    "best_route_official_out": 0.2,
    "best_route_system_prompt_handling": "unspecified",
@@ -271,11 +272,9 @@
    "recommendation_rank": 5,
    "model_family": "DeepSeek V4 Flash",
    "vendor": "DeepSeek",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "not_routing_eligible"
-   ],
+   "recommendation_eligible": true,
+   "recommendation_status": "recommended",
+   "gate_reasons": [],
    "tier": "upper_mid",
    "capability_score_100": 34.839,
    "capability_basis": "carried_over_prior_2026-09-22",
@@ -283,19 +282,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-21",
-   "recency_days": 73,
+   "recency_days": 74,
    "priced_provider_count": 3,
-   "shortlist_score_100": 79.5196,
+   "shortlist_score_100": 79.5128,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.030272,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.030667,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/deepseek-v4-flash",
-   "best_route_health": "degraded",
+   "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias_state=degraded (24h 98.19%), model-wide signal"
+    "model alias operational (24h 97.85%)",
+    "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.00858,
-   "best_route_min_ask_out": 0.02574,
+   "best_route_min_ask_in": 0.01298,
+   "best_route_min_ask_out": 0.03894,
    "best_route_official_in": 0.22,
    "best_route_official_out": 0.66,
    "best_route_system_prompt_handling": "upstream_note",
@@ -305,53 +305,12 @@
    ],
    "routes": [
     "cbcn/deepseek-v4-flash",
-    "ocg/deepseek-v4-flash",
-    "cmc/deepseek/deepseek-v4-flash"
+    "cmc/deepseek/deepseek-v4-flash",
+    "ocg/deepseek-v4-flash"
    ]
   },
   {
    "recommendation_rank": 6,
-   "model_family": "DeepSeek V4 Flash 0731",
-   "vendor": "DeepSeek",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "release_date_unknown",
-    "not_routing_eligible",
-    "open_weight_unverified"
-   ],
-   "tier": "top",
-   "capability_score_100": 74.171,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 2,
-   "shortlist_score_100": 78.426,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.046756,
-   "public_availability_7d_pct": 99.72,
-   "best_route": "ali/deepseek-v4-flash-0731",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias_state=degraded (24h 98.19%), model-wide signal"
-   ],
-   "best_route_min_ask_in": 0.02288,
-   "best_route_min_ask_out": 0.06864,
-   "best_route_official_in": 0.22,
-   "best_route_official_out": 0.66,
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "routes": [
-    "ali/deepseek-v4-flash-0731",
-    "alicn/deepseek-v4-flash-0731"
-   ]
-  },
-  {
-   "recommendation_rank": 7,
    "model_family": "Muse Spark 1.2 Contributor",
    "vendor": "Meta",
    "recommendation_eligible": false,
@@ -365,22 +324,22 @@
    "capability_score_100": 77.955,
    "capability_basis": "carried_over_prior_2026-09-22",
    "capability_confidence": "low",
-   "health_confidence": "medium",
+   "health_confidence": "low",
    "confidence": "low",
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 2,
-   "shortlist_score_100": 78.3461,
+   "shortlist_score_100": 78.2819,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.027802,
-   "public_availability_7d_pct": 99.88,
+   "supply_weighted_median_cost_usd_per_mtok": 0.0247,
+   "public_availability_7d_pct": 99.81,
    "best_route": "mai/muse-spark-1.2-contributor",
    "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias_state=major_outage (24h 31.07%), model-wide signal"
+    "model alias low_traffic, 24h availability 42.08% < 95.0"
    ],
-   "best_route_min_ask_in": 0.0006,
-   "best_route_min_ask_out": 0.0012,
+   "best_route_min_ask_in": 0.0007,
+   "best_route_min_ask_out": 0.0014,
    "best_route_official_in": 0.1,
    "best_route_official_out": 0.2,
    "best_route_system_prompt_handling": "unspecified",
@@ -392,7 +351,7 @@
    ]
   },
   {
-   "recommendation_rank": 8,
+   "recommendation_rank": 7,
    "model_family": "DeepSeek V4.1 Flash",
    "vendor": "DeepSeek",
    "recommendation_eligible": true,
@@ -405,20 +364,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-09-10",
-   "recency_days": 53,
+   "recency_days": 54,
    "priced_provider_count": 7,
-   "shortlist_score_100": 78.2601,
+   "shortlist_score_100": 78.2611,
    "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.135892,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.136394,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/deepseek-v4.1-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 98.21%)",
+    "model alias operational (24h 95.17%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0123,
-   "best_route_min_ask_out": 0.0492,
+   "best_route_min_ask_in": 0.0057,
+   "best_route_min_ask_out": 0.0228,
    "best_route_official_in": 0.15,
    "best_route_official_out": 0.6,
    "best_route_system_prompt_handling": "upstream_note",
@@ -428,56 +387,143 @@
    ],
    "routes": [
     "cbcn/deepseek-v4.1-flash",
-    "alicn/deepseek-v4.1-flash",
     "cb/deepseek-v4.1-flash",
+    "alicn/deepseek-v4.1-flash",
     "ali/deepseek-v4.1-flash",
-    "ocg/deepseek-v4.1-flash",
     "cmc/deepseek/deepseek-v4.1-flash",
+    "ocg/deepseek-v4.1-flash",
     "cp/cline-pass/deepseek-v4.1-flash"
    ]
   },
   {
-   "recommendation_rank": 9,
-   "model_family": "Qwen3.8 Flash",
-   "vendor": "Alibaba/Qwen",
-   "recommendation_eligible": true,
-   "recommendation_status": "recommended",
-   "gate_reasons": [],
+   "recommendation_rank": 8,
+   "model_family": "GPT 5.6 Luna",
+   "vendor": "OpenAI",
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "not_routing_eligible",
+    "open_weight_unverified"
+   ],
    "tier": "upper_mid",
-   "capability_score_100": 39.822,
+   "capability_score_100": 37.324,
    "capability_basis": "carried_over_prior_2026-09-22",
    "capability_confidence": "low",
    "health_confidence": "medium",
    "confidence": "low",
-   "release_date": "2026-08-26",
-   "recency_days": 68,
+   "release_date": "2026-07-09",
+   "recency_days": 117,
    "priced_provider_count": 4,
-   "shortlist_score_100": 77.1756,
-   "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.111842,
-   "public_availability_7d_pct": 99.72,
-   "best_route": "ali/qwen3.8-flash",
+   "shortlist_score_100": 78.0977,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.041545,
+   "public_availability_7d_pct": 98.34,
+   "best_route": "cx/gpt-5.6-luna",
+   "best_route_health": "degraded",
+   "best_route_health_reasons": [
+    "model alias_state=degraded (24h 92.97%), model-wide signal"
+   ],
+   "best_route_min_ask_in": 0.002,
+   "best_route_min_ask_out": 0.012,
+   "best_route_official_in": 0.2,
+   "best_route_official_out": 1.2,
+   "best_route_system_prompt_handling": "developer_message",
+   "best_route_preferred_endpoint": "/v1/responses",
+   "best_route_caveats": [
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent."
+   ],
+   "routes": [
+    "cx/gpt-5.6-luna",
+    "kiro/gpt-5.6-luna",
+    "cmc/gpt-5.6-luna",
+    "ocg/gpt-5.6-luna",
+    "cb/gpt-5.6-luna"
+   ]
+  },
+  {
+   "recommendation_rank": 9,
+   "model_family": "DeepSeek V4 Flash 0731",
+   "vendor": "DeepSeek",
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "top",
+   "capability_score_100": 74.171,
+   "capability_basis": "carried_over_prior_2026-09-22",
+   "capability_confidence": "low",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 2,
+   "shortlist_score_100": 77.8779,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.044089,
+   "public_availability_7d_pct": 99.76,
+   "best_route": "ali/deepseek-v4-flash-0731",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.6%)",
+    "model alias operational (24h 97.85%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0156,
-   "best_route_min_ask_out": 0.04888,
-   "best_route_official_in": 0.15,
-   "best_route_official_out": 0.47,
+   "best_route_min_ask_in": 0.02266,
+   "best_route_min_ask_out": 0.06798,
+   "best_route_official_in": 0.22,
+   "best_route_official_out": 0.66,
    "best_route_system_prompt_handling": "unspecified",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [],
    "routes": [
-    "ali/qwen3.8-flash",
-    "alicn/qwen3.8-flash",
-    "cmc/Qwen/Qwen3.8-Flash",
-    "ocg/qwen3.8-flash"
+    "ali/deepseek-v4-flash-0731",
+    "alicn/deepseek-v4-flash-0731"
    ]
   },
   {
    "recommendation_rank": 10,
+   "model_family": "Gemini 3.8 Flash",
+   "vendor": "Google",
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "insufficient_provider_breadth",
+    "catalog_availability_below_minimum",
+    "open_weight_unverified"
+   ],
+   "tier": "top",
+   "capability_score_100": 40.926,
+   "capability_basis": "carried_over_prior_2026-09-22",
+   "capability_confidence": "low",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": "2026-09-02",
+   "recency_days": 62,
+   "priced_provider_count": 1,
+   "shortlist_score_100": 74.3162,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.079196,
+   "public_availability_7d_pct": 99.57,
+   "best_route": "ag/gemini-3.8-flash-high",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias operational (24h 97.91%)",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.00075,
+   "best_route_min_ask_out": 0.00375,
+   "best_route_official_in": 0.75,
+   "best_route_official_out": 3.75,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "ag/gemini-3.8-flash-high"
+   ]
+  },
+  {
+   "recommendation_rank": 11,
    "model_family": "MiniMax M3.1 Flash",
    "vendor": null,
    "recommendation_eligible": false,
@@ -497,18 +543,18 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 4,
-   "shortlist_score_100": 73.7862,
+   "shortlist_score_100": 73.9085,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.033906,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.030516,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/minimax-m3.1-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.25%)",
+    "model alias operational (24h 97.97%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0045,
-   "best_route_min_ask_out": 0.018,
+   "best_route_min_ask_in": 0.00885,
+   "best_route_min_ask_out": 0.0354,
    "best_route_official_in": 0.15,
    "best_route_official_out": 0.6,
    "best_route_system_prompt_handling": "upstream_note",
@@ -518,13 +564,13 @@
    ],
    "routes": [
     "cbcn/minimax-m3.1-flash",
-    "mm/MiniMax-M3.1-Flash",
     "mmcn/MiniMax-M3.1-Flash",
-    "cb/minimax-m3.1-flash"
+    "cb/minimax-m3.1-flash",
+    "mm/MiniMax-M3.1-Flash"
    ]
   },
   {
-   "recommendation_rank": 11,
+   "recommendation_rank": 12,
    "model_family": "MiniMax M2.7",
    "vendor": null,
    "recommendation_eligible": false,
@@ -543,18 +589,18 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 4,
-   "shortlist_score_100": 73.2777,
+   "shortlist_score_100": 73.3085,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.055136,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.054433,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/minimax-m2.7",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 95.65%)",
+    "model alias operational (24h 96.52%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.009,
-   "best_route_min_ask_out": 0.036,
+   "best_route_min_ask_in": 0.0177,
+   "best_route_min_ask_out": 0.0708,
    "best_route_official_in": 0.3,
    "best_route_official_out": 1.2,
    "best_route_system_prompt_handling": "upstream_note",
@@ -564,13 +610,53 @@
    ],
    "routes": [
     "cbcn/minimax-m2.7",
-    "mm/MiniMax-M2.7",
     "mmcn/MiniMax-M2.7",
+    "mm/MiniMax-M2.7",
     "ocg/minimax-m2.7"
    ]
   },
   {
-   "recommendation_rank": 12,
+   "recommendation_rank": 13,
+   "model_family": "Qwen3.8 Flash",
+   "vendor": "Alibaba/Qwen",
+   "recommendation_eligible": true,
+   "recommendation_status": "recommended",
+   "gate_reasons": [],
+   "tier": "upper_mid",
+   "capability_score_100": 39.822,
+   "capability_basis": "carried_over_prior_2026-09-22",
+   "capability_confidence": "low",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": "2026-08-26",
+   "recency_days": 69,
+   "priced_provider_count": 4,
+   "shortlist_score_100": 72.4103,
+   "price_regime": "priced",
+   "supply_weighted_median_cost_usd_per_mtok": 0.148821,
+   "public_availability_7d_pct": 99.76,
+   "best_route": "ali/qwen3.8-flash",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias operational (24h 98.79%)",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.075,
+   "best_route_min_ask_out": 0.235,
+   "best_route_official_in": 0.15,
+   "best_route_official_out": 0.47,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "ali/qwen3.8-flash",
+    "alicn/qwen3.8-flash",
+    "cmc/Qwen/Qwen3.8-Flash",
+    "ocg/qwen3.8-flash"
+   ]
+  },
+  {
+   "recommendation_rank": 14,
    "model_family": "DeepSeek V4 Pro 0813",
    "vendor": "DeepSeek",
    "recommendation_eligible": false,
@@ -585,16 +671,16 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-13",
-   "recency_days": 81,
+   "recency_days": 82,
    "priced_provider_count": 2,
-   "shortlist_score_100": 73.0549,
+   "shortlist_score_100": 71.8387,
    "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.115363,
-   "public_availability_7d_pct": 99.72,
+   "supply_weighted_median_cost_usd_per_mtok": 0.12348,
+   "public_availability_7d_pct": 99.76,
    "best_route": "ali/deepseek-v4-pro-0813",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 98.14%)",
+    "model alias operational (24h 98.28%)",
     "rail_state=operational"
    ],
    "best_route_min_ask_in": 0.00066,
@@ -610,7 +696,7 @@
    ]
   },
   {
-   "recommendation_rank": 13,
+   "recommendation_rank": 15,
    "model_family": "Qwen3.8 Max 0902",
    "vendor": "Alibaba/Qwen",
    "recommendation_eligible": false,
@@ -625,16 +711,16 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-09-02",
-   "recency_days": 61,
+   "recency_days": 62,
    "priced_provider_count": 2,
-   "shortlist_score_100": 72.7945,
+   "shortlist_score_100": 71.3815,
    "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.133708,
-   "public_availability_7d_pct": 99.72,
+   "supply_weighted_median_cost_usd_per_mtok": 0.146599,
+   "public_availability_7d_pct": 99.76,
    "best_route": "ali/qwen3.8-max-0902",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.93%)",
+    "model alias operational (24h 99.84%)",
     "rail_state=operational"
    ],
    "best_route_min_ask_in": 0.002,
@@ -647,95 +733,6 @@
    "routes": [
     "ali/qwen3.8-max-0902",
     "alicn/qwen3.8-max-0902"
-   ]
-  },
-  {
-   "recommendation_rank": 14,
-   "model_family": "Claude Sonnet 4.6",
-   "vendor": "Anthropic",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown",
-    "open_weight_unverified"
-   ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "unscored_not_in_prior",
-   "capability_confidence": "none",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 3,
-   "shortlist_score_100": 70.6806,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.084365,
-   "public_availability_7d_pct": 99.61,
-   "best_route": "ag/claude-sonnet-4-6",
-   "best_route_health": "healthy",
-   "best_route_health_reasons": [
-    "model alias operational (24h 64.34%)",
-    "rail_state=operational"
-   ],
-   "best_route_min_ask_in": 0.003,
-   "best_route_min_ask_out": 0.015,
-   "best_route_official_in": 3.0,
-   "best_route_official_out": 15.0,
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "routes": [
-    "ag/claude-sonnet-4-6",
-    "cc/claude-sonnet-4-6",
-    "cp/anthropic/claude-sonnet-4.6"
-   ]
-  },
-  {
-   "recommendation_rank": 15,
-   "model_family": "Kimi K2.7 Code",
-   "vendor": "Moonshot",
-   "recommendation_eligible": true,
-   "recommendation_status": "recommended",
-   "gate_reasons": [],
-   "tier": "mid",
-   "capability_score_100": 25.812,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": "2026-06-12",
-   "recency_days": 143,
-   "priced_provider_count": 6,
-   "shortlist_score_100": 70.5513,
-   "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.167622,
-   "public_availability_7d_pct": 99.79,
-   "best_route": "cbcn/kimi-k2.7",
-   "best_route_health": "healthy",
-   "best_route_health_reasons": [
-    "model alias operational (24h 98.87%)",
-    "rail_state=operational"
-   ],
-   "best_route_min_ask_in": 0.0285,
-   "best_route_min_ask_out": 0.12,
-   "best_route_official_in": 0.95,
-   "best_route_official_out": 4.0,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/kimi-k2.7",
-    "alicn/kimi-k2.7-code",
-    "ali/kimi-k2.7-code",
-    "cb/kimi-k2.7",
-    "ocg/kimi-k2.7-code",
-    "cmc/moonshotai/Kimi-K2.7-Code",
-    "moon/kimi-k2.7-code"
    ]
   },
   {
@@ -755,43 +752,132 @@
    "capability_score_100": 0.0,
    "capability_basis": "unscored_not_in_prior",
    "capability_confidence": "none",
-   "health_confidence": "medium",
+   "health_confidence": "low",
    "confidence": "low",
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 2,
-   "shortlist_score_100": 69.5124,
+   "shortlist_score_100": 69.5213,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.029431,
-   "public_availability_7d_pct": 99.79,
-   "best_route": "cbcn/hy3",
+   "supply_weighted_median_cost_usd_per_mtok": 0.028426,
+   "public_availability_7d_pct": 99.7,
+   "best_route": "cb/hy3",
    "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias_state=major_outage (24h 78.54%), model-wide signal"
+    "model alias low_traffic, 24h availability 79.59% < 95.0"
    ],
-   "best_route_min_ask_in": 0.0028,
-   "best_route_min_ask_out": 0.0116,
+   "best_route_min_ask_in": 0.0077,
+   "best_route_min_ask_out": 0.0319,
    "best_route_official_in": 0.14,
    "best_route_official_out": 0.58,
    "best_route_system_prompt_handling": "upstream_note",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "routes": [
-    "cbcn/hy3",
-    "cb/hy3"
+    "cb/hy3",
+    "cbcn/hy3"
    ]
   },
   {
    "recommendation_rank": 17,
-   "model_family": "GLM 5.3",
-   "vendor": "Z.ai",
+   "model_family": "GPT 6 Luna",
+   "vendor": "OpenAI",
    "recommendation_eligible": false,
    "recommendation_status": "gated",
    "gate_reasons": [
-    "not_routing_eligible"
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
    ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 3,
+   "shortlist_score_100": 69.1249,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.015876,
+   "public_availability_7d_pct": 98.34,
+   "best_route": "cx/gpt-6-luna",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias operational (24h 97.29%)",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.001,
+   "best_route_min_ask_out": 0.005,
+   "best_route_official_in": 0.1,
+   "best_route_official_out": 0.5,
+   "best_route_system_prompt_handling": "developer_message",
+   "best_route_preferred_endpoint": "/v1/responses",
+   "best_route_caveats": [
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent."
+   ],
+   "routes": [
+    "cx/gpt-6-luna",
+    "cmc/gpt-6-luna",
+    "ocg/gpt-6-luna",
+    "cb/gpt-6-luna"
+   ]
+  },
+  {
+   "recommendation_rank": 18,
+   "model_family": "MiniMax M2.5",
+   "vendor": null,
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "low",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 3,
+   "shortlist_score_100": 68.7657,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.069528,
+   "public_availability_7d_pct": 99.76,
+   "best_route": "mmcn/MiniMax-M2.5",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias low_traffic, 24h availability 98.56%",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.027,
+   "best_route_min_ask_out": 0.108,
+   "best_route_official_in": 0.3,
+   "best_route_official_out": 1.2,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "mmcn/MiniMax-M2.5",
+    "mm/MiniMax-M2.5",
+    "ocg/minimax-m2.5"
+   ]
+  },
+  {
+   "recommendation_rank": 19,
+   "model_family": "GLM 5.3",
+   "vendor": "Z.ai",
+   "recommendation_eligible": true,
+   "recommendation_status": "recommended",
+   "gate_reasons": [],
    "tier": "top",
    "capability_score_100": 44.777,
    "capability_basis": "carried_over_prior_2026-09-22",
@@ -799,19 +885,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-18",
-   "recency_days": 76,
+   "recency_days": 77,
    "priced_provider_count": 8,
-   "shortlist_score_100": 69.3283,
+   "shortlist_score_100": 68.6911,
    "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.326877,
-   "public_availability_7d_pct": 99.79,
+   "supply_weighted_median_cost_usd_per_mtok": 0.360519,
+   "public_availability_7d_pct": 99.77,
    "best_route": "cbcn/glm-5.3",
-   "best_route_health": "degraded",
+   "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias_state=degraded (24h 99.44%), model-wide signal"
+    "model alias operational (24h 98.64%)",
+    "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.028,
-   "best_route_min_ask_out": 0.088,
+   "best_route_min_ask_in": 0.0826,
+   "best_route_min_ask_out": 0.2596,
    "best_route_official_in": 1.4,
    "best_route_official_out": 4.4,
    "best_route_system_prompt_handling": "upstream_note",
@@ -821,17 +908,17 @@
    ],
    "routes": [
     "cbcn/glm-5.3",
-    "ali/glm-5.3",
     "cb/glm-5.3",
-    "alicn/glm-5.3",
     "zai/glm-5.3",
+    "ali/glm-5.3",
+    "alicn/glm-5.3",
     "cmc/zai-org/GLM-5.3",
-    "ocg/glm-5.3",
-    "cp/cline-pass/glm-5.3"
+    "cp/cline-pass/glm-5.3",
+    "ocg/glm-5.3"
    ]
   },
   {
-   "recommendation_rank": 18,
+   "recommendation_rank": 20,
    "model_family": "Qwen3.8 27B",
    "vendor": null,
    "recommendation_eligible": false,
@@ -853,14 +940,14 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 1,
-   "shortlist_score_100": 67.8148,
+   "shortlist_score_100": 67.8244,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.048432,
-   "public_availability_7d_pct": 99.72,
+   "supply_weighted_median_cost_usd_per_mtok": 0.050426,
+   "public_availability_7d_pct": 99.76,
    "best_route": "ali/qwen3.8-27b",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias low_traffic, 24h availability 97.91%",
+    "model alias low_traffic, 24h availability 96.25%",
     "rail_state=operational"
    ],
    "best_route_min_ask_in": 0.0035,
@@ -872,96 +959,6 @@
    "best_route_caveats": [],
    "routes": [
     "ali/qwen3.8-27b"
-   ]
-  },
-  {
-   "recommendation_rank": 19,
-   "model_family": "Qwen3.8 2.4T-A95B",
-   "vendor": null,
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "insufficient_provider_breadth",
-    "catalog_availability_below_minimum",
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown",
-    "open_weight_unverified"
-   ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "unscored_not_in_prior",
-   "capability_confidence": "none",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 1,
-   "shortlist_score_100": 67.7131,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.095174,
-   "public_availability_7d_pct": 99.72,
-   "best_route": "ali/qwen3.8-2.4t-a95b",
-   "best_route_health": "healthy",
-   "best_route_health_reasons": [
-    "model alias operational (24h 99.63%)",
-    "rail_state=operational"
-   ],
-   "best_route_min_ask_in": 0.002,
-   "best_route_min_ask_out": 0.006,
-   "best_route_official_in": 2.0,
-   "best_route_official_out": 6.0,
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "routes": [
-    "ali/qwen3.8-2.4t-a95b"
-   ]
-  },
-  {
-   "recommendation_rank": 20,
-   "model_family": "MiMo V2.6 Flash",
-   "vendor": null,
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown",
-    "not_routing_eligible",
-    "open_weight_unverified"
-   ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "unscored_not_in_prior",
-   "capability_confidence": "none",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 5,
-   "shortlist_score_100": 67.1181,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.097965,
-   "public_availability_7d_pct": 98.01,
-   "best_route": "ocg/mimo-v2.6-flash",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias_state=degraded (24h 76.97%), model-wide signal"
-   ],
-   "best_route_min_ask_in": 0.06286,
-   "best_route_min_ask_out": 0.12572,
-   "best_route_official_in": 0.14,
-   "best_route_official_out": 0.28,
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "routes": [
-    "ocg/mimo-v2.6-flash",
-    "cmc/xiaomi/mimo-v2.6-flash",
-    "mimotp/mimo-v2.6-flash",
-    "mimo/mimo-v2.6-flash",
-    "cp/cline-pass/mimo-v2.6-flash"
    ]
   }
  ]
