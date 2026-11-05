@@ -1,0 +1,76 @@
+{
+ "catalogue": {
+  "generated_at": "2026-11-05T04:54:09Z",
+  "routes": 91,
+  "schema": "ihub-route-catalogue/v1.1",
+  "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
+  "schema_sha256": "5cfd69ebf37e1388d858ed4286d23e1b69e04918b4bdc14efd7f49cc641bb11e",
+  "status_counts": {
+   "degraded": 2,
+   "failing": 0,
+   "healthy": 5,
+   "insufficient_data": 84
+  }
+ },
+ "collector_git_sha": "930463c714b6f0c78095a8fa4ed3332d9ce21a67",
+ "day_et": "2026-11-04",
+ "files": {
+  "pricing.csv": {
+   "bytes": 133863,
+   "rows": 476,
+   "sha256": "676754d72900f44dde5d3f5b01be5d448206c9372fd91665edf15f1de7c5ba4f"
+  },
+  "providers.csv": {
+   "bytes": 1383,
+   "rows": 21,
+   "sha256": "f49590787dbacf3522d584c1801e03c71faee1a340da412033aadb1adf29149d"
+  },
+  "route-catalogue.csv": {
+   "bytes": 53870,
+   "rows": 91,
+   "sha256": "8f5eca51f0db2eca26530d363822e46f24f8acd73b23ca8adf616b99a5ec9c70"
+  },
+  "route-catalogue.json": {
+   "bytes": 358131,
+   "sha256": "7c3cc18b24a838f16e26bdc151a379451d748205303014f970b9ce7b511912a6"
+  },
+  "route-daily-summary.csv": {
+   "bytes": 271,
+   "rows": 0,
+   "sha256": "cb0b6c7503296512b768e30274393e322f01172ddbb550770f9d7aaeba804756"
+  },
+  "route-reliability.csv": {
+   "bytes": 71492,
+   "rows": 120,
+   "sha256": "77df8a050d9360f3f96b2ef5d7c3435612874f64a165b9d9d58702ad45efa33b"
+  }
+ },
+ "generated_utc": "2026-11-05T04:54:09+00:00",
+ "note": "Asks are listed prices, not guaranteed; InferHub may route to a higher tier when cheaper sellers are at their concurrency limit. Served prices are in request logs.",
+ "raw_host": "gravebuster:/srv/agent-telemetry/data/inferhub/raw",
+ "schema": "ihub-daily-snapshot/v1",
+ "snapshot_utc": "2026-11-05T04:45:20.451Z",
+ "sources": {
+  "catalog": {
+   "bytes": 149954,
+   "endpoint": "catalog",
+   "fetched_at": "2026-11-05T04:45:20.451Z",
+   "path": "catalog/2026-11-05/044520451Z-3fdd65ea.json.zst",
+   "sha256": "3fdd65ea86c05712e612efac23280ab9dba82b543bfddea96b840eff4d0a3b32",
+   "url": "https://inferhub.dev/api/catalog",
+   "zst_bytes": 19942,
+   "zst_sha256": "a50b68ebd06c63b7867ec346bffa1b3c882f4d72a33be62ef4346b7f1901ab6b"
+  },
+  "models": {
+   "bytes": 102538,
+   "endpoint": "models",
+   "fetched_at": "2026-11-05T04:10:19.065Z",
+   "path": "models/2026-11-05/041019065Z-d41c3dde.json.zst",
+   "sha256": "d41c3dde8844e720cc2e1cf6c1f8a46807f4d71e60d5c56c115585bd88e94a1c",
+   "url": "https://api.inferhub.dev/v1/models",
+   "zst_bytes": 9847,
+   "zst_sha256": "7cd4e95ee2b0cdf4b6b5e8dabf927702d6ffd592c93ee0de6fcf26ba4eb41938"
+  }
+ },
+ "units": "USD per 1M tokens; avail_count = seller accounts listed at that price tier"
+}
