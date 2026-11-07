@@ -2,7 +2,7 @@
  "schema": "ihub-route-catalogue/v1.1",
  "schema_file": "operational/telemetry/gravebuster/pipeline/ihub/schemas/route-catalogue.v1.schema.json",
  "hypothesis_notice": "Statuses, confidence and reliability_adjusted_rank are evidence-backed hypotheses from this account's own request logs and the live order book at generated_at, not facts or guarantees. Static list fields are copied from the 2026-09-22 lists unchanged. Prices are listed asks (USD per 1M tokens); served prices can be higher.",
- "generated_at": "2026-11-06T04:54:17Z",
+ "generated_at": "2026-11-07T04:50:40Z",
  "code_commit": "930463c714b6f0c78095a8fa4ed3332d9ce21a67",
  "evidence": {
   "request_log_coverage_end": "2026-10-07T08:47:48Z",
@@ -12,9 +12,9 @@
    "built_at": "2026-10-07T08:53:00Z"
   },
   "latest_catalog_fetch": {
-   "fetched_at": "2026-11-06T04:45:12.684Z",
-   "sha256": "4bae3d5ea71f3481a3e98c13d30e3c985ad64b68cb0df60e7c8e11ac07925dbd",
-   "raw_path": "catalog/2026-11-06/044512684Z-4bae3d5e.json.zst",
+   "fetched_at": "2026-11-07T04:50:20.376Z",
+   "sha256": "81360fe533636b3b3a96c7901224f0d60b9e5a2a9ddcb1ab74b19877ddb4537c",
+   "raw_path": "catalog/2026-11-07/045020376Z-81360fe5.json.zst",
    "dup_of_previous": false
   },
   "inputs_sha256": "55f833eaa08628eec51b5c07bbd2e492256f38a6c605ed8596bc54b22b273bae",
