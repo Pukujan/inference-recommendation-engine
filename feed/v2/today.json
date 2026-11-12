@@ -1,21 +1,21 @@
 {
  "schema_version": "ire-feed/v2",
  "schema_url": "https://raw.githubusercontent.com/Pukujan/inference-recommendation-engine/data/ire-feed/feed/v2/schema.json",
- "generated_at": "2026-11-11T18:38:08Z",
- "day_et": "2026-11-11",
- "stale_after": "2026-11-13T06:38:07Z",
- "code_commit": "c76fdd2563420fda6be4c564b08f12e57c0b88fc",
+ "generated_at": "2026-11-12T18:51:39Z",
+ "day_et": "2026-11-12",
+ "stale_after": "2026-11-14T06:51:36Z",
+ "code_commit": "f2134454841ebafc7c871a77e21594b2157d1c5c",
  "source_repo": "https://github.com/Pukujan/inference-recommendation-engine",
- "snapshot_sha256": "99d04e422ceee0a1001982bf79fff5b2b2c40ec5c44a0aebea0cf2ecc9a02cda",
+ "snapshot_sha256": "542de4e92cc0e98addf784c43275f4bdbb0dd4a7c4fcae8897cb6d2abf89c00d",
  "sources": {
   "top20": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_top20_recommendations.csv",
-   "sha256": "e12b1f95def266d4bc9707441b51a87134042fb647b42ed7726f9d591f9f133f",
-   "sidecar_sha256": "bc111e47bc78b7bd144fd3f5745b0197fc1da6ae156202bdbb345db1c6ad44d6"
+   "sha256": "a64b75b75848a850541647baf8496ee46a60ec818981804f3173a544ffd45d15",
+   "sidecar_sha256": "1a5aa80bc3119177f627ade678922256ef30d3f7d9cd7a18bb56914ee34fc4be"
   },
   "frontier": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_frontier_recommendations.json",
-   "sha256": "5f244f816e706da96ed59a7c57d6c7e516890ece7fd0f5c6fb42a2ab282bada5"
+   "sha256": "281a357147afd5adfb55456d41d9b6058b76e7c68cadbb9d32f90b634141813e"
   },
   "licences": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/model_licences.v1.json",
@@ -23,8 +23,8 @@
   },
   "utility": {
    "file": "operational/telemetry/gravebuster/pipeline/ihub/lists/research_model_utility_recommendations.csv",
-   "sha256": "bd7c6a5edcd56e8f42645782f7cc3c2ca96eb53966e8d93f9817858bd7743df7",
-   "sidecar_sha256": "63b14c4c92651c9c79fe3204a5ff970fc58cadfd99f4c69a2c0a58308a9a2dba"
+   "sha256": "60603e70058ba26e6ce37dd847bba6824d4861565815f7fe700577fa7fab6dc6",
+   "sidecar_sha256": "d0b15a8b02c6cc1c20c7b2913249f4acfc907e90db90fa2ca74a5f88ac76154f"
   }
  },
  "open_weight_only": true,
@@ -33,8 +33,8 @@
  "tiers": {
   "cheap": {
    "list": "top20",
-   "as_of": "2026-11-11T18:38:07Z",
-   "snapshot_sha256": "99d04e422ceee0a1001982bf79fff5b2b2c40ec5c44a0aebea0cf2ecc9a02cda",
+   "as_of": "2026-11-12T18:51:36Z",
+   "snapshot_sha256": "542de4e92cc0e98addf784c43275f4bdbb0dd4a7c4fcae8897cb6d2abf89c00d",
    "description": "Open-weight models from IRE's cheap Top 20, ranked; gated rows stay visible with their gate_reasons, recommended marks the usable ones.",
    "entries": [
     {
@@ -45,8 +45,8 @@
      "gate_reasons": [],
      "best_route": "cb/glm-5.3-flash",
      "price_usd_per_mtok": {
-      "input": 0.0057,
-      "output": 0.019,
+      "input": 0.0054,
+      "output": 0.018,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
@@ -69,9 +69,9 @@
      "routes": [
       "cb/glm-5.3-flash",
       "cbcn/glm-5.3-flash",
+      "zai/glm-5.3-flash",
       "cmc/z-ai/glm-5.3-flash",
       "ocg/glm-5.3-flash",
-      "zai/glm-5.3-flash",
       "cp/cline-pass/glm-5.3-flash",
       "cp/zai/glm-5.3-flash"
      ],
@@ -84,51 +84,96 @@
     },
     {
      "rank": 2,
-     "model_family": "DeepSeek V4.1 Flash",
-     "vendor": "DeepSeek",
+     "model_family": "MiniMax M3",
+     "vendor": "MiniMax",
      "recommended": true,
      "gate_reasons": [],
-     "best_route": "fw/deepseek-v4p1-flash",
+     "best_route": "cbcn/minimax-m3",
      "price_usd_per_mtok": {
-      "input": 0.15,
-      "output": 0.6,
+      "input": 0.0168,
+      "output": 0.0672,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
-      "confidence": "low",
+      "confidence": "medium",
       "reasons": [
-       "no model alias status published",
+       "model alias operational (24h 98.78%)",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "mid",
+     "capability_score_100": 29.22,
+     "price_regime": "near_free",
+     "system_prompt_handling": "upstream_note",
+     "preferred_endpoint": null,
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
+     "routes": [
+      "cbcn/minimax-m3",
+      "cb/minimax-m3",
+      "mmcn/MiniMax-M3",
+      "ocg/minimax-m3",
+      "mm/MiniMax-M3",
+      "cmc/MiniMaxAI/MiniMax-M3",
+      "fw/minimax-m3",
+      "cp/cline-pass/minimax-m3"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "MiniMax Community License (commercial use has conditions)",
+      "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M3"
+     }
+    },
+    {
+     "rank": 3,
+     "model_family": "DeepSeek V4 Pro",
+     "vendor": "DeepSeek",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "cbcn/deepseek-v4-pro",
+     "price_usd_per_mtok": {
+      "input": 0.0231,
+      "output": 0.0693,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "medium",
+      "reasons": [
+       "model alias operational (24h 92.04%)",
        "rail_state=operational"
       ]
      },
      "confidence": "low",
      "tier": "upper_mid",
-     "capability_score_100": 39.456,
-     "price_regime": "priced",
-     "system_prompt_handling": "unspecified",
+     "capability_score_100": 35.997,
+     "price_regime": "near_free",
+     "system_prompt_handling": "upstream_note",
      "preferred_endpoint": null,
-     "caveats": [],
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
      "routes": [
-      "fw/deepseek-v4p1-flash",
-      "cb/deepseek-v4.1-flash",
-      "cbcn/deepseek-v4.1-flash",
-      "alicn/deepseek-v4.1-flash",
-      "ocg/deepseek-v4.1-flash",
-      "alitp/deepseek-v4.1-flash",
-      "cmc/deepseek/deepseek-v4.1-flash",
-      "ali/deepseek-v4.1-flash",
-      "cp/cline-pass/deepseek-v4.1-flash"
+      "cbcn/deepseek-v4-pro",
+      "alitp/deepseek-v4-pro",
+      "ds/deepseek-v4-pro",
+      "cmc/deepseek/deepseek-v4-pro",
+      "cp/cline-pass/deepseek-v4-pro",
+      "ocg/deepseek-v4-pro"
      ],
      "open_weight": true,
      "licence": {
       "name": "MIT",
-      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
      }
     },
     {
-     "rank": 3,
+     "rank": 4,
      "model_family": "DeepSeek V4 Flash",
      "vendor": "DeepSeek",
      "recommended": false,
@@ -137,15 +182,15 @@
      ],
      "best_route": "cbcn/deepseek-v4-flash",
      "price_usd_per_mtok": {
-      "input": 0.01056,
-      "output": 0.03168,
+      "input": 0.00924,
+      "output": 0.02772,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "degraded",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=major_outage (24h 96.22%), model-wide signal"
+       "model alias_state=degraded (24h 88.62%), model-wide signal"
       ]
      },
      "confidence": "low",
@@ -170,183 +215,101 @@
      }
     },
     {
-     "rank": 4,
-     "model_family": "DeepSeek V4 Pro",
-     "vendor": "DeepSeek",
-     "recommended": false,
-     "gate_reasons": [
-      "not_routing_eligible"
-     ],
-     "best_route": "cbcn/deepseek-v4-pro",
-     "price_usd_per_mtok": {
-      "input": 0.04224,
-      "output": 0.12672,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "degraded",
-      "confidence": "medium",
-      "reasons": [
-       "model alias_state=degraded (24h 97.45%), model-wide signal"
-      ]
-     },
-     "confidence": "low",
-     "tier": "upper_mid",
-     "capability_score_100": 35.997,
-     "price_regime": "priced",
-     "system_prompt_handling": "upstream_note",
-     "preferred_endpoint": null,
-     "caveats": [
-      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-     ],
-     "routes": [
-      "cbcn/deepseek-v4-pro",
-      "ds/deepseek-v4-pro",
-      "alitp/deepseek-v4-pro",
-      "cmc/deepseek/deepseek-v4-pro",
-      "ocg/deepseek-v4-pro",
-      "cp/cline-pass/deepseek-v4-pro"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "MIT",
-      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
-     }
-    },
-    {
      "rank": 5,
-     "model_family": "MiniMax M3",
-     "vendor": "MiniMax",
+     "model_family": "DeepSeek V4.1 Flash",
+     "vendor": "DeepSeek",
      "recommended": true,
      "gate_reasons": [],
-     "best_route": "cbcn/minimax-m3",
+     "best_route": "cb/deepseek-v4.1-flash",
      "price_usd_per_mtok": {
-      "input": 0.0189,
-      "output": 0.0756,
+      "input": 0.0054,
+      "output": 0.0216,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 98.24%)",
+       "model alias operational (24h 94.31%)",
        "rail_state=operational"
       ]
      },
      "confidence": "low",
-     "tier": "mid",
-     "capability_score_100": 29.22,
+     "tier": "upper_mid",
+     "capability_score_100": 39.456,
      "price_regime": "priced",
      "system_prompt_handling": "upstream_note",
      "preferred_endpoint": null,
      "caveats": [
-      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
      ],
      "routes": [
-      "cbcn/minimax-m3",
-      "cb/minimax-m3",
-      "mmcn/MiniMax-M3",
-      "ocg/minimax-m3",
-      "cmc/MiniMaxAI/MiniMax-M3",
-      "mm/MiniMax-M3",
-      "fw/minimax-m3",
-      "cp/cline-pass/minimax-m3"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "MiniMax Community License (commercial use has conditions)",
-      "url": "https://huggingface.co/MiniMaxAI/MiniMax-M3/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M3"
-     }
-    },
-    {
-     "rank": 6,
-     "model_family": "GLM 5.2",
-     "vendor": "Z.ai",
-     "recommended": false,
-     "gate_reasons": [
-      "not_routing_eligible"
-     ],
-     "best_route": "ali/glm-5.2",
-     "price_usd_per_mtok": {
-      "input": 0.0126,
-      "output": 0.0396,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "degraded",
-      "confidence": "medium",
-      "reasons": [
-       "model alias_state=major_outage (24h 89.91%), model-wide signal"
-      ]
-     },
-     "confidence": "low",
-     "tier": "mid",
-     "capability_score_100": 26.737,
-     "price_regime": "priced",
-     "system_prompt_handling": "unspecified",
-     "preferred_endpoint": null,
-     "caveats": [],
-     "routes": [
-      "ali/glm-5.2",
-      "cb/glm-5.2",
-      "cbcn/glm-5.2",
-      "cmc/zai-org/GLM-5.2",
-      "alicn/glm-5.2",
-      "alitp/glm-5.2"
+      "cb/deepseek-v4.1-flash",
+      "cbcn/deepseek-v4.1-flash",
+      "ali/deepseek-v4.1-flash",
+      "alitp/deepseek-v4.1-flash",
+      "cmc/deepseek/deepseek-v4.1-flash",
+      "alicn/deepseek-v4.1-flash",
+      "ocg/deepseek-v4.1-flash",
+      "fw/deepseek-v4p1-flash",
+      "cp/cline-pass/deepseek-v4.1-flash"
      ],
      "open_weight": true,
      "licence": {
       "name": "MIT",
-      "url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/zai-org/GLM-5.2"
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
      }
     },
     {
-     "rank": 7,
-     "model_family": "Qwen 3.8 Max",
-     "vendor": "Alibaba/Qwen",
+     "rank": 6,
+     "model_family": "GLM 5.3",
+     "vendor": "Z.ai",
      "recommended": true,
      "gate_reasons": [],
-     "best_route": "ali/qwen3.8-max",
+     "best_route": "cb/glm-5.3",
      "price_usd_per_mtok": {
-      "input": 0.018,
-      "output": 0.054,
+      "input": 0.0504,
+      "output": 0.1584,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 98.34%)",
+       "model alias operational (24h 99.65%)",
        "rail_state=operational"
       ]
      },
      "confidence": "low",
      "tier": "top",
-     "capability_score_100": 45.415,
+     "capability_score_100": 44.777,
      "price_regime": "priced",
-     "system_prompt_handling": "unspecified",
+     "system_prompt_handling": "upstream_note",
      "preferred_endpoint": null,
-     "caveats": [],
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
      "routes": [
-      "ali/qwen3.8-max",
-      "alicn/qwen3.8-max",
-      "alitp/qwen3.8-max",
-      "cmc/Qwen/Qwen3.8-Max",
-      "ocg/qwen3.8-max",
-      "cp/cline-pass/qwen3.8-max"
+      "cb/glm-5.3",
+      "ali/glm-5.3",
+      "cbcn/glm-5.3",
+      "zai/glm-5.3",
+      "alitp/glm-5.3",
+      "alicn/glm-5.3",
+      "cmc/zai-org/GLM-5.3",
+      "cp/cline-pass/glm-5.3",
+      "ocg/glm-5.3"
      ],
      "open_weight": true,
      "licence": {
-      "name": "Qwen3.8-Max License",
-      "url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/Qwen/Qwen3.8-2.4T-A95B"
+      "name": "GLM-5.3 License (MIT-style)",
+      "url": "https://huggingface.co/zai-org/GLM-5.3/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/zai-org/GLM-5.3"
      }
     },
     {
-     "rank": 8,
+     "rank": 7,
      "model_family": "Qwen3.8 Flash",
      "vendor": "Alibaba/Qwen",
      "recommended": false,
@@ -355,15 +318,15 @@
      ],
      "best_route": "ali/qwen3.8-flash",
      "price_usd_per_mtok": {
-      "input": 0.0675,
-      "output": 0.2115,
+      "input": 0.0672,
+      "output": 0.21056,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "degraded",
       "confidence": "medium",
       "reasons": [
-       "model alias_state=major_outage (24h 97.59%), model-wide signal"
+       "model alias_state=major_outage (24h 86.11%), model-wide signal"
       ]
      },
      "confidence": "low",
@@ -388,52 +351,7 @@
      }
     },
     {
-     "rank": 9,
-     "model_family": "GLM 5.3",
-     "vendor": "Z.ai",
-     "recommended": true,
-     "gate_reasons": [],
-     "best_route": "ali/glm-5.3",
-     "price_usd_per_mtok": {
-      "input": 0.0112,
-      "output": 0.0352,
-      "basis": "best route lowest listed ask at as_of"
-     },
-     "health": {
-      "status": "healthy",
-      "confidence": "medium",
-      "reasons": [
-       "model alias operational (24h 99.21%)",
-       "rail_state=operational"
-      ]
-     },
-     "confidence": "low",
-     "tier": "top",
-     "capability_score_100": 44.777,
-     "price_regime": "priced",
-     "system_prompt_handling": "unspecified",
-     "preferred_endpoint": null,
-     "caveats": [],
-     "routes": [
-      "ali/glm-5.3",
-      "cb/glm-5.3",
-      "cbcn/glm-5.3",
-      "alicn/glm-5.3",
-      "alitp/glm-5.3",
-      "cmc/zai-org/GLM-5.3",
-      "ocg/glm-5.3",
-      "zai/glm-5.3",
-      "cp/cline-pass/glm-5.3"
-     ],
-     "open_weight": true,
-     "licence": {
-      "name": "GLM-5.3 License (MIT-style)",
-      "url": "https://huggingface.co/zai-org/GLM-5.3/blob/main/LICENSE",
-      "weights_url": "https://huggingface.co/zai-org/GLM-5.3"
-     }
-    },
-    {
-     "rank": 10,
+     "rank": 8,
      "model_family": "MiniMax M2.7",
      "vendor": null,
      "recommended": false,
@@ -444,15 +362,15 @@
      ],
      "best_route": "cbcn/minimax-m2.7",
      "price_usd_per_mtok": {
-      "input": 0.0147,
-      "output": 0.0588,
+      "input": 0.0075,
+      "output": 0.03,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 97.59%)",
+       "model alias operational (24h 98.22%)",
        "rail_state=operational"
       ]
      },
@@ -468,8 +386,8 @@
      "routes": [
       "cbcn/minimax-m2.7",
       "mmcn/MiniMax-M2.7",
-      "ocg/minimax-m2.7",
-      "mm/MiniMax-M2.7"
+      "mm/MiniMax-M2.7",
+      "ocg/minimax-m2.7"
      ],
      "open_weight": true,
      "licence": {
@@ -477,13 +395,149 @@
       "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7/blob/main/LICENSE",
       "weights_url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7"
      }
+    },
+    {
+     "rank": 9,
+     "model_family": "Hy4 Preview",
+     "vendor": "Tencent",
+     "recommended": false,
+     "gate_reasons": [
+      "tier_below_minimum",
+      "capability_below_minimum",
+      "release_date_unknown"
+     ],
+     "best_route": "cbcn/hy4-preview",
+     "price_usd_per_mtok": {
+      "input": 0.032526,
+      "output": 0.097539,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "medium",
+      "reasons": [
+       "model alias operational (24h 85.0%)",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "unscored",
+     "capability_score_100": 0.0,
+     "price_regime": "near_free",
+     "system_prompt_handling": "upstream_note",
+     "preferred_endpoint": null,
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
+     "routes": [
+      "cbcn/hy4-preview",
+      "cb/hy4-preview",
+      "cmc/tencent/hy4-preview",
+      "ocg/hy4-preview"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "Apache-2.0",
+      "url": "https://huggingface.co/tencent/Hy4-preview/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/tencent/Hy4-preview"
+     }
+    },
+    {
+     "rank": 10,
+     "model_family": "Kimi K2.7 Code",
+     "vendor": "Moonshot",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "cb/kimi-k2.7",
+     "price_usd_per_mtok": {
+      "input": 0.03515,
+      "output": 0.148,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "low",
+      "reasons": [
+       "model alias low_traffic, 24h availability 100.0%",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "mid",
+     "capability_score_100": 25.812,
+     "price_regime": "priced",
+     "system_prompt_handling": "upstream_note",
+     "preferred_endpoint": null,
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
+     "routes": [
+      "cb/kimi-k2.7",
+      "cbcn/kimi-k2.7",
+      "ali/kimi-k2.7-code",
+      "cmc/moonshotai/Kimi-K2.7-Code",
+      "alicn/kimi-k2.7-code",
+      "ocg/kimi-k2.7-code",
+      "moon/kimi-k2.7-code"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "Modified MIT",
+      "url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/moonshotai/Kimi-K2.7-Code"
+     }
+    },
+    {
+     "rank": 11,
+     "model_family": "GLM 5.2",
+     "vendor": "Z.ai",
+     "recommended": false,
+     "gate_reasons": [
+      "not_routing_eligible"
+     ],
+     "best_route": "cb/glm-5.2",
+     "price_usd_per_mtok": {
+      "input": 0.0518,
+      "output": 0.1628,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "degraded",
+      "confidence": "medium",
+      "reasons": [
+       "model alias_state=major_outage (24h 45.19%), model-wide signal"
+      ]
+     },
+     "confidence": "low",
+     "tier": "mid",
+     "capability_score_100": 26.737,
+     "price_regime": "priced",
+     "system_prompt_handling": "upstream_note",
+     "preferred_endpoint": null,
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
+     "routes": [
+      "cb/glm-5.2",
+      "cbcn/glm-5.2",
+      "ali/glm-5.2",
+      "alicn/glm-5.2",
+      "cmc/zai-org/GLM-5.2",
+      "alitp/glm-5.2"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "MIT",
+      "url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/zai-org/GLM-5.2"
+     }
     }
    ]
   },
   "strongest_open": {
    "list": "frontier",
-   "as_of": "2026-11-11T18:38:07Z",
-   "snapshot_sha256": "99d04e422ceee0a1001982bf79fff5b2b2c40ec5c44a0aebea0cf2ecc9a02cda",
+   "as_of": "2026-11-12T18:51:36Z",
+   "snapshot_sha256": "542de4e92cc0e98addf784c43275f4bdbb0dd4a7c4fcae8897cb6d2abf89c00d",
    "description": "The strongest recommended open-weight models, capability first, each with its cheapest healthy route.",
    "entries": [
     {
@@ -494,15 +548,15 @@
      "gate_reasons": [],
      "best_route": "ali/qwen3.8-max-0902",
      "price_usd_per_mtok": {
-      "input": 0.002,
-      "output": 0.006,
+      "input": 0.018,
+      "output": 0.054,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 99.8%)",
+       "model alias operational (24h 99.3%)",
        "rail_state=operational"
       ]
      },
@@ -518,12 +572,12 @@
      "routes": [
       "ali/qwen3.8-max-0902",
       "ali/qwen3.8-max",
-      "alicn/qwen3.8-max",
       "alitp/qwen3.8-max",
+      "alicn/qwen3.8-max",
       "alicn/qwen3.8-max-0902",
       "cmc/Qwen/Qwen3.8-Max",
-      "ocg/qwen3.8-max",
-      "cp/cline-pass/qwen3.8-max"
+      "cp/cline-pass/qwen3.8-max",
+      "ocg/qwen3.8-max"
      ],
      "open_weight": true,
      "licence": {
@@ -534,21 +588,68 @@
     },
     {
      "rank": 2,
-     "model_family": "GLM 5.3",
-     "vendor": "Z.ai",
+     "model_family": "DeepSeek V4 Pro",
+     "vendor": "DeepSeek",
      "recommended": true,
      "gate_reasons": [],
-     "best_route": "ali/glm-5.3",
+     "best_route": "cbcn/deepseek-v4-pro",
      "price_usd_per_mtok": {
-      "input": 0.0112,
-      "output": 0.0352,
+      "input": 0.0231,
+      "output": 0.0693,
       "basis": "best route lowest listed ask at as_of"
      },
      "health": {
       "status": "healthy",
       "confidence": "medium",
       "reasons": [
-       "model alias operational (24h 99.21%)",
+       "model alias operational (24h 92.04%)",
+       "rail_state=operational"
+      ]
+     },
+     "confidence": "low",
+     "tier": "top",
+     "capability_score_100": 72.0,
+     "price_regime": "under_policy",
+     "system_prompt_handling": "upstream_note",
+     "preferred_endpoint": null,
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
+     "routes": [
+      "cbcn/deepseek-v4-pro",
+      "ali/deepseek-v4-pro-0813",
+      "alitp/deepseek-v4-pro-0813",
+      "alitp/deepseek-v4-pro",
+      "ds/deepseek-v4-pro",
+      "alicn/deepseek-v4-pro-0813",
+      "cmc/deepseek/deepseek-v4-pro",
+      "cp/cline-pass/deepseek-v4-pro",
+      "ocg/deepseek-v4-pro"
+     ],
+     "open_weight": true,
+     "licence": {
+      "name": "MIT",
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/LICENSE",
+      "weights_url": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro"
+     }
+    },
+    {
+     "rank": 3,
+     "model_family": "GLM 5.3",
+     "vendor": "Z.ai",
+     "recommended": true,
+     "gate_reasons": [],
+     "best_route": "cb/glm-5.3",
+     "price_usd_per_mtok": {
+      "input": 0.0504,
+      "output": 0.1584,
+      "basis": "best route lowest listed ask at as_of"
+     },
+     "health": {
+      "status": "healthy",
+      "confidence": "medium",
+      "reasons": [
+       "model alias operational (24h 99.65%)",
        "rail_state=operational"
       ]
      },
@@ -556,19 +657,21 @@
      "tier": "top",
      "capability_score_100": 70.0,
      "price_regime": "under_policy",
-     "system_prompt_handling": "unspecified",
+     "system_prompt_handling": "upstream_note",
      "preferred_endpoint": null,
-     "caveats": [],
+     "caveats": [
+      "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+     ],
      "routes": [
-      "ali/glm-5.3",
       "cb/glm-5.3",
+      "ali/glm-5.3",
       "cbcn/glm-5.3",
-      "alicn/glm-5.3",
-      "alitp/glm-5.3",
-      "cmc/zai-org/GLM-5.3",
-      "ocg/glm-5.3",
       "zai/glm-5.3",
-      "cp/cline-pass/glm-5.3"
+      "alitp/glm-5.3",
+      "alicn/glm-5.3",
+      "cmc/zai-org/GLM-5.3",
+      "cp/cline-pass/glm-5.3",
+      "ocg/glm-5.3"
      ],
      "open_weight": true,
      "licence": {
@@ -581,8 +684,8 @@
   },
   "utility": {
    "list": "utility",
-   "as_of": "2026-11-11T18:38:07Z",
-   "snapshot_sha256": "99d04e422ceee0a1001982bf79fff5b2b2c40ec5c44a0aebea0cf2ecc9a02cda",
+   "as_of": "2026-11-12T18:51:36Z",
+   "snapshot_sha256": "542de4e92cc0e98addf784c43275f4bdbb0dd4a7c4fcae8897cb6d2abf89c00d",
    "description": "Image-generation and multimodal families, ranked on availability and price. open_weight is the verdict for the family: true (verified licence and weights) or null (listed, licence unverified, never recommended). No closed family is listed.",
    "entries": [
     {
@@ -605,7 +708,7 @@
       "status": "degraded",
       "confidence": null,
       "reasons": [
-       "model alias_state=major_outage (24h 82.88%), model-wide signal"
+       "model alias_state=major_outage (24h 69.85%), model-wide signal"
       ]
      },
      "routes": [
