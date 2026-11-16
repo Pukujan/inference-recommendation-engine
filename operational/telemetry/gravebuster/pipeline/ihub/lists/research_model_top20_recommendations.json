@@ -1,40 +1,40 @@
 {
  "schema": "ihub-top20-recommendations/v1",
  "hypothesis_notice": "Each row is a hypothesis, not a fact. Capability, tier and release date are carried over from the 2026-09-22 list (benchmark inputs lost; low confidence). Prices, provider breadth, supply depth and 7-day availability are live InferHub data at generated_at; listed asks are USD per 1M tokens and the served price can be higher. best_route_min_ask_in/out_usdc_per_1m is the cheapest ask at the best route; supply_weighted_median_cost_usdc_per_1m is the supply-weighted blended (0.4 in / 0.6 out) cost of an average seller, so the two answer different questions.",
- "generated_at": "2026-11-15T17:40:18Z",
- "code_commit": "36a18ffb07faaeb3dca6d87c863fa71a1a251b20",
+ "generated_at": "2026-11-16T20:57:04Z",
+ "code_commit": "e8b8771fddfa8beae11e334a5bcd6f2ac8e36f0b",
  "provenance": {
-  "snapshot_sha256": "bf09ac5b1c70e4fec30ba415d352c22a6eb6416b8bc5067ab22d63865adc45e4",
+  "snapshot_sha256": "e0d99b9a399c4d18677237f8113cdab3a6505de8fc51c3da8828ecc5482a5929",
   "sources": [
    {
     "endpoint": "catalog",
     "url": "https://inferhub.dev/api/catalog",
     "auth": "key",
     "method": "GET",
-    "fetched_at": "2026-11-15T17:40:16Z",
+    "fetched_at": "2026-11-16T20:57:03Z",
     "fetched_from": null,
-    "sha256": "5a28da2da58c3c135a35d70ee0bd52f7bf9e8584bcb3da6db90b71eed92cd7ce",
-    "bytes": 199802
+    "sha256": "d1ccd0c5ef0d28d0942f14eea152440e619921a54f05330915a9aa083c4c2929",
+    "bytes": 190611
    },
    {
     "endpoint": "status",
     "url": "https://inferhub.dev/api/status",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-11-15T17:40:17Z",
+    "fetched_at": "2026-11-16T20:57:03Z",
     "fetched_from": null,
-    "sha256": "92c446f1cf1cc28a346299d4c397adf98aa132b5c6a4faf6c3c9bd9ab57efa9f",
-    "bytes": 493745
+    "sha256": "69dfc555894bdf5b2abdab69dd93b344bf497782ecf1011784b06141e1979597",
+    "bytes": 490454
    },
    {
     "endpoint": "market",
     "url": "https://inferhub.dev/api/market",
     "auth": "public",
     "method": "GET",
-    "fetched_at": "2026-11-15T17:40:18Z",
+    "fetched_at": "2026-11-16T20:57:04Z",
     "fetched_from": null,
-    "sha256": "7b27af15a3f33a393357ca285c457c0fce2b2aab9920226cfb88675412eb853b",
-    "bytes": 44229
+    "sha256": "ea00e5d5f3ad6b3db386f98909ce3a58a64d8ecd49aebfa61a36d926cd2aa8af",
+    "bytes": 45016
    }
   ],
   "capability_prior": {
@@ -90,9 +90,9 @@
  "counts": {
   "families_considered": 140,
   "listed": 20,
-  "recommended": 5,
-  "gated": 15,
-  "unscored_listed": 7
+  "recommended": 3,
+  "gated": 17,
+  "unscored_listed": 10
  },
  "entries": [
   {
@@ -109,32 +109,32 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-26",
-   "recency_days": 81,
+   "recency_days": 82,
    "priced_provider_count": 5,
-   "shortlist_score_100": 84.5546,
+   "shortlist_score_100": 84.2727,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.013673,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/glm-5.3-flash",
+   "supply_weighted_median_cost_usd_per_mtok": 0.035635,
+   "public_availability_7d_pct": 99.68,
+   "best_route": "cb/glm-5.3-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.84%)",
+    "model alias operational (24h 99.41%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0048,
-   "best_route_min_ask_out": 0.016,
+   "best_route_min_ask_in": 0.00435,
+   "best_route_min_ask_out": 0.0145,
    "best_route_official_in": 0.15,
    "best_route_official_out": 0.5,
    "best_route_system_prompt_handling": "upstream_note",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "routes": [
-    "cbcn/glm-5.3-flash",
     "cb/glm-5.3-flash",
-    "cmc/z-ai/glm-5.3-flash",
+    "cbcn/glm-5.3-flash",
     "zai/glm-5.3-flash",
+    "cmc/z-ai/glm-5.3-flash",
     "ocg/glm-5.3-flash",
     "cp/cline-pass/glm-5.3-flash",
     "cp/zai/glm-5.3-flash"
@@ -154,85 +154,40 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-06-01",
-   "recency_days": 167,
+   "recency_days": 168,
    "priced_provider_count": 7,
-   "shortlist_score_100": 81.8716,
+   "shortlist_score_100": 81.9029,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.032546,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/minimax-m3",
+   "supply_weighted_median_cost_usd_per_mtok": 0.084437,
+   "public_availability_7d_pct": 99.68,
+   "best_route": "cb/minimax-m3",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.57%)",
+    "model alias operational (24h 98.65%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0093,
-   "best_route_min_ask_out": 0.0372,
+   "best_route_min_ask_in": 0.009,
+   "best_route_min_ask_out": 0.036,
    "best_route_official_in": 0.3,
    "best_route_official_out": 1.2,
    "best_route_system_prompt_handling": "upstream_note",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "routes": [
-    "cbcn/minimax-m3",
     "cb/minimax-m3",
+    "cbcn/minimax-m3",
     "mmcn/MiniMax-M3",
+    "mm/MiniMax-M3",
     "fw/minimax-m3",
     "ocg/minimax-m3",
-    "mm/MiniMax-M3",
     "cmc/MiniMaxAI/MiniMax-M3",
     "cp/cline-pass/minimax-m3"
    ]
   },
   {
    "recommendation_rank": 3,
-   "model_family": "DeepSeek V4 Pro",
-   "vendor": "DeepSeek",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "not_routing_eligible"
-   ],
-   "tier": "upper_mid",
-   "capability_score_100": 35.997,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": "2026-08-13",
-   "recency_days": 94,
-   "priced_provider_count": 4,
-   "shortlist_score_100": 80.8049,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.053309,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/deepseek-v4-pro",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias_state=degraded (24h 85.85%), model-wide signal"
-   ],
-   "best_route_min_ask_in": 0.02244,
-   "best_route_min_ask_out": 0.06732,
-   "best_route_official_in": 0.66,
-   "best_route_official_out": 1.98,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/deepseek-v4-pro",
-    "alitp/deepseek-v4-pro",
-    "ds/deepseek-v4-pro",
-    "cmc/deepseek/deepseek-v4-pro",
-    "cp/cline-pass/deepseek-v4-pro",
-    "ocg/deepseek-v4-pro"
-   ]
-  },
-  {
-   "recommendation_rank": 4,
    "model_family": "DeepSeek V4 Flash",
    "vendor": "DeepSeek",
    "recommendation_eligible": false,
@@ -247,19 +202,19 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-21",
-   "recency_days": 86,
+   "recency_days": 87,
    "priced_provider_count": 3,
-   "shortlist_score_100": 79.2732,
+   "shortlist_score_100": 78.792,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.018573,
+   "supply_weighted_median_cost_usd_per_mtok": 0.052953,
    "public_availability_7d_pct": 99.97,
    "best_route": "cbcn/deepseek-v4-flash",
    "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias_state=degraded (24h 89.19%), model-wide signal"
+    "model alias_state=degraded (24h 93.27%), model-wide signal"
    ],
-   "best_route_min_ask_in": 0.0066,
-   "best_route_min_ask_out": 0.0198,
+   "best_route_min_ask_in": 0.01958,
+   "best_route_min_ask_out": 0.05874,
    "best_route_official_in": 0.22,
    "best_route_official_out": 0.66,
    "best_route_system_prompt_handling": "upstream_note",
@@ -274,99 +229,7 @@
    ]
   },
   {
-   "recommendation_rank": 5,
-   "model_family": "Kimi K2.7 Code",
-   "vendor": "Moonshot",
-   "recommendation_eligible": true,
-   "recommendation_status": "recommended",
-   "gate_reasons": [],
-   "tier": "mid",
-   "capability_score_100": 25.812,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "low",
-   "confidence": "low",
-   "release_date": "2026-06-12",
-   "recency_days": 156,
-   "priced_provider_count": 7,
-   "shortlist_score_100": 78.5872,
-   "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.101433,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/kimi-k2.7",
-   "best_route_health": "healthy",
-   "best_route_health_reasons": [
-    "model alias low_traffic, 24h availability 98.91%",
-    "rail_state=operational"
-   ],
-   "best_route_min_ask_in": 0.03325,
-   "best_route_min_ask_out": 0.14,
-   "best_route_official_in": 0.95,
-   "best_route_official_out": 4.0,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/kimi-k2.7",
-    "cb/kimi-k2.7",
-    "ali/kimi-k2.7-code",
-    "alicn/kimi-k2.7-code",
-    "cmc/moonshotai/Kimi-K2.7-Code",
-    "ocg/kimi-k2.7-code",
-    "moon/kimi-k2.7-code"
-   ]
-  },
-  {
-   "recommendation_rank": 6,
-   "model_family": "GLM 5.3",
-   "vendor": "Z.ai",
-   "recommendation_eligible": true,
-   "recommendation_status": "recommended",
-   "gate_reasons": [],
-   "tier": "top",
-   "capability_score_100": 44.777,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": "2026-08-18",
-   "recency_days": 89,
-   "priced_provider_count": 7,
-   "shortlist_score_100": 78.2731,
-   "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.130689,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/glm-5.3",
-   "best_route_health": "healthy",
-   "best_route_health_reasons": [
-    "model alias operational (24h 98.97%)",
-    "rail_state=operational"
-   ],
-   "best_route_min_ask_in": 0.0504,
-   "best_route_min_ask_out": 0.1584,
-   "best_route_official_in": 1.4,
-   "best_route_official_out": 4.4,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/glm-5.3",
-    "cb/glm-5.3",
-    "zai/glm-5.3",
-    "alicn/glm-5.3",
-    "alitp/glm-5.3",
-    "cmc/zai-org/GLM-5.3",
-    "ali/glm-5.3",
-    "cp/cline-pass/glm-5.3",
-    "ocg/glm-5.3"
-   ]
-  },
-  {
-   "recommendation_rank": 7,
+   "recommendation_rank": 4,
    "model_family": "GPT 5.6 Luna",
    "vendor": "OpenAI",
    "recommendation_eligible": false,
@@ -381,20 +244,20 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-07-09",
-   "recency_days": 129,
+   "recency_days": 130,
    "priced_provider_count": 4,
-   "shortlist_score_100": 77.7192,
+   "shortlist_score_100": 77.1964,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.060889,
-   "public_availability_7d_pct": 98.71,
+   "supply_weighted_median_cost_usd_per_mtok": 0.093418,
+   "public_availability_7d_pct": 98.74,
    "best_route": "cx/gpt-5.6-luna",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 72.69%)",
+    "model alias operational (24h 94.71%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0002,
-   "best_route_min_ask_out": 0.0012,
+   "best_route_min_ask_in": 0.004,
+   "best_route_min_ask_out": 0.024,
    "best_route_official_in": 0.2,
    "best_route_official_out": 1.2,
    "best_route_system_prompt_handling": "developer_message",
@@ -405,14 +268,14 @@
    "routes": [
     "cx/gpt-5.6-luna",
     "oai/gpt-5.6-luna",
-    "cmc/gpt-5.6-luna",
     "kiro/gpt-5.6-luna",
+    "cmc/gpt-5.6-luna",
     "cb/gpt-5.6-luna",
     "ocg/gpt-5.6-luna"
    ]
   },
   {
-   "recommendation_rank": 8,
+   "recommendation_rank": 5,
    "model_family": "MiniMax M3.1 Flash",
    "vendor": null,
    "recommendation_eligible": false,
@@ -432,36 +295,36 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 6,
-   "shortlist_score_100": 76.9196,
+   "shortlist_score_100": 76.9632,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.01539,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/minimax-m3.1-flash",
+   "supply_weighted_median_cost_usd_per_mtok": 0.042165,
+   "public_availability_7d_pct": 99.68,
+   "best_route": "cb/minimax-m3.1-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
     "model alias operational (24h 99.97%)",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.00525,
-   "best_route_min_ask_out": 0.021,
+   "best_route_min_ask_in": 0.0045,
+   "best_route_min_ask_out": 0.018,
    "best_route_official_in": 0.15,
    "best_route_official_out": 0.6,
    "best_route_system_prompt_handling": "upstream_note",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "routes": [
-    "cbcn/minimax-m3.1-flash",
     "cb/minimax-m3.1-flash",
+    "cbcn/minimax-m3.1-flash",
     "mmcn/MiniMax-M3.1-Flash",
+    "mm/MiniMax-M3.1-Flash",
     "fw/minimax-m3p1-flash",
-    "ocg/minimax-m3.1-flash",
-    "mm/MiniMax-M3.1-Flash"
+    "ocg/minimax-m3.1-flash"
    ]
   },
   {
-   "recommendation_rank": 9,
+   "recommendation_rank": 6,
    "model_family": "DeepSeek V4.1 Flash",
    "vendor": "DeepSeek",
    "recommendation_eligible": true,
@@ -471,44 +334,42 @@
    "capability_score_100": 39.456,
    "capability_basis": "carried_over_prior_2026-09-22",
    "capability_confidence": "low",
-   "health_confidence": "medium",
+   "health_confidence": "low",
    "confidence": "low",
    "release_date": "2026-09-10",
-   "recency_days": 66,
+   "recency_days": 67,
    "priced_provider_count": 8,
-   "shortlist_score_100": 75.3468,
+   "shortlist_score_100": 75.1612,
    "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.166967,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/deepseek-v4.1-flash",
+   "supply_weighted_median_cost_usd_per_mtok": 0.166996,
+   "public_availability_7d_pct": 99.77,
+   "best_route": "fw/deepseek-v4p1-flash",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias operational (24h 95.29%)",
+    "no model alias status published",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.0054,
-   "best_route_min_ask_out": 0.0216,
-   "best_route_official_in": 0.15,
-   "best_route_official_out": 0.6,
-   "best_route_system_prompt_handling": "upstream_note",
+   "best_route_min_ask_in": 0.15,
+   "best_route_min_ask_out": 0.6,
+   "best_route_official_in": 0.3,
+   "best_route_official_out": 1.2,
+   "best_route_system_prompt_handling": "unspecified",
    "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
+   "best_route_caveats": [],
    "routes": [
+    "fw/deepseek-v4p1-flash",
     "cbcn/deepseek-v4.1-flash",
     "cb/deepseek-v4.1-flash",
+    "ali/deepseek-v4.1-flash",
     "cmc/deepseek/deepseek-v4.1-flash",
     "alicn/deepseek-v4.1-flash",
-    "alitp/deepseek-v4.1-flash",
     "ocg/deepseek-v4.1-flash",
-    "fw/deepseek-v4p1-flash",
-    "ali/deepseek-v4.1-flash",
+    "alitp/deepseek-v4.1-flash",
     "cp/cline-pass/deepseek-v4.1-flash"
    ]
   },
   {
-   "recommendation_rank": 10,
+   "recommendation_rank": 7,
    "model_family": "Muse Spark 1.2 Contributor",
    "vendor": "Meta",
    "recommendation_eligible": false,
@@ -527,14 +388,14 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 2,
-   "shortlist_score_100": 73.3507,
+   "shortlist_score_100": 74.0491,
    "price_regime": "near_free",
    "supply_weighted_median_cost_usd_per_mtok": 0.07571,
-   "public_availability_7d_pct": 99.67,
+   "public_availability_7d_pct": 99.64,
    "best_route": "cmc/meta/muse-spark-1.2-contributor",
    "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias_state=major_outage (24h 5.37%), model-wide signal"
+    "model alias_state=major_outage (24h 1.48%), model-wide signal"
    ],
    "best_route_min_ask_in": 0.0499,
    "best_route_min_ask_out": 0.0998,
@@ -549,53 +410,48 @@
    ]
   },
   {
-   "recommendation_rank": 11,
-   "model_family": "MiniMax M2.7",
-   "vendor": null,
+   "recommendation_rank": 8,
+   "model_family": "Muse Spark 1.3 Contributor",
+   "vendor": "Meta",
    "recommendation_eligible": false,
    "recommendation_status": "gated",
    "gate_reasons": [
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown"
+    "not_routing_eligible",
+    "open_weight_unverified"
    ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "unscored_not_in_prior",
-   "capability_confidence": "none",
+   "tier": "top",
+   "capability_score_100": 48.092,
+   "capability_basis": "carried_over_prior_2026-09-22",
+   "capability_confidence": "low",
    "health_confidence": "medium",
    "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 4,
-   "shortlist_score_100": 73.2126,
+   "release_date": "2026-09-02",
+   "recency_days": 75,
+   "priced_provider_count": 2,
+   "shortlist_score_100": 74.0277,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.029799,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/minimax-m2.7",
-   "best_route_health": "healthy",
+   "supply_weighted_median_cost_usd_per_mtok": 0.075558,
+   "public_availability_7d_pct": 99.64,
+   "best_route": "cmc/meta/muse-spark-1.3-contributor",
+   "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias operational (24h 99.84%)",
-    "rail_state=operational"
+    "model alias_state=major_outage (24h 16.13%), model-wide signal"
    ],
-   "best_route_min_ask_in": 0.0102,
-   "best_route_min_ask_out": 0.0408,
-   "best_route_official_in": 0.3,
-   "best_route_official_out": 1.2,
-   "best_route_system_prompt_handling": "upstream_note",
+   "best_route_min_ask_in": 0.0499,
+   "best_route_min_ask_out": 0.0998,
+   "best_route_official_in": 0.1,
+   "best_route_official_out": 0.2,
+   "best_route_system_prompt_handling": "unspecified",
    "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
+   "best_route_caveats": [],
    "routes": [
-    "cbcn/minimax-m2.7",
-    "mmcn/MiniMax-M2.7",
-    "mm/MiniMax-M2.7",
-    "ocg/minimax-m2.7"
+    "cmc/meta/muse-spark-1.3-contributor",
+    "mai/muse-spark-1.3-contributor",
+    "cp/cline-pass/muse-spark-1.3-contributor"
    ]
   },
   {
-   "recommendation_rank": 12,
+   "recommendation_rank": 9,
    "model_family": "Qwen3.8 Flash",
    "vendor": "Alibaba/Qwen",
    "recommendation_eligible": false,
@@ -610,17 +466,16 @@
    "health_confidence": "medium",
    "confidence": "low",
    "release_date": "2026-08-26",
-   "recency_days": 81,
+   "recency_days": 82,
    "priced_provider_count": 4,
-   "shortlist_score_100": 72.8945,
+   "shortlist_score_100": 73.3981,
    "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.144947,
-   "public_availability_7d_pct": 99.09,
+   "supply_weighted_median_cost_usd_per_mtok": 0.144914,
+   "public_availability_7d_pct": 98.84,
    "best_route": "ali/qwen3.8-flash",
    "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "rail_state=degraded",
-    "model alias_state=major_outage (24h 48.07%), model-wide signal"
+    "model alias_state=major_outage (24h 64.95%), model-wide signal"
    ],
    "best_route_min_ask_in": 0.0675,
    "best_route_min_ask_out": 0.2115,
@@ -638,193 +493,15 @@
    ]
   },
   {
-   "recommendation_rank": 13,
-   "model_family": "DeepSeek V4 Flash 0731",
-   "vendor": "DeepSeek",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "release_date_unknown",
-    "not_routing_eligible",
-    "open_weight_unverified"
-   ],
-   "tier": "top",
-   "capability_score_100": 74.171,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 3,
-   "shortlist_score_100": 72.4098,
-   "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.110715,
-   "public_availability_7d_pct": 99.71,
-   "best_route": "alicn/deepseek-v4-flash-0731",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias_state=degraded (24h 89.19%), model-wide signal"
-   ],
-   "best_route_min_ask_in": 0.02464,
-   "best_route_min_ask_out": 0.07392,
-   "best_route_official_in": 0.22,
-   "best_route_official_out": 0.66,
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "routes": [
-    "alicn/deepseek-v4-flash-0731",
-    "alitp/deepseek-v4-flash-0731",
-    "ali/deepseek-v4-flash-0731"
-   ]
-  },
-  {
-   "recommendation_rank": 14,
-   "model_family": "Hy4 Preview",
-   "vendor": "Tencent",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown",
-    "not_routing_eligible"
-   ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 3,
-   "shortlist_score_100": 72.3502,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.072591,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/hy4-preview",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias_state=major_outage (24h 37.03%), model-wide signal"
-   ],
-   "best_route_min_ask_in": 0.02919,
-   "best_route_min_ask_out": 0.087535,
-   "best_route_official_in": 0.834,
-   "best_route_official_out": 2.501,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/hy4-preview",
-    "cb/hy4-preview",
-    "cmc/tencent/hy4-preview",
-    "ocg/hy4-preview"
-   ]
-  },
-  {
-   "recommendation_rank": 15,
-   "model_family": "Kimi K2.6",
-   "vendor": "Moonshot",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown",
-    "not_routing_eligible"
-   ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "unscored_not_in_prior",
-   "capability_confidence": "none",
-   "health_confidence": "low",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 6,
-   "shortlist_score_100": 72.1487,
-   "price_regime": "priced",
-   "supply_weighted_median_cost_usd_per_mtok": 0.10495,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/kimi-k2.6",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias low_traffic, 24h availability 18.96% < 95.0"
-   ],
-   "best_route_min_ask_in": 0.0304,
-   "best_route_min_ask_out": 0.128,
-   "best_route_official_in": 0.95,
-   "best_route_official_out": 4.0,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/kimi-k2.6",
-    "cb/kimi-k2.6",
-    "alicn/kimi-k2.6",
-    "cmc/moonshotai/Kimi-K2.6",
-    "ocg/kimi-k2.6",
-    "moon/kimi-k2.6"
-   ]
-  },
-  {
-   "recommendation_rank": 16,
-   "model_family": "Muse Spark 1.3 Contributor",
-   "vendor": "Meta",
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "not_routing_eligible",
-    "open_weight_unverified"
-   ],
-   "tier": "top",
-   "capability_score_100": 48.092,
-   "capability_basis": "carried_over_prior_2026-09-22",
-   "capability_confidence": "low",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": "2026-09-02",
-   "recency_days": 74,
-   "priced_provider_count": 2,
-   "shortlist_score_100": 72.052,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.075558,
-   "public_availability_7d_pct": 94.16,
-   "best_route": "mai/muse-spark-1.3-contributor",
-   "best_route_health": "degraded",
-   "best_route_health_reasons": [
-    "model alias_state=major_outage (24h 15.02%), model-wide signal"
-   ],
-   "best_route_min_ask_in": 0.0497,
-   "best_route_min_ask_out": 0.0994,
-   "best_route_official_in": 0.1,
-   "best_route_official_out": 0.2,
-   "best_route_system_prompt_handling": "unspecified",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [],
-   "routes": [
-    "mai/muse-spark-1.3-contributor",
-    "cmc/meta/muse-spark-1.3-contributor",
-    "cp/cline-pass/muse-spark-1.3-contributor"
-   ]
-  },
-  {
-   "recommendation_rank": 17,
-   "model_family": "Hy4",
+   "recommendation_rank": 10,
+   "model_family": "MiniMax M2.7",
    "vendor": null,
    "recommendation_eligible": false,
    "recommendation_status": "gated",
    "gate_reasons": [
     "tier_below_minimum",
     "capability_below_minimum",
-    "release_date_unknown",
-    "open_weight_unverified"
+    "release_date_unknown"
    ],
    "tier": "unscored",
    "capability_score_100": 0.0,
@@ -834,34 +511,35 @@
    "confidence": "low",
    "release_date": null,
    "recency_days": null,
-   "priced_provider_count": 2,
-   "shortlist_score_100": 69.9227,
+   "priced_provider_count": 4,
+   "shortlist_score_100": 73.1525,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.03109,
+   "supply_weighted_median_cost_usd_per_mtok": 0.085933,
    "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/hy4free",
+   "best_route": "cbcn/minimax-m2.7",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "no model alias status published",
+    "model alias low_traffic, 24h availability 99.32%",
     "rail_state=operational"
    ],
-   "best_route_min_ask_in": 0.00834,
-   "best_route_min_ask_out": 0.02501,
-   "best_route_official_in": 0.834,
-   "best_route_official_out": 2.501,
+   "best_route_min_ask_in": 0.027,
+   "best_route_min_ask_out": 0.108,
+   "best_route_official_in": 0.3,
+   "best_route_official_out": 1.2,
    "best_route_system_prompt_handling": "upstream_note",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "routes": [
-    "cbcn/hy4free",
-    "cb/hy4free",
-    "ocg/hy4"
+    "cbcn/minimax-m2.7",
+    "mmcn/MiniMax-M2.7",
+    "mm/MiniMax-M2.7",
+    "ocg/minimax-m2.7"
    ]
   },
   {
-   "recommendation_rank": 18,
+   "recommendation_rank": 11,
    "model_family": "MiniMax M2.5",
    "vendor": null,
    "recommendation_eligible": false,
@@ -881,14 +559,14 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 3,
-   "shortlist_score_100": 69.9136,
+   "shortlist_score_100": 69.7801,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.079453,
-   "public_availability_7d_pct": 99.98,
+   "supply_weighted_median_cost_usd_per_mtok": 0.090266,
+   "public_availability_7d_pct": 99.97,
    "best_route": "mmcn/MiniMax-M2.5",
    "best_route_health": "healthy",
    "best_route_health_reasons": [
-    "model alias low_traffic, 24h availability 99.62%",
+    "model alias low_traffic, 24h availability 99.34%",
     "rail_state=operational"
    ],
    "best_route_min_ask_in": 0.018,
@@ -905,54 +583,9 @@
    ]
   },
   {
-   "recommendation_rank": 19,
+   "recommendation_rank": 12,
    "model_family": "Hy3",
    "vendor": null,
-   "recommendation_eligible": false,
-   "recommendation_status": "gated",
-   "gate_reasons": [
-    "tier_below_minimum",
-    "capability_below_minimum",
-    "release_date_unknown",
-    "open_weight_unverified"
-   ],
-   "tier": "unscored",
-   "capability_score_100": 0.0,
-   "capability_basis": "unscored_not_in_prior",
-   "capability_confidence": "none",
-   "health_confidence": "medium",
-   "confidence": "low",
-   "release_date": null,
-   "recency_days": null,
-   "priced_provider_count": 2,
-   "shortlist_score_100": 69.8251,
-   "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.017504,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/hy3",
-   "best_route_health": "healthy",
-   "best_route_health_reasons": [
-    "model alias operational (24h 84.87%)",
-    "rail_state=operational"
-   ],
-   "best_route_min_ask_in": 0.00154,
-   "best_route_min_ask_out": 0.00638,
-   "best_route_official_in": 0.14,
-   "best_route_official_out": 0.58,
-   "best_route_system_prompt_handling": "upstream_note",
-   "best_route_preferred_endpoint": null,
-   "best_route_caveats": [
-    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
-   ],
-   "routes": [
-    "cbcn/hy3",
-    "cb/hy3"
-   ]
-  },
-  {
-   "recommendation_rank": 20,
-   "model_family": "Kimi K2.5",
-   "vendor": "Moonshot",
    "recommendation_eligible": false,
    "recommendation_status": "gated",
    "gate_reasons": [
@@ -971,27 +604,381 @@
    "release_date": null,
    "recency_days": null,
    "priced_provider_count": 2,
-   "shortlist_score_100": 69.7276,
+   "shortlist_score_100": 69.5885,
    "price_regime": "near_free",
-   "supply_weighted_median_cost_usd_per_mtok": 0.075166,
-   "public_availability_7d_pct": 99.97,
-   "best_route": "cbcn/kimi-k2.5",
+   "supply_weighted_median_cost_usd_per_mtok": 0.029655,
+   "public_availability_7d_pct": 99.68,
+   "best_route": "cb/hy3",
    "best_route_health": "degraded",
    "best_route_health_reasons": [
-    "model alias_state=major_outage (24h 7.26%), model-wide signal"
+    "model alias_state=major_outage (24h 96.78%), model-wide signal"
    ],
-   "best_route_min_ask_in": 0.0216,
-   "best_route_min_ask_out": 0.108,
-   "best_route_official_in": 0.6,
-   "best_route_official_out": 3.0,
+   "best_route_min_ask_in": 0.0042,
+   "best_route_min_ask_out": 0.0174,
+   "best_route_official_in": 0.14,
+   "best_route_official_out": 0.58,
+   "best_route_system_prompt_handling": "upstream_note",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [
+    "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering. Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
+   ],
+   "routes": [
+    "cb/hy3",
+    "cbcn/hy3"
+   ]
+  },
+  {
+   "recommendation_rank": 13,
+   "model_family": "DeepSeek V4 Pro",
+   "vendor": "DeepSeek",
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "not_routing_eligible"
+   ],
+   "tier": "upper_mid",
+   "capability_score_100": 35.997,
+   "capability_basis": "carried_over_prior_2026-09-22",
+   "capability_confidence": "low",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": "2026-08-13",
+   "recency_days": 95,
+   "priced_provider_count": 4,
+   "shortlist_score_100": 69.5542,
+   "price_regime": "priced",
+   "supply_weighted_median_cost_usd_per_mtok": 0.158777,
+   "public_availability_7d_pct": 99.97,
+   "best_route": "cbcn/deepseek-v4-pro",
+   "best_route_health": "degraded",
+   "best_route_health_reasons": [
+    "model alias_state=major_outage (24h 91.77%), model-wide signal"
+   ],
+   "best_route_min_ask_in": 0.05874,
+   "best_route_min_ask_out": 0.17622,
+   "best_route_official_in": 0.66,
+   "best_route_official_out": 1.98,
    "best_route_system_prompt_handling": "upstream_note",
    "best_route_preferred_endpoint": null,
    "best_route_caveats": [
     "InferHub rail note: Adds a short system note ahead of your system prompt (formatting guidance, plus an identity line when a known coding agent such as Claude Code or Codex is detected) and may reword agent and product identity wording inside it. You can turn this off per API key: Dashboard → API keys → Prompt filtering (with it off, this upstream may reject coding-agent prompts). Always applied: multiple system messages are merged into one, and \"You are a helpful assistant.\" is used when you send none."
    ],
    "routes": [
-    "cbcn/kimi-k2.5",
-    "cb/kimi-k2.5"
+    "cbcn/deepseek-v4-pro",
+    "cmc/deepseek/deepseek-v4-pro",
+    "alitp/deepseek-v4-pro",
+    "ds/deepseek-v4-pro",
+    "cp/cline-pass/deepseek-v4-pro",
+    "ocg/deepseek-v4-pro"
+   ]
+  },
+  {
+   "recommendation_rank": 14,
+   "model_family": "GLM-5.3 Flash",
+   "vendor": null,
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "low",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 2,
+   "shortlist_score_100": 69.3701,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.005782,
+   "public_availability_7d_pct": 99.97,
+   "best_route": "mv/zai-glm-5-3-flash",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "no model alias status published",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.0027,
+   "best_route_min_ask_out": 0.009,
+   "best_route_official_in": 0.15,
+   "best_route_official_out": 0.5,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "mv/zai-glm-5-3-flash",
+    "fw/glm-5p3-flash"
+   ]
+  },
+  {
+   "recommendation_rank": 15,
+   "model_family": "DeepSeek V4 Flash 0731",
+   "vendor": "DeepSeek",
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "release_date_unknown",
+    "not_routing_eligible",
+    "open_weight_unverified"
+   ],
+   "tier": "top",
+   "capability_score_100": 74.171,
+   "capability_basis": "carried_over_prior_2026-09-22",
+   "capability_confidence": "low",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 2,
+   "shortlist_score_100": 68.5486,
+   "price_regime": "priced",
+   "supply_weighted_median_cost_usd_per_mtok": 0.115939,
+   "public_availability_7d_pct": 99.7,
+   "best_route": "alicn/deepseek-v4-flash-0731",
+   "best_route_health": "degraded",
+   "best_route_health_reasons": [
+    "model alias_state=degraded (24h 93.27%), model-wide signal"
+   ],
+   "best_route_min_ask_in": 0.02464,
+   "best_route_min_ask_out": 0.07392,
+   "best_route_official_in": 0.22,
+   "best_route_official_out": 0.66,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "alicn/deepseek-v4-flash-0731",
+    "alitp/deepseek-v4-flash-0731",
+    "ali/deepseek-v4-flash-0731"
+   ]
+  },
+  {
+   "recommendation_rank": 16,
+   "model_family": "MiMo V2.6 Flash",
+   "vendor": null,
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "not_routing_eligible",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 4,
+   "shortlist_score_100": 68.5373,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.095119,
+   "public_availability_7d_pct": 99.54,
+   "best_route": "ocg/mimo-v2.6-flash",
+   "best_route_health": "degraded",
+   "best_route_health_reasons": [
+    "model alias_state=major_outage (24h 69.05%), model-wide signal"
+   ],
+   "best_route_min_ask_in": 0.06146,
+   "best_route_min_ask_out": 0.12292,
+   "best_route_official_in": 0.14,
+   "best_route_official_out": 0.28,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "ocg/mimo-v2.6-flash",
+    "cmc/xiaomi/mimo-v2.6-flash",
+    "mimo/mimo-v2.6-flash",
+    "mimotp/mimo-v2.6-flash",
+    "cp/cline-pass/mimo-v2.6-flash"
+   ]
+  },
+  {
+   "recommendation_rank": 17,
+   "model_family": "GPT 6 Luna",
+   "vendor": "OpenAI",
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "medium",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 3,
+   "shortlist_score_100": 68.2369,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.039709,
+   "public_availability_7d_pct": 98.74,
+   "best_route": "cx/gpt-6-luna",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias operational (24h 96.47%)",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.0026,
+   "best_route_min_ask_out": 0.013,
+   "best_route_official_in": 0.1,
+   "best_route_official_out": 0.5,
+   "best_route_system_prompt_handling": "developer_message",
+   "best_route_preferred_endpoint": "/v1/responses",
+   "best_route_caveats": [
+    "System prompt is sent as a developer message; the upstream required instructions field is set to 'You are a helpful assistant.'; native /v1/responses keeps instructions as sent."
+   ],
+   "routes": [
+    "cx/gpt-6-luna",
+    "oai/gpt-6-luna",
+    "cmc/gpt-6-luna",
+    "cb/gpt-6-luna",
+    "ocg/gpt-6-luna"
+   ]
+  },
+  {
+   "recommendation_rank": 18,
+   "model_family": "Qwen3.8 27B",
+   "vendor": null,
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "insufficient_provider_breadth",
+    "catalog_availability_below_minimum",
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "low",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 1,
+   "shortlist_score_100": 67.6036,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.051327,
+   "public_availability_7d_pct": 98.84,
+   "best_route": "ali/qwen3.8-27b",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias low_traffic, 24h availability 99.11%",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.0035,
+   "best_route_min_ask_out": 0.021,
+   "best_route_official_in": 0.5,
+   "best_route_official_out": 3.0,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "ali/qwen3.8-27b"
+   ]
+  },
+  {
+   "recommendation_rank": 19,
+   "model_family": "MiniMax M3.1 Flash Preview",
+   "vendor": null,
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "low",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 2,
+   "shortlist_score_100": 67.3541,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.045133,
+   "public_availability_7d_pct": 99.97,
+   "best_route": "mmcn/MiniMax-M3.1-Flash-Preview",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias low_traffic, 24h availability 99.63%",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.009,
+   "best_route_min_ask_out": 0.036,
+   "best_route_official_in": 0.15,
+   "best_route_official_out": 0.6,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "mmcn/MiniMax-M3.1-Flash-Preview",
+    "mm/MiniMax-M3.1-Flash-Preview"
+   ]
+  },
+  {
+   "recommendation_rank": 20,
+   "model_family": "MiniMax M2",
+   "vendor": null,
+   "recommendation_eligible": false,
+   "recommendation_status": "gated",
+   "gate_reasons": [
+    "tier_below_minimum",
+    "capability_below_minimum",
+    "release_date_unknown",
+    "open_weight_unverified"
+   ],
+   "tier": "unscored",
+   "capability_score_100": 0.0,
+   "capability_basis": "unscored_not_in_prior",
+   "capability_confidence": "none",
+   "health_confidence": "low",
+   "confidence": "low",
+   "release_date": null,
+   "recency_days": null,
+   "priced_provider_count": 2,
+   "shortlist_score_100": 67.0397,
+   "price_regime": "near_free",
+   "supply_weighted_median_cost_usd_per_mtok": 0.087692,
+   "public_availability_7d_pct": 99.86,
+   "best_route": "mm/MiniMax-M2",
+   "best_route_health": "healthy",
+   "best_route_health_reasons": [
+    "model alias low_traffic, 24h availability 100.0%",
+    "rail_state=operational"
+   ],
+   "best_route_min_ask_in": 0.0003,
+   "best_route_min_ask_out": 0.0012,
+   "best_route_official_in": 0.3,
+   "best_route_official_out": 1.2,
+   "best_route_system_prompt_handling": "unspecified",
+   "best_route_preferred_endpoint": null,
+   "best_route_caveats": [],
+   "routes": [
+    "mm/MiniMax-M2",
+    "mmcn/MiniMax-M2"
    ]
   }
  ]
